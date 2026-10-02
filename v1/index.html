@@ -1,0 +1,755 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NanoHRMS Homepage Mock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0;background:#f7f8fa}
+a{color:#203247;text-decoration:none}a:hover{color:#40698f}
+*{box-sizing:border-box}
+button{font:inherit;cursor:pointer}
+.ease{transition:background-color 180ms cubic-bezier(.22,1,.36,1),color 180ms cubic-bezier(.22,1,.36,1),border-color 180ms cubic-bezier(.22,1,.36,1),box-shadow 180ms cubic-bezier(.22,1,.36,1),transform 180ms cubic-bezier(.22,1,.36,1)}
+.lift:hover{box-shadow:0 8px 28px rgb(26 42 61 / .07);border-color:#cfd8e2}
+.press:active{transform:scale(.98)}
+.emp-row{display:grid;grid-template-columns:28px minmax(0,2.3fr) minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:center}
+.emp-row:hover{background:#f4f7fa}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
+.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.five{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.mods{display:grid;grid-template-columns:240px minmax(0,1fr);gap:32px}
+.modgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.app{display:grid;grid-template-columns:184px minmax(0,1fr) 260px}
+.focus-ring:focus-visible{outline:2px solid #40698f;outline-offset:2px}
+@media (max-width:1100px){.app{grid-template-columns:184px minmax(0,1fr)}.app-detail{display:none}.five{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:860px){.nav-links{display:none!important}.split,.three,.mods{grid-template-columns:minmax(0,1fr)}.app{grid-template-columns:minmax(0,1fr)}.app-side{display:none!important}.five{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-h{font-size:40px!important}}
+.rise{animation:rise 560ms cubic-bezier(.22,1,.36,1) both}
+.d1{animation-delay:70ms}.d2{animation-delay:140ms}.d3{animation-delay:210ms}.d4{animation-delay:300ms}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.fade-in{animation:fadeIn 260ms cubic-bezier(.22,1,.36,1) both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.slide-in{animation:slideIn 180ms cubic-bezier(.22,1,.36,1) both}
+@keyframes slideIn{from{opacity:0;transform:translateY(-4px) scale(.98)}to{opacity:1;transform:none}}
+.grow-bar{animation:grow 800ms cubic-bezier(.22,1,.36,1) 120ms both;transform-origin:left center}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.lift:hover{transform:translateY(-2px)}
+.nav-links a{position:relative;padding:6px 0}
+.nav-links a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1.5px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform 180ms cubic-bezier(.22,1,.36,1)}
+.nav-links a:hover::after{transform:scaleX(1)}
+.menu-btn{display:none}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 0;font-size:16px;font-weight:600;color:#203247}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary svg{flex-shrink:0;transition:transform 180ms cubic-bezier(.22,1,.36,1)}
+.faq details[open] summary svg{transform:rotate(45deg)}
+.faq details[open] p{animation:fadeIn 260ms cubic-bezier(.22,1,.36,1) both}
+.faq summary:focus-visible{outline:2px solid #40698f;outline-offset:4px;border-radius:4px}
+@media (max-width:860px){.menu-btn{display:grid}.signin{display:none}}
+@media (prefers-reduced-motion:reduce){.rise,.fade-in,.slide-in,.grow-bar,.faq details[open] p{animation:none!important}.lift:hover{transform:none}}
+@media (max-width:560px){.emp-row{grid-template-columns:28px minmax(0,1fr) minmax(0,auto)}.hide-sm{display:none}.modgrid{grid-template-columns:minmax(0,1fr)}.five{grid-template-columns:minmax(0,1fr)}}
+</style>
+
+<div class="tweak" role="group" aria-label="Accent colour">
+<span>Accent</span>
+<button type="button" data-a="#40698f" aria-label="Mist blue" style="background:#40698f"></button>
+<button type="button" data-a="#856344" aria-label="Sand" style="background:#856344"></button>
+<button type="button" data-a="#526f58" aria-label="Sage" style="background:#526f58"></button>
+<button type="button" data-a="#596775" aria-label="Graphite" style="background:#596775"></button>
+</div>
+<style>
+:root{color-scheme:light}
+.tweak{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:50;display:flex;align-items:center;gap:8px;padding:8px 10px;background:#fff;border:1px solid #e3e8ee;border-radius:12px;box-shadow:0 8px 28px rgb(26 42 61 / .12);font:600 12px Geist,ui-sans-serif,system-ui,sans-serif;color:#43556a}
+.tweak button{width:26px;height:26px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px #c9d3de;cursor:pointer}
+.tweak button[aria-pressed="true"]{box-shadow:0 0 0 2px #203247}
+.tweak button:focus-visible{outline:2px solid #203247;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.ease{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<template id="tpl">
+
+
+<div style="font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; color: #43556a; background: #f7f8fa; font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased">
+
+<!-- NAV -->
+<header style="{{headerStyle}}">
+<div style="max-width: 1200px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; gap: 32px">
+<a href="#top" style="display: flex; align-items: center; gap: 10px; font-weight: 650; color: #203247; font-size: 16px; letter-spacing: -0.01em">
+<span style="width: 28px; height: 28px; border-radius: 7px; background: {{accent}}; color: #fff; display: grid; place-items: center; font-size: 14px; font-weight: 700">N</span>
+NanoHRMS
+</a>
+<nav class="nav-links" aria-label="Main" style="display: flex; gap: 24px; font-size: 14px; flex-grow: 1">
+<a href="#product">Product</a>
+<a href="#modules">Modules</a>
+<a href="#deploy">Security &amp; deployment</a>
+<a href="#pricing">Pricing</a>
+<a href="#faq">FAQ</a>
+</nav>
+<div style="display: flex; gap: 8px; align-items: center; margin-left: auto">
+<a href="#top" class="signin" style="font-size: 14px; padding: 10px 12px">Sign in</a>
+<a href="#top" class="ease press" style="font-size: 14px; font-weight: 600; padding: 10px 16px; border-radius: 8px; background: {{accent}}; color: #fff">Start free</a>
+<button type="button" class="menu-btn ease focus-ring" aria-label="{{menuLabel}}" aria-expanded="{{menuOpen}}" onClick="{{toggleMenu}}" style="width: 44px; height: 44px; place-items: center; border: 1px solid #e3e8ee; border-radius: 9px; background: #fff; color: #203247">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+</button>
+</div>
+</div>
+<sc-if value="{{menuOpen}}" hint-placeholder-val="{{ false }}">
+<nav data-key="mobile-menu" class="slide-in" aria-label="Mobile" style="border-top: 1px solid #e3e8ee; background: #fff; padding: 8px 24px 16px; display: flex; flex-direction: column; font-size: 16px">
+<a href="#product" onClick="{{closeMenu}}" style="padding: 12px 0; border-bottom: 1px solid #edf0f4">Product</a>
+<a href="#modules" onClick="{{closeMenu}}" style="padding: 12px 0; border-bottom: 1px solid #edf0f4">Modules</a>
+<a href="#deploy" onClick="{{closeMenu}}" style="padding: 12px 0; border-bottom: 1px solid #edf0f4">Security &amp; deployment</a>
+<a href="#pricing" onClick="{{closeMenu}}" style="padding: 12px 0; border-bottom: 1px solid #edf0f4">Pricing</a>
+<a href="#faq" onClick="{{closeMenu}}" style="padding: 12px 0; border-bottom: 1px solid #edf0f4">FAQ</a>
+<a href="#top" onClick="{{closeMenu}}" style="padding: 12px 0">Sign in</a>
+</nav>
+</sc-if>
+</header>
+
+<!-- HERO -->
+<section id="top" style="max-width: 1200px; margin: 0 auto; padding: 88px 24px 0">
+<div style="max-width: 900px">
+<h1 class="hero-h rise" style="margin: 0; font-size: 64px; line-height: 1.02; letter-spacing: -0.04em; color: #203247; font-weight: 650; text-wrap: balance">Run people, pay and time off from one calm workspace.</h1>
+<p class="rise d1" style="margin: 22px 0 0; font-size: 19px; line-height: 1.55; max-width: 620px; color: #43556a">NanoHRMS keeps employee records, leave, attendance, payroll and hiring in one place. Run it in our cloud, or on servers you control.</p>
+<div class="rise d2" style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; align-items: center">
+<a href="#pricing" class="ease press" style="display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 20px; border-radius: 9px; background: {{accent}}; color: #fff; font-weight: 600">Start free
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+</a>
+<a href="#deploy" class="ease press" style="display: inline-flex; align-items: center; min-height: 46px; padding: 0 20px; border-radius: 9px; border: 1px solid #c9d3de; background: #fff; color: #203247; font-weight: 600">Book a demo</a>
+<span style="font-size: 13px; color: #5f6f82; margin-left: 4px">Free for up to 5 employees · 14-day trial on paid plans</span>
+</div>
+</div>
+
+<!-- PRODUCT FRAME -->
+<div id="product" class="rise d3" style="margin-top: 56px; position: relative">
+<div aria-hidden="true" style="position: absolute; left: -24px; right: -24px; top: 38%; bottom: -36px; background: #fbf2e9; border-radius: 24px"></div>
+<div style="position: relative; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 14px">
+<div role="group" aria-label="Preview as" style="display: inline-flex; padding: 4px; background: #eef1f5; border-radius: 10px; gap: 4px">
+<button type="button" class="ease focus-ring" aria-pressed="{{isAdmin}}" onClick="{{showAdmin}}" style="{{tabAdmin}}">HR admin view</button>
+<button type="button" class="ease focus-ring" aria-pressed="{{isEmp}}" onClick="{{showEmp}}" style="{{tabEmp}}">Employee view</button>
+</div>
+<span style="font-size: 13px; color: #5f6f82">Try it: tick a few rows, click a name, or switch views.</span>
+</div>
+
+<div style="position: relative; background: #fff; border: 1px solid #e3e8ee; border-radius: 14px; box-shadow: 0 18px 65px rgb(21 36 53 / .10); overflow: hidden">
+<!-- window bar -->
+<div style="height: 40px; border-bottom: 1px solid #edf0f4; display: flex; align-items: center; gap: 8px; padding: 0 14px; background: #fbfcfd">
+<span style="width: 10px; height: 10px; border-radius: 50%; background: #dfe4ea"></span>
+<span style="width: 10px; height: 10px; border-radius: 50%; background: #dfe4ea"></span>
+<span style="width: 10px; height: 10px; border-radius: 50%; background: #dfe4ea"></span>
+<span style="margin-left: 16px; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 12px; color: #5f6f82">acme.[your-hrms-domain]</span>
+</div>
+
+<div class="app" style="min-height: 520px">
+<!-- sidebar -->
+<aside class="app-side" style="border-right: 1px solid #edf0f4; padding: 16px 12px; display: flex; flex-direction: column; gap: 2px; font-size: 13px; background: #fbfcfd">
+<div style="font-weight: 650; color: #203247; padding: 4px 10px 14px">Acme Ltd</div>
+<sc-for list="{{nav}}" as="n" hint-placeholder-count="7">
+<div style="{{n.style}}"><span style="{{n.bar}}"></span>{{n.label}}</div>
+</sc-for>
+</aside>
+
+<!-- ADMIN VIEW -->
+<sc-if value="{{isAdmin}}" hint-placeholder-val="{{ true }}">
+<div data-key="admin" class="fade-in" style="padding: 20px 22px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+<div style="flex-grow: 1">
+<div style="font-size: 18px; font-weight: 650; color: #203247; letter-spacing: -0.015em">Employees</div>
+<div style="font-size: 12.5px; color: #5f6f82">248 people · Saved view: Everyone</div>
+</div>
+<label style="display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border: 1px solid #e3e8ee; border-radius: 8px; font-size: 13px; color: #5f6f82; min-width: 200px">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+<span class="sr-only" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search employees</span>
+<input type="text" placeholder="Search name, team, ID" style="border: 0; outline: 0; font: inherit; color: #203247; background: transparent; width: 100%">
+</label>
+<button type="button" class="ease press" style="height: 34px; padding: 0 14px; border-radius: 8px; border: 0; background: {{accent}}; color: #fff; font-size: 13px; font-weight: 600">Add employee</button>
+</div>
+
+<!-- toolbar / bulk bar -->
+<div style="margin-top: 16px; min-height: 38px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap">
+<sc-if value="{{noSel}}" hint-placeholder-val="{{ true }}">
+<span style="font-size: 12.5px; padding: 6px 10px; border-radius: 999px; background: {{accentSoft}}; color: {{accent}}; font-weight: 600">Status: Any</span>
+<span style="font-size: 12.5px; padding: 6px 10px; border-radius: 999px; border: 1px solid #e3e8ee">Department</span>
+<span style="font-size: 12.5px; padding: 6px 10px; border-radius: 999px; border: 1px solid #e3e8ee">Location</span>
+<span style="font-size: 12.5px; color: #5f6f82; margin-left: 4px">Tick a row to see bulk actions</span>
+</sc-if>
+<sc-if value="{{hasSel}}" hint-placeholder-val="{{ false }}">
+<div data-key="bulk" class="slide-in" style="display: flex; align-items: center; gap: 10px; padding: 6px 8px 6px 14px; border-radius: 10px; background: #203247; color: #fff; font-size: 13px">
+<span style="font-weight: 600">{{selCount}} selected</span>
+<span style="width: 1px; height: 18px; background: rgb(255 255 255 / .2)"></span>
+<button type="button" style="border: 0; background: transparent; color: #fff; padding: 6px 8px; font-size: 13px">Message</button>
+<button type="button" style="border: 0; background: transparent; color: #fff; padding: 6px 8px; font-size: 13px">Export</button>
+<button type="button" style="border: 0; background: transparent; color: #fff; padding: 6px 8px; font-size: 13px">Change manager</button>
+<button type="button" onClick="{{clearSel}}" style="border: 0; background: rgb(255 255 255 / .12); color: #fff; padding: 6px 10px; border-radius: 7px; font-size: 13px">Clear</button>
+</div>
+</sc-if>
+</div>
+
+<!-- table -->
+<div style="margin-top: 10px; border: 1px solid #edf0f4; border-radius: 10px; overflow: hidden">
+<div class="emp-row" style="padding: 9px 14px; background: #fbfcfd; font-size: 11.5px; color: #5f6f82; font-weight: 600; letter-spacing: .02em">
+<span></span><span>Name</span><span class="hide-sm">Department</span><span>Status</span><span class="hide-sm">Joined</span>
+</div>
+<sc-for list="{{emps}}" as="e" hint-placeholder-count="7">
+<div class="emp-row ease" style="{{e.rowStyle}}">
+<input type="checkbox" checked="{{e.checked}}" onChange="{{e.toggle}}" aria-label="Select {{e.name}}" style="width: 15px; height: 15px; accent-color: {{accent}}">
+<button type="button" class="focus-ring" onClick="{{e.focusMe}}" style="display: flex; align-items: center; gap: 10px; border: 0; background: transparent; padding: 0; text-align: left; min-width: 0">
+<span style="{{e.avatar}}">{{e.initials}}</span>
+<span style="min-width: 0">
+<span style="display: block; color: #203247; font-weight: 600; font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{e.name}}</span>
+<span style="display: block; color: #5f6f82; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{e.role}}</span>
+</span>
+</button>
+<span class="hide-sm" style="font-size: 13px">{{e.dept}}</span>
+<span><span style="{{e.pill}}">{{e.status}}</span></span>
+<span class="hide-sm" style="font-size: 13px; font-family: 'Geist Mono', ui-monospace, monospace; color: #5f6f82">{{e.joined}}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<!-- EMPLOYEE VIEW -->
+<sc-if value="{{isEmp}}" hint-placeholder-val="{{ false }}">
+<div data-key="emp" class="fade-in" style="padding: 28px 30px; min-width: 0">
+<div style="font-size: 13px; color: #5f6f82">Friday, 2 October</div>
+<div style="font-size: 26px; font-weight: 650; color: #203247; letter-spacing: -0.025em; margin-top: 2px">Good morning, Rahul</div>
+<div class="three" style="margin-top: 22px">
+<div style="border: 1px solid #edf0f4; border-radius: 12px; padding: 18px">
+<div style="font-size: 12.5px; color: #5f6f82">Annual leave left</div>
+<div style="font-size: 30px; font-weight: 650; color: #203247; letter-spacing: -0.03em; margin-top: 4px; font-variant-numeric: tabular-nums">12 <span style="font-size: 14px; font-weight: 500; color: #5f6f82">of 18 days</span></div>
+<div style="height: 6px; border-radius: 99px; background: #eef1f5; margin-top: 12px; overflow: hidden"><div class="grow-bar" style="width: 66%; height: 100%; background: {{accent}}; border-radius: 99px"></div></div>
+</div>
+<div style="border: 1px solid #edf0f4; border-radius: 12px; padding: 18px">
+<div style="font-size: 12.5px; color: #5f6f82">September payslip</div>
+<div style="font-size: 15px; font-weight: 600; color: #203247; margin-top: 8px">Ready to download</div>
+<button type="button" class="ease press" style="margin-top: 12px; height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid #c9d3de; background: #fff; color: #203247; font-size: 13px; font-weight: 600">Download PDF</button>
+</div>
+<div style="border-radius: 12px; padding: 18px; background: #fbf2e9">
+<div style="font-size: 12.5px; color: #886445">Next company holiday</div>
+<div style="font-size: 15px; font-weight: 600; color: #203247; margin-top: 8px">Friday, 23 October</div>
+<div style="font-size: 13px; color: #886445; margin-top: 4px">Three weeks from today</div>
+</div>
+</div>
+<div style="margin-top: 16px; border: 1px solid #edf0f4; border-radius: 12px; padding: 18px">
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap">
+<div style="flex-grow: 1">
+<div style="font-size: 14px; font-weight: 600; color: #203247">Time off · 26–27 October</div>
+<div style="font-size: 12.5px; color: #5f6f82">2 days annual leave</div>
+</div>
+<span style="font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: #fff5e6; color: #8d601f">Waiting on HR</span>
+</div>
+<div style="display: flex; gap: 0; margin-top: 18px; align-items: center">
+<div style="display: flex; flex-direction: column; gap: 6px; flex-grow: 1">
+<div style="height: 3px; background: {{accent}}; border-radius: 99px"></div>
+<div style="font-size: 12px; color: #203247; font-weight: 600">Submitted</div>
+<div style="font-size: 11.5px; color: #5f6f82">Mon 28 Sep</div>
+</div>
+<div style="width: 8px"></div>
+<div style="display: flex; flex-direction: column; gap: 6px; flex-grow: 1">
+<div style="height: 3px; background: {{accent}}; border-radius: 99px"></div>
+<div style="font-size: 12px; color: #203247; font-weight: 600">Manager approved</div>
+<div style="font-size: 11.5px; color: #5f6f82">Tue 29 Sep · Divya Rao</div>
+</div>
+<div style="width: 8px"></div>
+<div style="display: flex; flex-direction: column; gap: 6px; flex-grow: 1">
+<div style="height: 3px; background: #e3e8ee; border-radius: 99px"></div>
+<div style="font-size: 12px; color: #203247; font-weight: 600">HR confirms</div>
+<div style="font-size: 11.5px; color: #5f6f82">Usually within a day</div>
+</div>
+</div>
+</div>
+<button type="button" class="ease press" style="margin-top: 16px; height: 40px; padding: 0 16px; border-radius: 9px; border: 0; background: {{accent}}; color: #fff; font-size: 14px; font-weight: 600">Request time off</button>
+</div>
+</sc-if>
+
+<!-- detail panel -->
+<aside class="app-detail" style="border-left: 1px solid #edf0f4; padding: 20px; background: #fbfcfd">
+<sc-if value="{{isAdmin}}" hint-placeholder-val="{{ true }}">
+<div data-key="{{fe.id}}" class="fade-in" style="display: flex; flex-direction: column; gap: 14px">
+<span style="{{fe.avatarLg}}">{{fe.initials}}</span>
+<div>
+<div style="font-size: 16px; font-weight: 650; color: #203247">{{fe.name}}</div>
+<div style="font-size: 13px; color: #5f6f82">{{fe.role}}</div>
+</div>
+<div><span style="{{fe.pill}}">{{fe.status}}</span></div>
+<div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px; border-top: 1px solid #edf0f4; padding-top: 14px">
+<div style="display: flex; justify-content: space-between; gap: 8px"><span style="color: #5f6f82">Department</span><span style="color: #203247">{{fe.dept}}</span></div>
+<div style="display: flex; justify-content: space-between; gap: 8px"><span style="color: #5f6f82">Manager</span><span style="color: #203247">{{fe.manager}}</span></div>
+<div style="display: flex; justify-content: space-between; gap: 8px"><span style="color: #5f6f82">Location</span><span style="color: #203247">{{fe.loc}}</span></div>
+<div style="display: flex; justify-content: space-between; gap: 8px"><span style="color: #5f6f82">Leave left</span><span style="color: #203247; font-variant-numeric: tabular-nums">{{fe.leave}}</span></div>
+</div>
+<button type="button" class="ease press" style="height: 34px; border-radius: 8px; border: 1px solid #c9d3de; background: #fff; color: #203247; font-size: 13px; font-weight: 600">Open profile</button>
+</div>
+</sc-if>
+<sc-if value="{{isEmp}}" hint-placeholder-val="{{ false }}">
+<div data-key="emp-side" class="fade-in">
+<div style="font-size: 13px; font-weight: 600; color: #203247">Your team today</div>
+<div style="display: flex; flex-direction: column; gap: 12px; margin-top: 14px; font-size: 13px">
+<div style="display: flex; gap: 10px; align-items: center"><span style="width: 8px; height: 8px; border-radius: 50%; background: #28704e"></span>5 in office</div>
+<div style="display: flex; gap: 10px; align-items: center"><span style="width: 8px; height: 8px; border-radius: 50%; background: {{accent}}"></span>2 working remotely</div>
+<div style="display: flex; gap: 10px; align-items: center"><span style="width: 8px; height: 8px; border-radius: 50%; background: #c4903f"></span>1 on leave</div>
+</div>
+</div>
+</sc-if>
+</aside>
+</div>
+</div>
+</div>
+
+<!-- trust strip: real platform facts -->
+<div class="five" style="position: relative; margin-top: 72px; padding: 22px 0; border-top: 1px solid #e3e8ee; border-bottom: 1px solid #e3e8ee; font-size: 13.5px">
+<div style="display: flex; gap: 10px; align-items: flex-start"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6z"></path></svg><span><b style="color: #203247; font-weight: 600">Tenant-isolated</b><br>at app and database layer</span></div>
+<div style="display: flex; gap: 10px; align-items: flex-start"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><rect x="4" y="10" width="16" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg><span><b style="color: #203247; font-weight: 600">Hash-chained</b><br>audit log</span></div>
+<div style="display: flex; gap: 10px; align-items: flex-start"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><rect x="3" y="4" width="18" height="7" rx="2"></rect><rect x="3" y="13" width="18" height="7" rx="2"></rect></svg><span><b style="color: #203247; font-weight: 600">Cloud or on-prem</b><br>same product</span></div>
+<div style="display: flex; gap: 10px; align-items: flex-start"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><path d="m9 15 2 2 4-4"></path></svg><span><b style="color: #203247; font-weight: 600">Signed licences</b><br>verified offline</span></div>
+<div style="display: flex; gap: 10px; align-items: flex-start"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"></path></svg><span><b style="color: #203247; font-weight: 600">SSO &amp; SCIM</b><br>on Enterprise</span></div>
+</div>
+</section>
+
+<!-- TWO AUDIENCES -->
+<section style="max-width: 1200px; margin: 0 auto; padding: 112px 24px 0">
+<h2 style="margin: 0; font-size: 38px; line-height: 1.12; letter-spacing: -0.03em; color: #203247; font-weight: 650; max-width: 680px">Built for the people who use HR, and the people who run it.</h2>
+<div class="split" style="margin-top: 40px">
+<div style="background: #fff; border: 1px solid #e3e8ee; border-radius: 14px; padding: 32px">
+<div style="font-size: 13px; font-weight: 600; color: #886445">For employees</div>
+<div style="font-size: 22px; font-weight: 650; color: #203247; letter-spacing: -0.02em; margin-top: 6px">Everything about my work, without asking HR.</div>
+<ul style="margin: 20px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px">
+<li style="display: flex; gap: 10px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 2px"><path d="m5 12 5 5L20 7"></path></svg>Request time off and see exactly where approval stands</li>
+<li style="display: flex; gap: 10px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 2px"><path d="m5 12 5 5L20 7"></path></svg>Payslips, documents and policies in one place</li>
+<li style="display: flex; gap: 10px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 2px"><path d="m5 12 5 5L20 7"></path></svg>Learning, reviews and recognition over time</li>
+</ul>
+<div style="margin-top: 20px; border: 1px solid #edf0f4; border-radius: 10px; padding: 14px; display: flex; align-items: center; gap: 12px; font-size: 13px; flex-wrap: wrap">
+<div style="flex-grow: 1"><div style="color: #203247; font-weight: 600">Time off · 26–27 October</div><div style="color: #5f6f82; font-size: 12px">Manager approved · waiting on HR</div></div>
+<span style="font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: #fff5e6; color: #8d601f">Waiting on HR</span>
+</div>
+<div style="font-size: 13.5px; margin-top: 16px">Self-service that answers the everyday questions before they reach HR.</div>
+</div>
+<div style="background: #fff; border: 1px solid #e3e8ee; border-radius: 14px; padding: 32px">
+<div style="font-size: 13px; font-weight: 600; color: {{accent}}">For HR teams and managers</div>
+<div style="font-size: 22px; font-weight: 650; color: #203247; letter-spacing: -0.02em; margin-top: 6px">Hundreds of records, still easy to work with.</div>
+<div style="margin-top: 20px; border: 1px solid #edf0f4; border-radius: 10px; overflow: hidden; font-size: 13px">
+<div style="display: flex; justify-content: space-between; padding: 10px 14px; background: #fbfcfd; color: #5f6f82; font-size: 12px; font-weight: 600"><span>Approval queue</span><span>6 waiting</span></div>
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-top: 1px solid #edf0f4; gap: 8px"><span><b style="color: #203247; font-weight: 600">Rahul Nair</b> · Annual leave, 2 days</span><span style="display: flex; gap: 6px"><button type="button" style="height: 28px; padding: 0 10px; border-radius: 7px; border: 1px solid #c9d3de; background: #fff; font-size: 12px; color: #203247">Decline</button><button type="button" style="height: 28px; padding: 0 10px; border-radius: 7px; border: 0; background: {{accent}}; color: #fff; font-size: 12px; font-weight: 600">Approve</button></span></div>
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-top: 1px solid #edf0f4; gap: 8px"><span><b style="color: #203247; font-weight: 600">Fatima Khan</b> · Expense claim</span><span style="display: flex; gap: 6px"><button type="button" style="height: 28px; padding: 0 10px; border-radius: 7px; border: 1px solid #c9d3de; background: #fff; font-size: 12px; color: #203247">Decline</button><button type="button" style="height: 28px; padding: 0 10px; border-radius: 7px; border: 0; background: {{accent}}; color: #fff; font-size: 12px; font-weight: 600">Approve</button></span></div>
+</div>
+<div style="font-size: 13.5px; margin-top: 16px">Saved views, bulk actions, approval queues and payroll runs, built for daily use.</div>
+</div>
+</div>
+</section>
+
+<!-- MODULES -->
+<section id="modules" style="max-width: 1200px; margin: 0 auto; padding: 112px 24px 0">
+<h2 style="margin: 0; font-size: 38px; line-height: 1.12; letter-spacing: -0.03em; color: #203247; font-weight: 650; max-width: 680px">One employee record. Every module reads from it.</h2>
+<p style="margin: 14px 0 0; font-size: 17px; max-width: 600px">Start with core HR and leave. Turn on payroll, hiring or learning when you need them. No re-entering data.</p>
+<div class="mods" style="margin-top: 40px">
+<div role="group" aria-label="Module groups" style="display: flex; flex-direction: column; gap: 4px">
+<sc-for list="{{cats}}" as="c" hint-placeholder-count="6">
+<button type="button" class="ease focus-ring" aria-pressed="{{c.on}}" onClick="{{c.pick}}" style="{{c.style}}"><span>{{c.label}}</span><span style="font-size: 12px; font-family: 'Geist Mono', ui-monospace, monospace; opacity: .75">{{c.count}}</span></button>
+</sc-for>
+</div>
+<div class="modgrid">
+<sc-for list="{{mods}}" as="m" hint-placeholder-count="4">
+<div data-key="{{m.name}}" class="ease lift fade-in" style="background: #fff; border: 1px solid #e3e8ee; border-radius: 12px; padding: 20px; animation-delay: {{m.delay}}">
+<div style="font-size: 15px; font-weight: 600; color: #203247">{{m.name}}</div>
+<div style="font-size: 13.5px; margin-top: 6px">{{m.desc}}</div>
+<div style="font-size: 12px; color: #5f6f82; margin-top: 12px">{{m.plan}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+
+<!-- AI -->
+<section style="max-width: 1200px; margin: 0 auto; padding: 112px 24px 0">
+<div class="split" style="align-items: center; gap: 56px">
+<div>
+<div style="font-size: 13px; font-weight: 600; color: {{accent}}">NanoNexus AI</div>
+<h2 style="margin: 8px 0 0; font-size: 38px; line-height: 1.12; letter-spacing: -0.03em; color: #203247; font-weight: 650">Ask HR questions in plain language.</h2>
+<p style="margin: 16px 0 0; font-size: 17px">Answers come from your organisation's HR records, and only from what the person asking is allowed to see. It stays on HR topics.</p>
+<div style="font-size: 13px; color: #5f6f82; margin-top: 16px">Included from the Business plan.</div>
+</div>
+<div style="background: #fff; border: 1px solid #e3e8ee; border-radius: 14px; padding: 22px; display: flex; flex-direction: column; gap: 12px; font-size: 14px">
+<div style="align-self: flex-end; max-width: 80%; background: {{accentSoft}}; color: #203247; padding: 10px 14px; border-radius: 12px 12px 4px 12px">How much annual leave do I have left this year?</div>
+<div style="max-width: 88%; background: #f4f6f9; color: #203247; padding: 12px 14px; border-radius: 12px 12px 12px 4px">You have <b style="font-weight: 600">12 of 18 days</b> left. Your request for 26–27 October is approved by your manager and waiting on HR, so it is not deducted yet.</div>
+<div style="align-self: flex-end; max-width: 80%; background: {{accentSoft}}; color: #203247; padding: 10px 14px; border-radius: 12px 12px 4px 12px">What is Aarav's salary?</div>
+<div style="max-width: 88%; background: #f4f6f9; color: #203247; padding: 12px 14px; border-radius: 12px 12px 12px 4px">I can't share other employees' pay details. Your HR team can help if you need this for an approved purpose.</div>
+<label style="display: flex; gap: 8px; align-items: center; border: 1px solid #e3e8ee; border-radius: 10px; padding: 0 6px 0 12px; height: 44px; margin-top: 4px">
+<span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Ask a question</span>
+<input type="text" placeholder="Ask about leave, policies, payslips…" style="border: 0; outline: 0; font: inherit; background: transparent; flex-grow: 1; color: #203247">
+<button type="button" aria-label="Send" style="width: 32px; height: 32px; border-radius: 8px; border: 0; background: {{accent}}; color: #fff; display: grid; place-items: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+</label>
+</div>
+</div>
+</section>
+
+<!-- DEPLOYMENT & SECURITY -->
+<section id="deploy" style="max-width: 1200px; margin: 0 auto; padding: 112px 24px 0">
+<div style="background: #203247; color: #c6d2df; border-radius: 18px; padding: 56px 48px">
+<div class="split" style="gap: 48px">
+<div>
+<h2 style="margin: 0; font-size: 38px; line-height: 1.12; letter-spacing: -0.03em; color: #fff; font-weight: 650">Run it where your data needs to live.</h2>
+<p style="margin: 16px 0 0; font-size: 17px">The same NanoHRMS, hosted by us or installed on infrastructure you operate.</p>
+<div role="group" aria-label="Deployment" style="display: inline-flex; padding: 4px; background: rgb(255 255 255 / .08); border-radius: 10px; gap: 4px; margin-top: 28px">
+<button type="button" class="ease focus-ring" aria-pressed="{{isCloud}}" onClick="{{pickCloud}}" style="{{tabCloud}}">Cloud</button>
+<button type="button" class="ease focus-ring" aria-pressed="{{isOnprem}}" onClick="{{pickOnprem}}" style="{{tabOnprem}}">On-premises</button>
+</div>
+<ul style="margin: 24px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 15px">
+<sc-for list="{{deployPoints}}" as="d" hint-placeholder-count="3">
+<li data-key="{{d}}" class="fade-in" style="display: flex; gap: 10px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a6c6e3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 2px"><path d="m5 12 5 5L20 7"></path></svg>{{d}}</li>
+</sc-for>
+</ul>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-content: start">
+<div style="border: 1px solid rgb(255 255 255 / .12); border-radius: 12px; padding: 20px"><div style="color: #fff; font-weight: 600">Tenant isolation</div><div style="font-size: 13.5px; margin-top: 6px">Each organisation's records are scoped to its own tenant, in the app and at the database layer.</div></div>
+<div style="border: 1px solid rgb(255 255 255 / .12); border-radius: 12px; padding: 20px"><div style="color: #fff; font-weight: 600">Tamper-evident audit</div><div style="font-size: 13.5px; margin-top: 6px">Sensitive changes go to a hash-chained log, so later edits are detectable.</div></div>
+<div style="border: 1px solid rgb(255 255 255 / .12); border-radius: 12px; padding: 20px"><div style="color: #fff; font-weight: 600">Offline licensing</div><div style="font-size: 13.5px; margin-top: 6px">Licence files are signed and verified by the install itself.</div></div>
+<div style="border: 1px solid rgb(255 255 255 / .12); border-radius: 12px; padding: 20px"><div style="color: #fff; font-weight: 600">Your identity provider</div><div style="font-size: 13.5px; margin-top: 6px">SAML/OIDC single sign-on with SCIM provisioning on Enterprise.</div></div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" style="max-width: 1200px; margin: 0 auto; padding: 112px 24px 0">
+<div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap">
+<div>
+<h2 style="margin: 0; font-size: 38px; line-height: 1.12; letter-spacing: -0.03em; color: #203247; font-weight: 650">Priced by team size.</h2>
+<p style="margin: 12px 0 0; font-size: 17px">Billed in INR. Every plan includes core HR and leave.</p>
+</div>
+<div role="group" aria-label="Billing" style="display: inline-flex; padding: 4px; background: #eef1f5; border-radius: 10px; gap: 4px">
+<button type="button" class="ease focus-ring" aria-pressed="{{isMonthly}}" onClick="{{pickMonthly}}" style="{{tabMonthly}}">Monthly</button>
+<button type="button" class="ease focus-ring" aria-pressed="{{annual}}" onClick="{{pickAnnual}}" style="{{tabAnnual}}">Annual · save 20%</button>
+</div>
+</div>
+<div class="five" style="margin-top: 32px">
+<sc-for list="{{plans}}" as="p" hint-placeholder-count="5">
+<div class="ease lift" style="{{p.card}}">
+<div style="font-size: 15px; font-weight: 600; color: #203247">{{p.name}}</div>
+<div style="font-size: 12.5px; color: #5f6f82">{{p.who}}</div>
+<div style="margin-top: 18px; font-size: 26px; font-weight: 650; color: #203247; letter-spacing: -0.03em; font-variant-numeric: tabular-nums"><span data-key="{{p.price}}" class="fade-in" style="display: inline-block">{{p.price}}</span><span style="font-size: 13px; font-weight: 500; color: #5f6f82">{{p.unit}}</span></div>
+<div style="font-size: 13px; margin-top: 4px">{{p.limit}}</div>
+<a href="#top" class="ease press" style="{{p.cta}}">{{p.ctaLabel}}</a>
+</div>
+</sc-for>
+</div>
+<div style="margin-top: 16px; font-size: 13.5px"><a href="#pricing" style="color: {{accent}}; font-weight: 600">Compare every feature →</a></div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" style="max-width: 1200px; margin: 0 auto; padding: 112px 24px 0">
+<div class="split" style="gap: 48px">
+<div>
+<h2 style="margin: 0; font-size: 38px; line-height: 1.12; letter-spacing: -0.03em; color: #203247; font-weight: 650">Questions before you start</h2>
+<p style="margin: 14px 0 0; font-size: 17px">Something else? <a href="#deploy" style="color: {{accent}}; font-weight: 600">Talk to us</a>.</p>
+</div>
+<div class="faq" style="border-top: 1px solid #e3e8ee">
+<details style="border-bottom: 1px solid #e3e8ee"><summary>Can I change plans later?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></summary><p style="margin: 0 0 20px; font-size: 15px">Yes. Upgrades take effect immediately and are billed pro rata. Downgrades take effect at the start of your next billing cycle.</p></details>
+<details style="border-bottom: 1px solid #e3e8ee"><summary>Is there a free trial?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></summary><p style="margin: 0 0 20px; font-size: 15px">The Free plan has no time limit and needs no credit card. Paid plans include a 14-day free trial.</p></details>
+<details style="border-bottom: 1px solid #e3e8ee"><summary>What payment methods do you accept?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></summary><p style="margin: 0 0 20px; font-size: 15px">Major credit and debit cards, UPI, net banking, and bank transfer for annual plans.</p></details>
+<details style="border-bottom: 1px solid #e3e8ee"><summary>What happens to my data if I cancel?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></summary><p style="margin: 0 0 20px; font-size: 15px">Your data stays available for 30 days so you can export it as CSV. After that it is securely deleted.</p></details>
+<details style="border-bottom: 1px solid #e3e8ee"><summary>Can we run it on our own servers?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></summary><p style="margin: 0 0 20px; font-size: 15px">Yes, on the Enterprise plan. The licence is signed and verified by the install itself, so it can run offline.</p></details>
+</div>
+</div>
+</section>
+
+<!-- CLOSING -->
+<section style="max-width: 1200px; margin: 0 auto; padding: 112px 24px 0">
+<div style="background: #fbf2e9; border-radius: 18px; padding: 56px 48px; display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap">
+<div style="max-width: 560px">
+<h2 style="margin: 0; font-size: 34px; line-height: 1.15; letter-spacing: -0.03em; color: #203247; font-weight: 650">See it with your own organisation in mind.</h2>
+<p style="margin: 12px 0 0; font-size: 16px; color: #6e5038">Start free for up to 5 employees, or talk to us about a rollout plan.</p>
+</div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap">
+<a href="#pricing" class="ease press" style="display: inline-flex; align-items: center; min-height: 46px; padding: 0 20px; border-radius: 9px; background: {{accent}}; color: #fff; font-weight: 600">Start free</a>
+<a href="#deploy" class="ease press" style="display: inline-flex; align-items: center; min-height: 46px; padding: 0 20px; border-radius: 9px; border: 1px solid #d7bea6; background: #fff; color: #203247; font-weight: 600">Book a demo</a>
+</div>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer style="max-width: 1200px; margin: 0 auto; padding: 72px 24px 48px">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 32px; font-size: 13.5px">
+<div>
+<div style="display: flex; align-items: center; gap: 10px; font-weight: 650; color: #203247"><span style="width: 24px; height: 24px; border-radius: 6px; background: {{accent}}; color: #fff; display: grid; place-items: center; font-size: 12px; font-weight: 700">N</span>NanoHRMS</div>
+<div style="margin-top: 10px; color: #5f6f82">by NanoNexus</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px"><b style="color: #203247; font-weight: 600">Product</b><a href="#modules">Modules</a><a href="#pricing">Pricing</a><a href="#top">Integrations</a><a href="#top">Changelog</a></div>
+<div style="display: flex; flex-direction: column; gap: 8px"><b style="color: #203247; font-weight: 600">Company</b><a href="#deploy">Enterprise</a><a href="#top">Blog</a><a href="#top">Docs</a></div>
+<div style="display: flex; flex-direction: column; gap: 8px"><b style="color: #203247; font-weight: 600">Legal</b><a href="#top">Privacy</a><a href="#top">Terms</a><a href="#top">Security</a><a href="#top">GDPR</a></div>
+</div>
+<div style="margin-top: 48px; padding-top: 20px; border-top: 1px solid #e3e8ee; font-size: 12.5px; color: #5f6f82">© 2026 NanoNexus. All rights reserved.</div>
+</footer>
+
+</div>
+</template>
+
+<script>
+class DCLogic{constructor(props){this.props=props||{};this.state={};}setState(p){Object.assign(this.state,typeof p==='function'?p(this.state):p);window.__dcRender&&window.__dcRender();}forceUpdate(){window.__dcRender&&window.__dcRender();}}
+(function(){
+  var WHOLE=/^\{\{\s*([\w.$]+)\s*\}\}$/, PART=/\{\{\s*([\w.$]+)\s*\}\}/g;
+  function look(path,scope){
+    if(path==='true')return true; if(path==='false')return false;
+    if(/^-?\d+(\.\d+)?$/.test(path))return Number(path);
+    return path.split('.').reduce(function(o,k){return o==null?undefined:o[k];},scope);
+  }
+  function interp(str,scope){return str.replace(PART,function(_,p){var v=look(p,scope);return v==null?'':String(v);});}
+  function proc(nodes,scope,out){
+    for(var i=0;i<nodes.length;i++){
+      var n=nodes[i];
+      if(n.nodeType===3){out.push(document.createTextNode(interp(n.nodeValue,scope)));continue;}
+      if(n.nodeType!==1)continue;
+      var tag=n.localName;
+      if(tag==='sc-for'){
+        var list=look((n.getAttribute('list')||'').replace(/[{}\s]/g,''),scope)||[];
+        var as=n.getAttribute('as')||'item';
+        list.forEach(function(item,idx){var sc=Object.assign({},scope);sc[as]=item;sc.$index=idx;proc(n.childNodes,sc,out);});
+        continue;
+      }
+      if(tag==='sc-if'){
+        if(look((n.getAttribute('value')||'').replace(/[{}\s]/g,''),scope))proc(n.childNodes,scope,out);
+        continue;
+      }
+      var el=n.cloneNode(false);
+      Array.prototype.slice.call(n.attributes).forEach(function(a){
+        if(a.name.indexOf('hint-')===0){el.removeAttribute(a.name);return;}
+        if(a.value.indexOf('{{')<0)return;
+        var m=a.value.match(WHOLE);
+        if(!m){el.setAttribute(a.name,interp(a.value,scope));return;}
+        var v=look(m[1],scope);
+        if(/^on/i.test(a.name)){el.removeAttribute(a.name);if(typeof v==='function'){(el.__h=el.__h||{})[a.name.slice(2).toLowerCase()]=v;}return;}
+        if(a.name==='checked'){el.removeAttribute('checked');el.checked=!!v;if(v)el.setAttribute('checked','');return;}
+        if(a.name.indexOf('aria-')===0&&typeof v==='boolean'){el.setAttribute(a.name,String(v));return;}
+        if(v===false||v==null)el.removeAttribute(a.name);else el.setAttribute(a.name,String(v));
+      });
+      var kids=[];proc(n.childNodes,scope,kids);kids.forEach(function(k){el.appendChild(k);});
+      out.push(el);
+    }
+  }
+
+  function wire(el){
+    if(!el.__h)return;
+    el.__w=el.__w||{};
+    Object.keys(el.__h).forEach(function(t){
+      if(el.__w[t])return; el.__w[t]=true;
+      el.addEventListener(t,function(ev){var f=el.__h&&el.__h[t];if(f)f(ev);});
+    });
+  }
+  function wireAll(node){if(node.nodeType!==1)return;wire(node);for(var i=0;i<node.children.length;i++)wireAll(node.children[i]);}
+  function same(a,b){
+    if(a.nodeType!==b.nodeType)return false;
+    if(a.nodeType!==1)return true;
+    return a.localName===b.localName&&a.getAttribute('data-key')===b.getAttribute('data-key');
+  }
+  function morph(parent,nodes){
+    var i=0;
+    for(;i<nodes.length;i++){
+      var nu=nodes[i], old=parent.childNodes[i];
+      if(!old){parent.appendChild(nu);wireAll(nu);continue;}
+      if(!same(old,nu)){parent.replaceChild(nu,old);wireAll(nu);continue;}
+      if(nu.nodeType!==1){if(old.nodeValue!==nu.nodeValue)old.nodeValue=nu.nodeValue;continue;}
+      var oa=old.attributes;
+      for(var k=oa.length-1;k>=0;k--){if(!nu.hasAttribute(oa[k].name))old.removeAttribute(oa[k].name);}
+      var na=nu.attributes;
+      for(var j=0;j<na.length;j++){if(old.getAttribute(na[j].name)!==na[j].value)old.setAttribute(na[j].name,na[j].value);}
+      if(old.localName==='input'&&old.type==='checkbox')old.checked=nu.checked;
+      old.__h=nu.__h; wire(old);
+      morph(old,Array.prototype.slice.call(nu.childNodes));
+    }
+    while(parent.childNodes.length>nodes.length)parent.removeChild(parent.lastChild);
+  }
+  window.__dcMount=function(Comp,props,root,tpl){
+    var c=new Comp(props);
+    window.__dcComp=c;
+    window.__dcRender=function(){var out=[];proc(tpl.content.childNodes,c.renderVals(),out);morph(root,out);};
+    window.__dcRender();
+  };
+})();
+</script>
+<script>
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { view: 'admin', sel: {}, focus: 'e3', cat: 'people', deploy: 'cloud', annual: false, menuOpen: false, scrolled: false };
+  }
+  mix(hex, t) {
+    var h = (hex || '#40698f').replace('#', '');
+    if (h.length === 3) h = h.split('').map(function (c) { return c + c; }).join('');
+    var n = parseInt(h, 16), r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+    var m = function (c) { return Math.round(c + (255 - c) * t); };
+    return 'rgb(' + m(r) + ' ' + m(g) + ' ' + m(b) + ')';
+  }
+  seg(on, accent, dark) {
+    var base = 'border: 0; height: 36px; padding: 0 14px; border-radius: 7px; font-size: 13.5px; font-weight: 600; ';
+    if (dark) return base + (on ? 'background: #fff; color: #203247;' : 'background: transparent; color: #c6d2df;');
+    return base + (on ? 'background: #fff; color: #203247; box-shadow: 0 1px 3px rgb(26 42 61 / .08);' : 'background: transparent; color: #5f6f82;');
+  }
+  renderVals() {
+    var self = this, s = this.state;
+    var accent = this.props.accent ?? '#40698f';
+    var accentSoft = this.mix(accent, 0.9);
+    var tints = ['#e8eef5', '#f3ebe2', '#e9efe8', '#f1e8ec', '#e9ecf0'];
+    var inks = ['#3a5a7a', '#7a5a3d', '#4b6650', '#86576a', '#4f5c69'];
+    var pills = {
+      'Active': 'background: #edf6f0; color: #28704e;',
+      'On leave': 'background: #fff5e6; color: #8d601f;',
+      'Probation': 'background: ' + accentSoft + '; color: ' + accent + ';',
+      'Notice period': 'background: #fceff0; color: #b34350;'
+    };
+    var raw = [
+      { id: 'e1', name: 'Aarav Mehta', role: 'Senior Engineer', dept: 'Engineering', status: 'Active', joined: '12 Mar 2022', manager: 'Divya Rao', loc: 'Bengaluru', leave: '9 days' },
+      { id: 'e2', name: 'Fatima Khan', role: 'Payroll Specialist', dept: 'Finance', status: 'Active', joined: '04 Jan 2021', manager: 'Joseph Mathew', loc: 'Kochi', leave: '14 days' },
+      { id: 'e3', name: 'Rahul Nair', role: 'Product Designer', dept: 'Design', status: 'On leave', joined: '19 Aug 2023', manager: 'Divya Rao', loc: 'Kochi', leave: '12 days' },
+      { id: 'e4', name: 'Sneha Iyer', role: 'HR Business Partner', dept: 'People', status: 'Active', joined: '02 May 2020', manager: 'Anita Menon', loc: 'Chennai', leave: '6 days' },
+      { id: 'e5', name: 'Daniel Thomas', role: 'Sales Lead', dept: 'Sales', status: 'Probation', joined: '01 Sep 2026', manager: 'Karan Shah', loc: 'Dubai', leave: '2 days' },
+      { id: 'e6', name: 'Meera Pillai', role: 'Data Analyst', dept: 'Finance', status: 'Active', joined: '23 Nov 2024', manager: 'Joseph Mathew', loc: 'Remote', leave: '11 days' },
+      { id: 'e7', name: 'Arjun Das', role: 'Support Engineer', dept: 'Operations', status: 'Notice period', joined: '15 Jun 2022', manager: 'Karan Shah', loc: 'Pune', leave: '4 days' }
+    ];
+    var selCount = 0;
+    var emps = raw.map(function (e, i) {
+      var checked = !!s.sel[e.id];
+      if (checked) selCount++;
+      var focused = s.view === 'admin' && s.focus === e.id;
+      var bg = checked ? accentSoft : (focused ? '#f4f7fa' : '#fff');
+      var initials = e.name.split(' ').map(function (w) { return w[0]; }).join('');
+      var av = 'display: grid; place-items: center; border-radius: 50%; font-weight: 600; flex-shrink: 0; background: ' + tints[i % 5] + '; color: ' + inks[i % 5] + ';';
+      return Object.assign({}, e, {
+        initials: initials,
+        checked: checked,
+        rowStyle: 'padding: 9px 14px; border-top: 1px solid #edf0f4; background: ' + bg + ';' + (focused ? ' box-shadow: inset 2px 0 0 ' + accent + ';' : ''),
+        pill: 'display: inline-block; font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 999px; white-space: nowrap; ' + pills[e.status],
+        avatar: av + ' width: 30px; height: 30px; font-size: 11.5px;',
+        avatarLg: av + ' width: 52px; height: 52px; font-size: 17px;',
+        toggle: function () { var n = Object.assign({}, self.state.sel); if (n[e.id]) delete n[e.id]; else n[e.id] = true; self.setState({ sel: n }); },
+        focusMe: function () { self.setState({ focus: e.id }); }
+      });
+    });
+    var fe = emps.filter(function (e) { return e.id === s.focus; })[0] || emps[0];
+
+    var navItems = s.view === 'admin'
+      ? ['Home', 'Employees', 'Leave', 'Attendance', 'Payroll', 'Recruitment', 'Reports']
+      : ['Home', 'My time off', 'Payslips', 'Documents', 'Learning', 'Team', 'Help'];
+    var activeNav = s.view === 'admin' ? 'Employees' : 'Home';
+    var nav = navItems.map(function (l) {
+      var on = l === activeNav;
+      return {
+        label: l,
+        style: 'position: relative; padding: 7px 10px; border-radius: 7px; ' + (on ? 'background: #eef1f5; color: #203247; font-weight: 600;' : 'color: #5f6f82;'),
+        bar: on ? 'position: absolute; left: 0; top: 8px; bottom: 8px; width: 2px; border-radius: 2px; background: ' + accent + ';' : 'display: none;'
+      };
+    });
+
+    var groups = [
+      { id: 'people', label: 'People & records', mods: [
+        ['Core HR', 'Employee profiles, org charts, departments and positions.', 'All plans'],
+        ['Policy management', 'Publish policies and track who has acknowledged them.', 'Starter and up'],
+        ['Workflow', 'Configurable steps for moving work through approvals.', 'Business and up'],
+        ['Identity & access', 'Roles and permissions for everyone using the platform.', '[PLAN]']] },
+      { id: 'time', label: 'Time & attendance', mods: [
+        ['Leave management', 'Leave requests, policies and team calendars in one place.', 'All plans'],
+        ['Attendance', 'Attendance records and time tracking.', 'Starter and up'],
+        ['Scheduler', 'Shifts and schedules linked to attendance.', '[PLAN]']] },
+      { id: 'pay', label: 'Pay & benefits', mods: [
+        ['Payroll', 'Payroll runs and records tied to each employee.', 'Professional and up'],
+        ['Compensation', 'Salary structures and compensation reviews.', 'Professional and up'],
+        ['Benefits', 'Employee benefit enrolment and records.', 'Professional and up']] },
+      { id: 'talent', label: 'Hiring & growth', mods: [
+        ['Recruitment', 'Roles, candidates and hiring stages.', 'Professional and up'],
+        ['Performance', 'Review cycles, goals and feedback records.', 'Professional and up'],
+        ['Learning', 'Courses, participation and progress.', 'Business and up']] },
+      { id: 'engage', label: 'Engagement', mods: [
+        ['Engagement & surveys', 'Collect workplace feedback and see trends.', 'Business and up'],
+        ['Recognition', 'Milestones, kudos and participation.', 'Business and up'],
+        ['Helpdesk', 'Employee tickets and grievances with clear owners.', '[PLAN]'],
+        ['Wiki', 'A shared knowledge base for your organisation.', '[PLAN]']] },
+      { id: 'insight', label: 'Insight & platform', mods: [
+        ['Reports & analytics', 'Headcount, leave and payroll reporting.', 'Professional and up'],
+        ['NanoNexus AI', 'HR answers scoped to each person’s permissions.', 'Business and up'],
+        ['Integrations & API', 'Connect existing tools; full API access.', 'Business and up'],
+        ['Notifications', 'Email and in-app notices for every workflow.', '[PLAN]']] }
+    ];
+    var cats = groups.map(function (g) {
+      var on = g.id === s.cat;
+      return {
+        label: g.label, count: String(g.mods.length), on: on,
+        pick: function () { self.setState({ cat: g.id }); },
+        style: 'display: flex; justify-content: space-between; align-items: center; text-align: left; border: 0; min-height: 44px; padding: 0 14px; border-radius: 9px; font-size: 14.5px; ' + (on ? 'background: #fff; color: #203247; font-weight: 600; box-shadow: inset 2px 0 0 ' + accent + ', 0 1px 3px rgb(26 42 61 / .06);' : 'background: transparent; color: #5f6f82;')
+      };
+    });
+    var cur = groups.filter(function (g) { return g.id === s.cat; })[0];
+    var mods = cur.mods.map(function (m, i) { return { name: m[0], desc: m[1], plan: m[2], delay: (i * 50) + 'ms' }; });
+
+    var isCloud = s.deploy === 'cloud';
+    var deployPoints = isCloud
+      ? ['Your own workspace at your-company.[your-hrms-domain]', 'Hosted and maintained by NanoNexus', 'Ready as soon as you register']
+      : ['Install on servers you operate', 'Signed licence verified locally, so installs can run offline', 'Part of the Enterprise plan, configured with our team'];
+
+    var plansRaw = [
+      ['Free', 'Micro businesses', 0, 0, 'Up to 5 employees'],
+      ['Starter', 'Growing small teams', 2999, 2399, 'Up to 25 employees'],
+      ['Professional', 'Scaling companies', 7499, 5999, 'Up to 100 employees'],
+      ['Business', 'Established businesses', 14999, 11999, 'Up to 500 employees'],
+      ['Enterprise', 'Large organisations', null, null, 'Unlimited employees']
+    ];
+    var plans = plansRaw.map(function (p) {
+      var v = s.annual ? p[3] : p[2];
+      var featured = p[0] === 'Professional';
+      return {
+        name: p[0], who: p[1], limit: p[4],
+        price: v === null ? 'Custom' : '₹' + v.toLocaleString('en-IN'),
+        unit: v === null ? '' : ' /mo',
+        ctaLabel: v === null ? 'Talk to us' : (v === 0 ? 'Start free' : 'Choose ' + p[0]),
+        card: 'background: #fff; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; border: 1px solid ' + (featured ? accent : '#e3e8ee') + ';',
+        cta: 'margin-top: 20px; display: flex; align-items: center; justify-content: center; min-height: 44px; border-radius: 8px; font-size: 13.5px; font-weight: 600; ' + (featured ? 'background: ' + accent + '; color: #fff;' : 'border: 1px solid #c9d3de; color: #203247;')
+      };
+    });
+
+    return {
+      accent: accent, accentSoft: accentSoft,
+      isAdmin: s.view === 'admin', isEmp: s.view === 'employee',
+      showAdmin: function () { self.setState({ view: 'admin' }); },
+      showEmp: function () { self.setState({ view: 'employee' }); },
+      tabAdmin: this.seg(s.view === 'admin', accent, false),
+      tabEmp: this.seg(s.view === 'employee', accent, false),
+      nav: nav, emps: emps, fe: fe,
+      selCount: selCount, hasSel: selCount > 0, noSel: selCount === 0,
+      clearSel: function () { self.setState({ sel: {} }); },
+      cats: cats, mods: mods,
+      isCloud: isCloud, isOnprem: !isCloud, deployPoints: deployPoints,
+      pickCloud: function () { self.setState({ deploy: 'cloud' }); },
+      pickOnprem: function () { self.setState({ deploy: 'onprem' }); },
+      tabCloud: this.seg(isCloud, accent, true),
+      tabOnprem: this.seg(!isCloud, accent, true),
+      annual: s.annual, isMonthly: !s.annual,
+      pickMonthly: function () { self.setState({ annual: false }); },
+      pickAnnual: function () { self.setState({ annual: true }); },
+      tabMonthly: this.seg(!s.annual, accent, false),
+      tabAnnual: this.seg(s.annual, accent, false),
+      plans: plans,
+      menuOpen: s.menuOpen, menuLabel: s.menuOpen ? 'Close menu' : 'Open menu',
+      toggleMenu: function () { self.setState({ menuOpen: !self.state.menuOpen }); },
+      closeMenu: function () { self.setState({ menuOpen: false }); },
+      headerStyle: 'position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: rgb(247 248 250 / ' + (s.scrolled || s.menuOpen ? '.94' : '.7') + '); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid ' + (s.scrolled || s.menuOpen ? '#e3e8ee' : 'transparent') + '; box-shadow: ' + (s.scrolled ? '0 8px 24px rgb(26 42 61 / .05)' : 'none') + '; transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;'
+    };
+  }
+}
+
+</script>
+
+<script>
+(function(){
+  var props={accent:'#40698f'};
+  __dcMount(Component,props,document.getElementById('app'),document.getElementById('tpl'));
+  var btns=document.querySelectorAll('.tweak button');
+  function mark(){btns.forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.a===props.accent));});}
+  btns.forEach(function(b){b.addEventListener('click',function(){props.accent=b.dataset.a;__dcComp.props=props;__dcRender();mark();});});
+  mark();
+  var onScroll=function(){var v=window.scrollY>8;if(v!==__dcComp.state.scrolled)__dcComp.setState({scrolled:v});};
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+})();
+</script>
+
+</body>
+</html>
