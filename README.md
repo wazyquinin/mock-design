@@ -2,7 +2,8 @@
 
 Interactive design mocks for the NanoHRMS marketing-site revamp. Live at https://wazyquinin.github.io/mock-design/
 
-- `index.html` — **v2**: dark hero with a layered, tilting product scene, auto-playing product tour, platform grid of live mini-UIs, employee phone view, AI chat, hash-chained audit log visual, pricing calculator, FAQ.
-- `v1/index.html` — **v1**: the first, calmer "Soft Workspace" draft, kept for comparison.
+- `index.html` — **v3**: cinematic scroll. Each chapter has its own colour world and the product builds as you scroll (laptop hero, one-record orbit, time-off phone, payroll count-up, audit chain with tamper demo, AI answers, deployment, pricing slider).
+- `v2/` — dark hero + product tour + bento grid.
+- `v1/` — first calm "Soft Workspace" draft.
 
-Use the v1 / v2 switch in the bottom-left corner to compare. All names and figures in the product screens are fictional sample data; plan prices and FAQ answers come from the current website.
+Switch versions with the pill in the bottom-left corner. All names and figures in product screens are fictional sample data; plan prices and FAQ answers come from the current website.
