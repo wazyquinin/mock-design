@@ -306,7 +306,7 @@ section{position:relative}
 .dark h2,.dark h3{color:#fff}
 .dark .eyebrow{color:var(--sand-glow)}
 .dark .lede{color:var(--night-text)}
-.chain{display:flex;gap:0;margin-top:56px;overflow-x:auto;padding-bottom:8px}
+.chain{display:flex;gap:0;margin-top:48px;overflow-x:auto;padding:10px 4px 8px}
 .block{flex:0 0 250px;background:var(--night-2);border:1px solid var(--night-line);border-radius:16px;padding:16px;font-size:13px;position:relative}
 .block.new{border-color:rgb(232 200 163 / .5);box-shadow:0 0 0 4px rgb(232 200 163 / .08)}
 .block .when{font:11px var(--mono);color:var(--night-muted)}
@@ -433,6 +433,7 @@ footer{padding-block:72px 48px}
       <a href="#faq">FAQ</a>
     </nav>
     <div class="nav-cta">
+      <button class="kbtn" id="kOpen" type="button" aria-label="Open command menu"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Search<span class="kbd" id="kHint">Ctrl K</span></button>
       <a class="signin" href="#top">Sign in</a>
       <a class="btn btn-primary" href="#pricing">Start free</a>
       <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false">
@@ -440,6 +441,7 @@ footer{padding-block:72px 48px}
       </button>
     </div>
   </div>
+  <div class="progress" id="prog" aria-hidden="true"></div>
   <nav class="mnav" aria-label="Mobile">
     <a href="#tour">Product</a><a href="#platform">Platform</a><a href="#security">Security</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a><a href="#top">Sign in</a>
   </nav>
@@ -451,7 +453,7 @@ footer{padding-block:72px 48px}
   <div class="wrap">
     <div class="hero-copy">
       <span class="tagline hero-in" style="--d:0ms"><b>HRMS</b>Cloud or on your own servers</span>
-      <h1 class="hero-in" style="--d:80ms">All of HR.<br><em>One calm</em> workspace.</h1>
+      <h1 aria-label="All of HR. One calm workspace."><span class="w" aria-hidden="true" style="--i:0">All</span> <span class="w" aria-hidden="true" style="--i:1">of</span> <span class="w" aria-hidden="true" style="--i:2">HR.</span><br><em><span class="w" aria-hidden="true" style="--i:3">One</span> <span class="w" aria-hidden="true" style="--i:4">calm</span></em> <span class="w" aria-hidden="true" style="--i:5">workspace.</span></h1>
       <p class="lede hero-in" style="--d:160ms">Employee records, leave, attendance, payroll and hiring on a single employee record. Hosted by us, or installed where your data has to live.</p>
       <div class="hero-ctas hero-in" style="--d:240ms">
         <a class="btn btn-sand" href="#pricing">Start free <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
@@ -554,15 +556,15 @@ footer{padding-block:72px 48px}
             <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
               <span class="av c4" style="width:52px;height:52px;font-size:17px">DT</span>
               <div style="flex:1"><h4>Daniel Thomas</h4><div style="font-size:13px;color:var(--muted)">Sales Lead · joins Tue 1 September · reports to Karan Shah</div></div>
-              <span class="pill info">3 of 5 done</span>
+              <span class="pill info" id="onbPill">3 of 5 done</span>
             </div>
-            <div class="track" style="margin-top:18px;height:8px"><i style="width:60%"></i></div>
+            <div class="track" style="margin-top:18px;height:8px"><i id="onbBar" style="width:60%;transition:width 700ms var(--ease)"></i></div>
             <div class="checklist">
               <div class="ck done"><span class="tick"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span>Offer letter signed<span class="mod">Recruitment</span></div>
               <div class="ck done"><span class="tick"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span>ID and bank details collected<span class="mod">Core HR</span></div>
               <div class="ck done"><span class="tick"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></span>Laptop assigned<span class="mod">Inventory</span></div>
-              <div class="ck now"><span class="tick"></span>Accounts and access created<span class="mod">Identity</span></div>
-              <div class="ck"><span class="tick"></span>First-week learning plan<span class="mod">Learning</span></div>
+              <div class="ck now" id="ck4"><span class="tick"></span>Accounts and access created<span class="mod">Identity</span></div>
+              <div class="ck" id="ck5"><span class="tick"></span>First-week learning plan<span class="mod">Learning</span></div>
             </div>
           </div>
         </div>
@@ -571,10 +573,10 @@ footer{padding-block:72px 48px}
       <div class="scene" role="tabpanel">
         <div class="win"><div class="win-bar"><i></i><i></i><i></i><span class="win-url">acme.[your-hrms-domain]/time-off</span><span class="sample">Sample data</span></div>
           <div class="pane">
-            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><h4 style="flex:1">October 2026 · Design team</h4><span class="pill warn">2 waiting</span></div>
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><h4 style="flex:1">October 2026 · Design team</h4><span class="pill warn" id="leavePill">2 waiting</span></div>
             <div class="cal" id="cal"></div>
             <div class="flags" style="margin-top:14px">
-              <div><span class="av c2">RN</span><span style="flex:1"><b style="color:var(--ink)">Rahul Nair</b> · Annual leave, Mon 26 – Tue 27 Oct</span><button class="btn btn-ghost" style="min-height:34px;padding:0 12px;font-size:13px">Decline</button><button class="btn btn-primary" style="min-height:34px;padding:0 12px;font-size:13px;box-shadow:none">Approve</button></div>
+              <div><span class="av c2">RN</span><span style="flex:1"><b style="color:var(--ink)">Rahul Nair</b> · Annual leave, Mon 26 – Tue 27 Oct</span><span id="leaveAct" style="display:flex;gap:8px"></span></div>
             </div>
           </div>
         </div>
@@ -583,13 +585,13 @@ footer{padding-block:72px 48px}
       <div class="scene" role="tabpanel">
         <div class="win"><div class="win-bar"><i></i><i></i><i></i><span class="win-url">acme.[your-hrms-domain]/payroll/2026-09</span><span class="sample">Sample data</span></div>
           <div class="pane">
-            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><h4 style="flex:1">September 2026 payroll</h4><button class="btn btn-primary" style="min-height:38px;padding:0 16px;font-size:13.5px">Publish payslips</button></div>
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><h4 style="flex:1">September 2026 payroll</h4><button class="btn btn-primary" id="pubBtn" style="min-height:38px;padding:0 16px;font-size:13.5px">Publish payslips</button></div>
             <div class="stages">
               <div class="stg done"><b></b><span>Inputs locked</span></div>
               <div class="stg done"><b></b><span>Attendance synced</span></div>
               <div class="stg done"><b></b><span>Calculated</span></div>
-              <div class="stg now"><b></b><span>Review</span></div>
-              <div class="stg"><b></b><span style="color:var(--muted)">Payslips</span></div>
+              <div class="stg now" id="stgR"><b></b><span>Review</span></div>
+              <div class="stg" id="stgP"><b></b><span>Payslips</span></div>
             </div>
             <div class="totals">
               <div class="tot"><small>Employees paid</small><div class="tab">248</div></div>
@@ -597,8 +599,8 @@ footer{padding-block:72px 48px}
               <div class="tot"><small>Net pay</small><div class="tab">₹1,18,04,120</div></div>
             </div>
             <div class="flags">
-              <div><span class="pill warn">Review</span><span style="flex:1">Meera Pillai · 2 days unpaid leave applied</span><span class="mono" style="font-size:12px;color:var(--muted)">Leave</span></div>
-              <div><span class="pill warn">Review</span><span style="flex:1">Daniel Thomas · joined mid-cycle, pro-rated</span><span class="mono" style="font-size:12px;color:var(--muted)">Core HR</span></div>
+              <div><span class="pill warn rvw">Review</span><span style="flex:1">Meera Pillai · 2 days unpaid leave applied</span><span class="mono" style="font-size:12px;color:var(--muted)">Leave</span></div>
+              <div><span class="pill warn rvw">Review</span><span style="flex:1">Daniel Thomas · joined mid-cycle, pro-rated</span><span class="mono" style="font-size:12px;color:var(--muted)">Core HR</span></div>
               <div><span class="pill ok">Matched</span><span style="flex:1">Attendance for 246 employees</span><span class="mono" style="font-size:12px;color:var(--muted)">Attendance</span></div>
             </div>
           </div>
@@ -754,14 +756,10 @@ footer{padding-block:72px 48px}
         <h2 class="h2">Every sensitive change leaves a trail no one can quietly edit.</h2>
         <p class="lede">Changes are written to a hash-chained audit log. Each entry carries the fingerprint of the one before it, so tampering with history breaks the chain.</p>
       </div>
-      <div class="chain rv" aria-label="Example audit log entries">
-        <div class="block"><span class="when">01 Oct · 09:12</span><b>Leave policy updated</b>by Sneha Iyer<div class="h"><span>prev <em>#3c1e…a07b</em></span><span>hash <em>#91fd…4c22</em></span></div></div>
-        <div class="link"></div>
-        <div class="block"><span class="when">01 Oct · 11:40</span><b>Salary revised</b>Meera Pillai, by Joseph Mathew<div class="h"><span>prev <em>#91fd…4c22</em></span><span>hash <em>#5b08…e913</em></span></div></div>
-        <div class="link"></div>
-        <div class="block"><span class="when">02 Oct · 08:05</span><b>Manager changed</b>Arjun Das → Karan Shah<div class="h"><span>prev <em>#5b08…e913</em></span><span>hash <em>#d47a…0b6f</em></span></div></div>
-        <div class="link"></div>
-        <div class="block new"><span class="when">02 Oct · 09:31</span><b>Bank details updated</b>Fatima Khan, self-service<div class="h"><span>prev <em>#d47a…0b6f</em></span><span>hash <em>#e2c9…77a1</em></span></div></div>
+      <div class="chain rv" id="chain" aria-label="Example audit log entries"></div>
+      <div class="chain-ctl rv">
+        <div class="cstat" id="cstat" aria-live="polite"></div>
+        <button type="button" class="btn btn-ghost-dark" id="tamper">Try editing an old entry</button>
       </div>
       <div class="sec-grid">
         <div class="sg rv"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/><path d="M13 7h4a2 2 0 0 1 2 2v2M11 17H7a2 2 0 0 1-2-2v-2"/></svg><h3>Tenant isolation</h3><p>Each organisation’s records are scoped to its own tenant, in the app and at the database layer.</p></div>
@@ -802,6 +800,7 @@ footer{padding-block:72px 48px}
       <span class="pname" id="pName">Professional</span>
       <div class="price tab"><span id="pPrice">₹7,499</span><small id="pUnit">/ month</small></div>
       <div style="font-size:14px;margin-top:8px" id="pWho">Up to 100 employees</div>
+      <div class="save" id="pSave" hidden></div>
       <ul id="pFeat"></ul>
       <a class="btn btn-sand" href="#top" id="pCta" style="margin-top:28px">Start your trial <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
     </div>
@@ -841,9 +840,86 @@ footer{padding-block:72px 48px}
   <div class="legal"><span>© 2026 NanoNexus. All rights reserved.</span><span>Design mock v2 · sample data throughout</span></div>
 </footer>
 
+<div class="wordmark" aria-hidden="true">NanoHRMS</div>
+
+<div class="pal-back" id="pal" hidden>
+  <div class="pal" role="dialog" aria-modal="true" aria-label="Command menu">
+    <div class="pal-in"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="color:var(--muted)"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><label class="sr" for="palQ">Search</label><input id="palQ" placeholder="Search people, actions, pages…" autocomplete="off" role="combobox" aria-controls="palList" aria-expanded="true"><span class="kbd">Esc</span></div>
+    <div class="pal-list" id="palList" role="listbox"></div>
+    <div class="pal-foot"><span><span class="kbd">↑</span> <span class="kbd">↓</span> move</span><span><span class="kbd">↵</span> open</span><span style="margin-left:auto">Sample menu</span></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <nav class="ver" aria-label="Mock version"><a href="./v1/">v1</a><a href="./" class="on" aria-current="page">v2</a></nav>
 
 <style>
+
+/* ── enhancements ── */
+.hero h1 .w{display:inline-block;animation:wordUp 1000ms var(--ease) both;animation-delay:calc(var(--i) * 75ms + 60ms)}
+@keyframes wordUp{from{opacity:0;transform:translateY(.35em);filter:blur(8px)}to{opacity:1;transform:none;filter:blur(0)}}
+.kbtn{display:flex;align-items:center;gap:8px;height:40px;padding:0 8px 0 12px;border-radius:10px;border:1px solid rgb(255 255 255 / .16);background:rgb(255 255 255 / .05);font-size:13.5px;transition:background-color 180ms,border-color 180ms}
+.kbtn:hover{background:rgb(255 255 255 / .1)}
+.kbtn .kbd{border-color:currentColor;opacity:.55;color:inherit}
+.nav.solid .kbtn{border-color:var(--line);background:var(--surface)}
+.progress{position:absolute;left:0;bottom:0;height:2px;width:100%;background:var(--sand-glow);transform:scaleX(0);transform-origin:left;opacity:0;transition:opacity 200ms}
+.nav.solid .progress{opacity:1;background:var(--accent)}
+.ghost{position:absolute;left:0;top:0;z-index:20;width:22px;height:22px;pointer-events:none;transition:transform 850ms cubic-bezier(.65,0,.35,1),opacity 300ms;opacity:0;filter:drop-shadow(0 4px 8px rgb(13 24 36 / .3))}
+.ghost.on{opacity:1}
+.ghost::after{content:"";position:absolute;left:-9px;top:-9px;width:20px;height:20px;border-radius:50%;border:2px solid var(--accent);opacity:0;transform:scale(.4)}
+.ghost.tap::after{animation:tap 420ms var(--ease)}
+.ghost.tap svg{transform:scale(.86)}
+.ghost svg{transition:transform 120ms}
+@keyframes tap{0%{opacity:.9;transform:scale(.4)}100%{opacity:0;transform:scale(1.8)}}
+.demo-tag{position:absolute;right:120px;top:9px;z-index:21;font:500 11px var(--mono);letter-spacing:.04em;background:var(--night);color:#fff;padding:6px 10px;border-radius:8px;opacity:0;transition:opacity 300ms}
+.demo-tag.on{opacity:.9}
+.ck .tick{transition:background-color 300ms var(--ease),border-color 300ms var(--ease),box-shadow 300ms var(--ease)}
+.ck.done .tick{animation:tickPop 420ms var(--spring)}
+@keyframes tickPop{from{transform:scale(.6)}to{transform:none}}
+.stg b{transition:background-color 500ms var(--ease)}
+.cal .ev{transition:background-color 400ms,color 400ms}
+.spot{--mx:50%;--my:50%}
+.spot::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:radial-gradient(420px circle at var(--mx) var(--my),rgb(59 106 150 / .08),transparent 60%);opacity:0;transition:opacity 260ms}
+.spot:hover::after{opacity:1}
+.dark .spot::after{background:radial-gradient(380px circle at var(--mx) var(--my),rgb(143 185 224 / .14),transparent 60%)}
+.sg,.dep{position:relative;overflow:hidden}
+.chain-ctl{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:18px}
+.cstat{display:flex;align-items:center;gap:10px;font:500 13px var(--mono);color:var(--night-text)}
+.cstat i{width:9px;height:9px;border-radius:50%;background:#7fd1a0;box-shadow:0 0 0 4px rgb(127 209 160 / .15)}
+.cstat.bad i{background:#f08a96;box-shadow:0 0 0 4px rgb(240 138 150 / .15)}
+.cstat.bad{color:#f6c1c8}
+.block{transition:border-color 300ms var(--ease),box-shadow 300ms var(--ease),transform 300ms var(--ease)}
+.block.bad{border-color:rgb(240 138 150 / .7);box-shadow:0 0 0 4px rgb(240 138 150 / .1);transform:translateY(-4px)}
+.block.warn{border-color:rgb(240 138 150 / .35)}
+.block em.miss{color:#f6a3ad;text-decoration:line-through}
+.block .edited{color:#f6a3ad}
+.link{transition:opacity 300ms}
+.link.broken{background:repeating-linear-gradient(90deg,#f08a96 0 6px,transparent 6px 10px);opacity:.9}
+.link.broken::after{content:"×";position:absolute;left:50%;top:50%;transform:translate(-50%,-55%);width:20px;height:20px;border-radius:50%;background:var(--night);border:1.5px solid #f08a96;color:#f08a96;display:grid;place-items:center;font:600 13px/1 var(--sans)}
+.block.append{animation:append 600ms var(--spring)}
+@keyframes append{from{opacity:0;transform:translateX(-14px) scale(.96)}to{opacity:1;transform:none}}
+.save{display:inline-flex;align-self:flex-start;margin-top:12px;font-size:13px;font-weight:600;color:#2a1d10;background:var(--sand-glow);padding:4px 10px;border-radius:999px;animation:fadeup 300ms var(--ease)}
+.wordmark{font:600 clamp(80px,19vw,300px)/.8 var(--display);letter-spacing:-.065em;text-align:center;margin:8px auto -0.12em;padding-inline:16px;background:linear-gradient(180deg,#d9e0e8 10%,rgb(245 246 248 / 0) 92%);-webkit-background-clip:text;background-clip:text;color:transparent;user-select:none;overflow:hidden;white-space:nowrap}
+.pal-back{position:fixed;inset:0;z-index:80;background:rgb(13 24 36 / .45);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:flex;align-items:flex-start;justify-content:center;padding:14vh 16px 16px;opacity:0;transition:opacity 180ms var(--ease)}
+.pal-back[hidden]{display:none}
+.pal-back.open{opacity:1}
+.pal{width:min(640px,100%);background:var(--surface);border-radius:18px;box-shadow:0 40px 120px rgb(3 10 20 / .4),0 0 0 1px var(--line);overflow:hidden;transform:translateY(-10px) scale(.97);transition:transform 260ms var(--spring)}
+.pal-back.open .pal{transform:none}
+.pal-in{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line-2)}
+.pal-in input{flex:1;border:0;outline:0;font:inherit;font-size:16px;color:var(--ink);background:transparent;min-width:0}
+.pal-list{max-height:min(420px,52vh);overflow:auto;padding:8px}
+.pal-g{font:500 10.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:#93a1b0;padding:10px 10px 6px}
+.pal-it{display:flex;align-items:center;gap:12px;width:100%;border:0;background:transparent;text-align:left;padding:9px 10px;border-radius:10px;font-size:14px;color:var(--ink)}
+.pal-it small{color:var(--muted);margin-left:auto;font-size:12px}
+.pal-it.on{background:var(--accent-soft)}
+.pal-it .ic{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:var(--surface-2);border:1px solid var(--line-2);color:var(--accent);flex-shrink:0}
+.pal-it .av{width:30px;height:30px}
+.pal-foot{display:flex;gap:18px;padding:10px 18px;border-top:1px solid var(--line-2);font-size:12px;color:var(--muted)}
+.pal-empty{padding:28px;text-align:center;color:var(--muted);font-size:14px}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);z-index:90;background:var(--night);color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;box-shadow:0 20px 50px rgb(3 10 20 / .3);opacity:0;pointer-events:none;transition:opacity 200ms var(--ease),transform 300ms var(--spring);max-width:calc(100% - 32px)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media (max-width:980px){.kbtn{display:none}}
+@media (prefers-reduced-motion:reduce){.hero h1 .w{animation:none}.ghost,.demo-tag{display:none}}
 .hero-in{animation:rise 900ms var(--ease) both;animation-delay:var(--d,0ms)}
 @keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
 @media (max-width:980px){.faq-grid{grid-template-columns:minmax(0,1fr)!important;gap:24px!important}}
@@ -933,6 +1009,7 @@ footer{padding-block:72px 48px}
     steps.forEach(function(s,k){s.classList.toggle('on',k===i);s.setAttribute('aria-selected',String(k===i));s.querySelector('.bar b').style.width='0';});
     scenes.forEach(function(s,k){s.classList.toggle('on',k===i);});
     if(i===3) drawChart();
+    sceneAnim(i);
   }
   function loop(now){
     if(!paused && !reduce){
@@ -945,12 +1022,31 @@ footer{padding-block:72px 48px}
   var tourEl=$('.tour');
   tourEl.addEventListener('pointerenter',function(){paused=true;}); tourEl.addEventListener('pointerleave',function(){paused=false;});
   if('IntersectionObserver' in window){ new IntersectionObserver(function(es){es.forEach(function(e){paused=!e.isIntersecting;});},{threshold:.25}).observe(tourEl); }
+
+  /* tour scenes play out their outcome */
+  var tt=[]; function later(fn,ms){tt.push(setTimeout(fn,reduce?0:ms));}
+  var TICK='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>';
+  var ACT='<button class="btn btn-ghost" style="min-height:34px;padding:0 12px;font-size:13px">Decline</button><button class="btn btn-primary" style="min-height:34px;padding:0 12px;font-size:13px;box-shadow:none">Approve</button>';
+  function sceneAnim(i){
+    tt.forEach(clearTimeout); tt=[];
+    var ck4=$('#ck4'), ck5=$('#ck5');
+    ck4.className='ck now'; ck4.querySelector('.tick').innerHTML=''; ck5.className='ck'; $('#onbBar').style.width='60%'; $('#onbPill').textContent='3 of 5 done';
+    $$('#cal .rp').forEach(function(e){e.className='ev a rp';e.textContent='Rahul · pending';}); $('#leaveAct').innerHTML=ACT; $('#leavePill').textContent='2 waiting';
+    $('#stgR').className='stg now'; $('#stgP').className='stg'; $('#pubBtn').textContent='Publish payslips'; $$('.rvw').forEach(function(e){e.className='pill warn rvw';e.textContent='Review';});
+    if(i===0){ later(function(){ck4.className='ck done';ck4.querySelector('.tick').innerHTML=TICK;ck5.className='ck now';$('#onbBar').style.width='80%';$('#onbPill').textContent='4 of 5 done';},2200); }
+    if(i===1){ later(function(){$('#leaveAct').innerHTML='<span class="pill ok" style="animation:fadeup 260ms var(--ease)">Approved</span>';$$('#cal .rp').forEach(function(e){e.className='ev s rp';e.textContent='Rahul · leave';});$('#leavePill').textContent='1 waiting';},2400); }
+    if(i===2){
+      later(function(){$$('.rvw').forEach(function(e){e.className='pill ok rvw';e.textContent='Resolved';});},1600);
+      later(function(){$('#stgR').className='stg done';$('#stgP').className='stg now';$('#pubBtn').textContent='Publishing…';},2800);
+      later(function(){$('#stgP').className='stg done';$('#pubBtn').textContent='Published';},4300);
+    }
+  }
   show(0); raf=requestAnimationFrame(loop);
 
   /* calendar: October 2026 starts on a Thursday */
   var cal=$('#cal'), html='';
   ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].forEach(function(d){html+='<div class="dh">'+d+'</div>';});
-  var ev={6:'<span class="ev a">Sneha · WFH</span>',12:'<span class="ev s">Meera · leave</span>',13:'<span class="ev s">Meera · leave</span>',23:'<span class="ev h">Holiday</span>',26:'<span class="ev a">Rahul · pending</span>',27:'<span class="ev a">Rahul · pending</span>',29:'<span class="ev s">Omar · leave</span>'};
+  var ev={6:'<span class="ev a">Sneha · WFH</span>',12:'<span class="ev s">Meera · leave</span>',13:'<span class="ev s">Meera · leave</span>',23:'<span class="ev h">Holiday</span>',26:'<span class="ev a rp">Rahul · pending</span>',27:'<span class="ev a rp">Rahul · pending</span>',29:'<span class="ev s">Omar · leave</span>'};
   for(var k=0;k<3;k++) html+='<div class="dc mute">'+(28+k)+'</div>';
   for(var d=1;d<=31;d++) html+='<div class="dc'+(d===2?' today':'')+'"><span>'+d+'</span>'+(ev[d]||'')+'</div>';
   html+='<div class="dc mute">1</div>';
@@ -1034,6 +1130,7 @@ footer{padding-block:72px 48px}
     $('#pName').textContent=p.n; $('#pWho').textContent=p.max===Infinity?'Unlimited employees':'Up to '+p.max+' employees';
     tween($('#pPrice'), lastPrice, v); lastPrice=v;
     $('#pUnit').textContent=v===null?'':(annual?'/ month, billed yearly':'/ month');
+    var sv=$('#pSave'); if(annual&&p.m){sv.hidden=false;sv.textContent='You save '+inr((p.m-p.a)*12)+' a year';}else sv.hidden=true;
     if(i!==shown){
       $('#pFeat').innerHTML=p.f.map(function(x){return '<li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>'+x+'</li>';}).join('');
       $('#pFeat').style.animation='none'; void $('#pFeat').offsetWidth; $('#pFeat').style.animation='fadeup 300ms var(--ease)';
@@ -1048,6 +1145,119 @@ footer{padding-block:72px 48px}
     $$('.plan .pp').forEach(function(el){var v=a?el.dataset.a:el.dataset.m;el.textContent=v==='null'?'Custom':inr(+v);}); shown=-1; calc();}
   $('#bm').addEventListener('click',function(){setBilling(false);}); $('#ba').addEventListener('click',function(){setBilling(true);});
   calc();
+
+  /* ── scroll progress ── */
+  var prog=$('#prog');
+  function onProg(){var h=document.documentElement.scrollHeight-window.innerHeight;prog.style.transform='scaleX('+(h>0?window.scrollY/h:0).toFixed(4)+')';}
+  window.addEventListener('scroll',onProg,{passive:true}); onProg();
+
+  /* ── pointer spotlight on cards ── */
+  $$('.tile,.sg,.dep,.step').forEach(function(el){
+    el.classList.add('spot');
+    el.addEventListener('pointermove',function(e){var r=el.getBoundingClientRect();el.style.setProperty('--mx',(e.clientX-r.left)+'px');el.style.setProperty('--my',(e.clientY-r.top)+'px');});
+  });
+
+  /* ── toast ── */
+  var toastEl=$('#toast'), toastT=0;
+  function toast(msg){toastEl.textContent=msg;toastEl.classList.add('show');clearTimeout(toastT);toastT=setTimeout(function(){toastEl.classList.remove('show');},2600);}
+
+  /* ── demo cursor drives the hero app until the visitor takes over ── */
+  var win=$('.win',stage), ghost=document.createElement('div'), tag=document.createElement('div'), gLive=false, gStopped=false, gVisible=true;
+  ghost.className='ghost'; ghost.innerHTML='<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l14 7.5-6.2 1.6L10 18.5z" fill="#16273a" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>';
+  tag.className='demo-tag'; tag.textContent='Demo playing · click anywhere to take over';
+  win.appendChild(ghost); win.appendChild(tag);
+  function wait(ms){return new Promise(function(r){setTimeout(r,ms);});}
+  function at(el){var x=0,y=0,e=el;while(e&&e!==win){x+=e.offsetLeft;y+=e.offsetTop;e=e.offsetParent;}return {x:x+Math.min(el.offsetWidth/2,40),y:y+el.offsetHeight/2};}
+  function ok(){return gLive&&!gStopped&&gVisible;}
+  async function go(el,click){ if(!ok()||!el||el.offsetParent===null) return; var p=at(el); ghost.style.transform='translate('+p.x+'px,'+p.y+'px)'; await wait(950); if(!ok()) return; if(click){ghost.classList.remove('tap');void ghost.offsetWidth;ghost.classList.add('tap');el.click();await wait(500);} }
+  function rowEl(id,sel){return $('.row[data-id="'+id+'"] '+sel);}
+  async function demo(){
+    while(!gStopped){
+      if(!gVisible||window.innerWidth<1000||reduce){await wait(800);continue;}
+      gLive=true; ghost.classList.add('on'); tag.classList.add('on');
+      await go(rowEl(1,'input'),true); await go(rowEl(6,'input'),true); await wait(400);
+      await go($('#bulk button'),false); await wait(500); await go($('#clear'),true);
+      await go($('#chips [data-f="On leave"]'),true); await wait(700); await go($('#chips [data-f="all"]'),true);
+      await go(rowEl(2,'.who'),true); await wait(1400); await go(rowEl(3,'.who'),true);
+      await wait(2600);
+    }
+  }
+  function stopDemo(){ if(gStopped) return; gStopped=true; gLive=false; ghost.classList.remove('on'); tag.classList.remove('on'); }
+  stage.addEventListener('pointerdown',function(e){ if(e.isTrusted) stopDemo(); });
+  stage.addEventListener('keydown',stopDemo);
+  if('IntersectionObserver' in window){ new IntersectionObserver(function(es){es.forEach(function(e){gVisible=e.isIntersecting;});},{threshold:.35}).observe(stage); }
+  setTimeout(demo, 3200);
+
+  /* ── audit chain with tamper demo ── */
+  var entries=[
+    {w:'01 Oct · 09:12',t:'Leave policy updated',b:'by Sneha Iyer',prev:'#3c1e…a07b',h:'#91fd…4c22'},
+    {w:'01 Oct · 11:40',t:'Salary revised',b:'Meera Pillai, by Joseph Mathew',prev:'#91fd…4c22',h:'#5b08…e913',th:'#c7a2…31d0',tb:'Changed directly in the database'},
+    {w:'02 Oct · 08:05',t:'Manager changed',b:'Arjun Das → Karan Shah',prev:'#5b08…e913',h:'#d47a…0b6f'},
+    {w:'02 Oct · 09:31',t:'Bank details updated',b:'Fatima Khan, self-service',prev:'#d47a…0b6f',h:'#e2c9…77a1'}
+  ];
+  var tampered=false, chainEl=$('#chain');
+  function drawChain(appendLast){
+    var out='';
+    entries.forEach(function(e,i){
+      var hash=(tampered&&e.th)?e.th:e.h, cls='block';
+      var prevOk=i===0||entries[i-1][(tampered&&entries[i-1].th)?'th':'h']===e.prev;
+      if(tampered&&e.th) cls+=' bad'; else if(tampered&&i>1) cls+=' warn';
+      if(!tampered&&i===entries.length-1) cls+=' new';
+      if(appendLast&&i===entries.length-1) cls+=' append';
+      if(i>0) out+='<div class="link'+(prevOk?'':' broken')+'"></div>';
+      out+='<div class="'+cls+'"><span class="when">'+e.w+'</span><b>'+e.t+'</b><span class="'+((tampered&&e.tb)?'edited':'')+'">'+((tampered&&e.tb)?e.tb:e.b)+'</span>'+
+        '<div class="h"><span>prev <em class="'+(prevOk?'':'miss')+'">'+e.prev+'</em></span><span>hash <em>'+hash+'</em></span></div></div>';
+    });
+    chainEl.innerHTML=out;
+    var st=$('#cstat');
+    if(tampered){st.className='cstat bad';st.innerHTML='<i></i>Mismatch at entry 3: previous hash does not match entry 2';$('#tamper').textContent='Restore the original';}
+    else{st.className='cstat';st.innerHTML='<i></i>Chain verified · 4 of 4 entries intact';$('#tamper').textContent='Try editing an old entry';}
+  }
+  $('#tamper').addEventListener('click',function(){tampered=!tampered;drawChain(false);});
+  drawChain(false);
+
+  /* ── command menu ── */
+  var pal=$('#pal'), palQ=$('#palQ'), palList=$('#palList'), palItems=[], palIdx=0, opener=null;
+  var isMac=/Mac|iPhone|iPad/.test(navigator.platform||''); $('#kHint').textContent=isMac?'⌘K':'Ctrl K';
+  var IC={go:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+          act:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>'};
+  var catalog=people.map(function(pp,i){return {g:'People',label:pp.n,hint:pp.r,icon:'<span class="av c'+(i%5)+'">'+ini(pp.n)+'</span>',run:function(){stopDemo();focus=pp.id;paint(true);stage.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});}};})
+    .concat([
+      {g:'Actions',label:'Request time off',hint:'Leave',icon:IC.act,run:function(){toast('In the product, this opens the time-off request form.');}},
+      {g:'Actions',label:'Approve pending leave',hint:'2 waiting',icon:IC.act,run:function(){show(1);document.getElementById('tour').scrollIntoView({behavior:reduce?'auto':'smooth'});}},
+      {g:'Actions',label:'Run September payroll',hint:'Payroll',icon:IC.act,run:function(){show(2);document.getElementById('tour').scrollIntoView({behavior:reduce?'auto':'smooth'});}},
+      {g:'Actions',label:'Add employee',hint:'Core HR',icon:IC.act,run:function(){toast('In the product, this opens a new employee record.');}},
+      {g:'Pages',label:'Product tour',hint:'#tour',icon:IC.go,run:function(){location.hash='tour';}},
+      {g:'Pages',label:'Security & deployment',hint:'#security',icon:IC.go,run:function(){location.hash='security';}},
+      {g:'Pages',label:'Pricing',hint:'#pricing',icon:IC.go,run:function(){location.hash='pricing';}},
+      {g:'Pages',label:'FAQ',hint:'#faq',icon:IC.go,run:function(){location.hash='faq';}}
+    ]);
+  function renderPal(){
+    var q=palQ.value.trim().toLowerCase(), last='', out='';
+    palItems=catalog.filter(function(it){return !q||(it.label+' '+it.hint+' '+it.g).toLowerCase().indexOf(q)>-1;});
+    if(palIdx>=palItems.length) palIdx=0;
+    palItems.forEach(function(it,i){ if(it.g!==last){out+='<div class="pal-g">'+it.g+'</div>';last=it.g;}
+      out+='<button type="button" class="pal-it'+(i===palIdx?' on':'')+'" role="option" aria-selected="'+(i===palIdx)+'" id="pi'+i+'" data-i="'+i+'">'+it.icon+'<span>'+it.label+'</span><small>'+it.hint+'</small></button>'; });
+    palList.innerHTML=out||'<div class="pal-empty">No matches in this sample menu.</div>';
+    palQ.setAttribute('aria-activedescendant',palItems.length?'pi'+palIdx:'');
+    var on=$('.pal-it.on',palList); if(on) on.scrollIntoView({block:'nearest'});
+  }
+  function openPal(){ if(!pal.hidden) return; opener=document.activeElement; pal.hidden=false; palQ.value=''; palIdx=0; renderPal(); requestAnimationFrame(function(){pal.classList.add('open');}); palQ.focus(); }
+  function closePal(){ pal.classList.remove('open'); setTimeout(function(){pal.hidden=true;},180); if(opener&&opener.focus) opener.focus(); }
+  function runPal(i){ var it=palItems[i]; if(!it) return; closePal(); setTimeout(it.run,60); }
+  $('#kOpen').addEventListener('click',openPal);
+  pal.addEventListener('click',function(e){ if(e.target===pal) closePal(); var b=e.target.closest('.pal-it'); if(b) runPal(+b.dataset.i); });
+  palQ.addEventListener('input',function(){palIdx=0;renderPal();});
+  palQ.addEventListener('keydown',function(e){
+    if(e.key==='ArrowDown'){e.preventDefault();palIdx=(palIdx+1)%Math.max(1,palItems.length);renderPal();}
+    else if(e.key==='ArrowUp'){e.preventDefault();palIdx=(palIdx-1+palItems.length)%Math.max(1,palItems.length);renderPal();}
+    else if(e.key==='Enter'){e.preventDefault();runPal(palIdx);}
+  });
+  document.addEventListener('keydown',function(e){
+    if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault(); pal.hidden?openPal():closePal(); return;}
+    if(e.key==='Escape'&&!pal.hidden){closePal();return;}
+    var tg=e.target.tagName; if(e.key==='/'&&pal.hidden&&tg!=='INPUT'&&tg!=='TEXTAREA'){e.preventDefault();openPal();}
+  });
 })();
 </script>
 </body>
