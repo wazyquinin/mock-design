@@ -369,7 +369,7 @@ button,input{font:inherit}
   <ul><li>The previous vector-illustrated version is kept at <a href="./illustrated.html" style="color:#5eead4">illustrated.html</a>.</li></ul>
   <h4>Built to lower stress</h4>
   <ul>
-    <li><b>Seven rigged SVG animals</b> (deer, rabbit, fox, bear, squirrel by day; owl and raccoon at night). Each is a photographic cut-out split into parts (head, ears, tail, legs, paws, eyelids) with its own pivot, so any part animates independently: blinking, ear flicks, a tail swish, the squirrel nibbling, the fox trotting with real leg swings, heads that follow your pointer, the owl's head turn and wink, and the raccoon's wave. A shared SVG colour matrix lights them with the valley's time-of-day grade, and real-coloured grass blades sway in front of their feet. Tapping one gives a little performance, hearts and a short, kind wellbeing tip. Adding an animation is a few lines: <code>Puppet.rot(p, 'head', 8)</code>, <code>Puppet.flick(p, 'earL', -15)</code>, <code>Puppet.blink(p)</code>.</li>
+    <li><b>Seven rigged SVG animals that roam the valley.</b> Deer, fox and bear by day, raccoon at night: side-on walking photos split into legs, head, ears and tail, each with its own hip or shoulder pivot, driven by a four-legged diagonal walk cycle with a body bob. The rabbit hops (crouch, hind-foot push, ears streaming back), the squirrel bounds (switching to a real mid-air leap photo), and the owl stays perched. They wander their patch of meadow, stop, look around, sniff the grass, blink and flick their ears; heads glance at your pointer. Tap one for a little act (the bear stops and waves a paw, the deer startles and trots off, the fox pounces, the raccoon waves, the rabbit does a binky, the owl turns its head and winks), hearts and a short, kind wellbeing tip. A shared SVG colour matrix lights them with the valley's time-of-day grade, and photo-coloured grass sways in front of their feet. Adding an animation is a few lines: <code>Puppet.rot(p, 'head', 8)</code>, <code>Puppet.flick(p, 'earL', -15)</code>, <code>Puppet.blink(p)</code>.</li>
     <li><b>Tap the sky:</b> by day a flock lifts off from your tap; at night a shooting star crosses and your wish is made. Tap the moon for its phase.</li>
     <li><b>1-minute breather:</b> four slow breaths (in 4 s, hold 4 s, out 6 s). The clouds, wind and birds slow down with you, and soft chimes play if sound is on.</li>
     <li><b>Nature sounds</b> (off by default): wind and birdsong by day, crickets and an owl at night. They're generated live with WebAudio, so there are no audio files.</li>
@@ -377,7 +377,7 @@ button,input{font:inherit}
     <li>None of it blocks signing in: the form works at any moment, and everything respects reduced motion and is keyboard-reachable.</li>
   </ul>
   <h4>Photo</h4>
-  <ul><li>Valley: Unsplash photo <code>1464822759023-fed622ff2c3b</code>. Animals: Unsplash photos <code>1484406566174</code>, <code>1585110396000</code>, <code>1474511320723</code>, <code>1530595467537</code>, <code>1507666405895</code>, <code>1497752531616</code>, <code>1543549790</code>, cut out with an ML matting model. All used under the Unsplash License. For production, confirm the licence and credit, or commission or generate an owned image; the depth and sky masks regenerate with the same scripts.</li></ul>
+  <ul><li>Valley: Unsplash photo <code>1464822759023-fed622ff2c3b</code>. Animals (cut out with an ML matting model): Wikimedia Commons: deer by lwolfartist (CC BY 2.0), red fox by Bengt Nyman (CC BY 2.0), brown bear cub by Steve Hillebrand, USFWS (public domain), rabbit by Friedrich Haag (CC BY-SA 4.0), raccoon by Warren Garst (CC BY-SA 4.0), leaping red squirrel by Peter Trimming (CC BY-SA 2.0). Unsplash: sitting squirrel <code>1507666405895</code> and owl <code>1543549790</code> (Unsplash License). For production, confirm the licence and credit, or commission or generate an owned image; the depth and sky masks regenerate with the same scripts.</li></ul>
   <h4>How it would port</h4>
   <ul>
     <li>Replace <code>PaintedEnvironment</code> and the cast with one <code>ValleyScene</code> component (a WebGL canvas, the photo and a data texture). Keep the static photo as the reduced-motion / no-WebGL fallback.</li>
@@ -385,7 +385,7 @@ button,input{font:inherit}
     <li>Keep the existing contracts: <code>playExit()</code> with its 900 ms safety race, the null→error shake, and <code>skipViewTransition</code>.</li>
   </ul>
 </aside>
-<div class="credit">Photo: <a href="https://unsplash.com/photos/fed622ff2c3b" target="_blank" rel="noopener">Unsplash</a></div>
+<div class="credit">Valley: <a href="https://unsplash.com/photos/fed622ff2c3b" target="_blank" rel="noopener">Unsplash</a> · Animals: Wikimedia Commons &amp; Unsplash (CC BY / BY-SA, see design notes)</div>
 
 <script src="./vendor/gsap.min.js"></script>
 <script id="vs" type="x-shader/x-vertex">
@@ -786,7 +786,7 @@ $('#mockMin').addEventListener('click', () => { const m = $('#mock').classList.t
 addEventListener('keydown', e => { if (e.key === 'Escape'){ $('#notes').classList.remove('open'); $('#apPop').classList.remove('open'); } });
 
 
-/* ═════════ The zoo: rigged SVG puppets living in the valley ═════════ */
+/* ═════════ The zoo: rigged SVG puppets that walk the valley ═════════ */
 /* ═════════ SVG puppets ═════════
    Each animal is a photographic cut-out split into parts (body, head, ears, tail, legs, paws).
    Every part is an SVG <g> with its own pivot, so any part can be animated independently:
@@ -822,6 +822,8 @@ const Puppet = {
       gsap.set(e, {scaleY:0, svgOrigin:`${l.x+ox} ${l.y+oy-l.r*1.2}`});
       p.lids.push(e);
     }
+    // optional whole-image poses (e.g. the squirrel's mid-air leap), hidden until used
+    if (R.extra && R.extra.leap){ const [lw, lh] = R.extra.leap; p.leap = this.el('image', {href:`${this.base}${key}-leap.webp`, x:-lw*.55, y:-lh*1.15, width:lw, height:lh, visibility:'hidden'}, flip); }
     // whole-body breathing pivots at the feet
     p.breath = gsap.to(rigG, {scaleY:1.012, scaleX:.996, svgOrigin:`0 0`, duration:1.8 + Math.random()*.6, ease:'sine.inOut', yoyo:true, repeat:-1});
     return p;
@@ -839,17 +841,28 @@ const Puppet = {
   lookAt(p, deg){ const g = p.look.head; if (!g) return; const [x, y] = p.pivots.head; gsap.set(g, {rotation:deg, svgOrigin:`${x} ${y}`}); },
 };
 
-// x / y = where the feet touch the photo (texture space), h = height in texture units, d = depth (parallax)
+// y = ground line in the photo (texture space), range = the patch of meadow they roam, h = height, d = depth (parallax)
+// face: which way the source photo looks (+1 right, -1 left). gait: walk | hop | bound | perch
+const WALK4 = (amp) => [{id:'frontNear', ph:0, amp}, {id:'hindFar', ph:0, amp:amp*.9}, {id:'frontFar', ph:.5, amp}, {id:'hindNear', ph:.5, amp:amp*.9}];
 const ACTORS = [
-  {key:'deer',     name:'deer',     x:.300, y:.935, h:.135, d:.31, face:1,  when:n => n < .8,  msgs:['Easy now. Drop your shoulders and unclench your jaw.','Gentle reminder: you don’t have to sprint all day.','Look out a window for 20 seconds. Your eyes will thank you.']},
-  {key:'rabbit',   name:'rabbit',   x:.352, y:.962, h:.052, d:.34, face:-1, when:n => n < .45, msgs:['Hop up and grab some water 💧','A short walk between meetings resets your brain.','Tiny breaks, big difference.']},
-  {key:'fox',      name:'fox',      x:.235, y:.985, h:.085, d:.37, face:1,  when:() => true,   msgs:['One thing at a time gets you further, faster.','Clever move: 25 focused minutes, then stretch.','Mute one notification today. Just one.'], patrol:[.215,.36]},
-  {key:'bear',     name:'bear',     x:.415, y:1.0,  h:.105, d:.46, face:1,  when:n => n < .5,  msgs:['Bear hug! You’re doing better than you think.','Even bears rest. Take your breaks.','Big day? Pick the one thing that matters most.']},
-  {key:'squirrel', name:'squirrel', x:.178, y:.992, h:.05,  d:.62, face:-1, when:n => n < .3,  msgs:['Stash a win: note one thing that went well today.','Small steps still count.','Snack break? Make it a real one.']},
-  {key:'raccoon',  name:'raccoon',  x:.335, y:.99,  h:.07,  d:.40, face:1,  when:n => n > .55, msgs:['Late shift? Stretch, sip water, and log off on time.','Snack check: something real, not just coffee ☕','The inbox will still be there tomorrow.']},
-  {key:'owl',      name:'owl',      x:.962, y:.615, h:.06,  d:.56, face:-1, when:n => n > .5,  msgs:['Whooo deserves a proper rest tonight? You do.','Wise words: tomorrow’s list can wait until tomorrow.','Screens off 30 minutes before bed. Owl’s orders.']},
+  {key:'deer',     name:'deer',     x:.33,  y:.935, h:.125, d:.31, face:1,  gait:'walk', range:[.24,.40], speed:.018, cycle:1.05, bob:5,
+   legs:[{id:'frontNear', ph:0, amp:17}, {id:'frontFar', ph:.5, amp:15}, {id:'hind', ph:.25, amp:9}], when:n => n < .8,
+   msgs:['Easy now. Drop your shoulders and unclench your jaw.','Gentle reminder: you don’t have to sprint all day.','Look out a window for 20 seconds. Your eyes will thank you.']},
+  {key:'fox',      name:'fox',      x:.27,  y:.985, h:.055, d:.37, face:-1, gait:'walk', range:[.18,.38], speed:.022, cycle:.7, bob:4, legs:WALK4(20), when:() => true,
+   msgs:['One thing at a time gets you further, faster.','Clever move: 25 focused minutes, then stretch.','Mute one notification today. Just one.']},
+  {key:'bear',     name:'bear',     x:.42,  y:.995, h:.08,  d:.46, face:1,  gait:'walk', range:[.36,.47], speed:.011, cycle:1.4, bob:4, legs:WALK4(15), when:n => n < .5,
+   msgs:['Bear hug! You’re doing better than you think.','Even bears rest. Take your breaks.','Big day? Pick the one thing that matters most.']},
+  {key:'rabbit',   name:'rabbit',   x:.355, y:.962, h:.045, d:.34, face:-1, gait:'hop',  range:[.31,.40], when:n => n < .45,
+   msgs:['Hop up and grab some water 💧','A short walk between meetings resets your brain.','Tiny breaks, big difference.']},
+  {key:'squirrel', name:'squirrel', x:.19,  y:.992, h:.05,  d:.62, face:-1, gait:'bound', range:[.15,.24], when:n => n < .3,
+   msgs:['Stash a win: note one thing that went well today.','Small steps still count.','Snack break? Make it a real one.']},
+  {key:'raccoon',  name:'raccoon',  x:.33,  y:.985, h:.045, d:.40, face:-1, gait:'walk', range:[.26,.40], speed:.016, cycle:.8, bob:3, legs:WALK4(19), when:n => n > .55,
+   msgs:['Late shift? Stretch, sip water, and log off on time.','Snack check: something real, not just coffee ☕','The inbox will still be there tomorrow.']},
+  {key:'owl',      name:'owl',      x:.962, y:.615, h:.06,  d:.56, face:-1, gait:'perch', when:n => n > .5,
+   msgs:['Whooo deserves a proper rest tonight? You do.','Wise words: tomorrow’s list can wait until tomorrow.','Screens off 30 minutes before bed. Owl’s orders.']},
 ];
-ACTORS.forEach(a => Object.assign(a, {o:{dx:0,dy:0}, alpha:0, away:false, busy:false, next:2+Math.random()*4, dir:1, mi:0, look:0, lookT:0, step:0}));
+ACTORS.forEach(a => Object.assign(a, {o:{dx:0,dy:0}, alpha:0, away:false, busy:false, next:2+Math.random()*4, dir:a.face, mi:0, look:0,
+  state:'rest', rest:1.5+Math.random()*4, target:a.x, phase:0, x0:a.x}));
 const zoo = $('#zoo');
 let zooReady = false;
 Puppet.load().then(() => {
@@ -862,7 +875,7 @@ Puppet.load().then(() => {
     r.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); poke(a); } });
     r.addEventListener('pointerenter', () => { if (!a.busy && !reduced()) Puppet.blink(a.p); });
     a.tufts = grassFor(a); if (a.tufts && photoPx) recolourGrass(a);
-    if (a.key === 'fox') a.trot = foxTrot(a);
+    if (a.p.act.tail && a.key !== 'squirrel') gsap.to(a.p.act.tail, {rotation:a.key === 'deer' ? 4 : -5, svgOrigin:a.p.pivots.tail.join(' '), duration:1.4 + Math.random(), ease:'sine.inOut', yoyo:true, repeat:-1});
   }
   zooReady = true; render();
 });
@@ -877,18 +890,17 @@ function setCritterLight(P){
   f.setAttribute('values', rows.join(' ') + ' 0 0 0 1 0');
 }
 
-/* a few blades of real-coloured grass in front of the feet, so animals stand *in* the meadow */
+/* real-coloured grass blades in front of the feet, so animals stand *in* the meadow */
 let photoPx = null;
 (() => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = 600; c.height = 400; const x = c.getContext('2d'); x.drawImage(im,0,0,600,400); photoPx = x.getImageData(0,0,600,400).data; ACTORS.forEach(a => a.tufts && recolourGrass(a)); }; im.src = './assets/valley.webp'; })();
 function photoColour(tx, ty){ if (!photoPx) return '#4d6b3a'; const x = Math.round(clamp(tx,0,1)*599), y = Math.round(clamp(ty,0,1)*399), i = (y*600+x)*4; return toHex([photoPx[i], photoPx[i+1], photoPx[i+2]]); }
 function grassFor(a){
-  if (a.key === 'owl') return null;
+  if (a.gait === 'perch') return null;
   const R = a.p.R, g = Puppet.el('g', {class:'tufts'}, a.p.root), blades = [];
-  const n = 16, span = R.w*.9;
+  const n = Math.round(10 + R.w/40), span = R.w*.9;
   for (let i=0;i<n;i++){
-    const x = -span/2 + span*(i+Math.random()*.8)/n, hgt = R.h*(.04 + Math.random()*.08), lean = (Math.random()-.5)*R.h*.06, w = R.h*(.008 + Math.random()*.006);
-    const path = Puppet.el('path', {d:`M${x-w} 2Q${x+lean*.4} ${-hgt*.6} ${x+lean} ${-hgt}Q${x+lean*.35+w*.6} ${-hgt*.5} ${x+w} 2Z`}, g);
-    blades.push(path);
+    const x = -span/2 + span*(i+Math.random()*.8)/n, hgt = R.h*(.04 + Math.random()*.07), lean = (Math.random()-.5)*R.h*.06, w = R.h*(.008 + Math.random()*.006);
+    blades.push(Puppet.el('path', {d:`M${x-w} 2Q${x+lean*.4} ${-hgt*.6} ${x+lean} ${-hgt}Q${x+lean*.35+w*.6} ${-hgt*.5} ${x+w} 2Z`}, g));
   }
   g.style.animationDuration = (3 + Math.random()*2) + 's';
   return {g, blades};
@@ -918,7 +930,7 @@ let skyData = null, skyW = 0, skyH = 0;
 (() => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = skyW = im.width; c.height = skyH = im.height; const x = c.getContext('2d'); x.drawImage(im,0,0); skyData = x.getImageData(0,0,skyW,skyH).data; }; im.src = './assets/valley-data.png'; })();
 const isSky = (tx, ty) => { if (!skyData || tx < 0 || tx > 1 || ty < 0 || ty > 1) return false; const i = (Math.floor(ty*(skyH-1))*skyW + Math.floor(tx*(skyW-1)))*4; return skyData[i+1] > 128; };
 
-/* place every puppet on its spot in the photo each frame (follows parallax + camera) */
+/* place every puppet on its spot each frame (follows parallax + camera); heads glance at the pointer */
 let pointer = {x:-1e4, y:-1e4};
 addEventListener('pointermove', e => { pointer = {x:e.clientX, y:e.clientY}; }, {passive:true});
 function placeZoo(dt){
@@ -926,70 +938,117 @@ function placeZoo(dt){
   for (const a of ACTORS){
     const P = a.p, [x, y] = texToScreen(a.x + a.o.dx, a.y + a.o.dy, a.d), top = texToScreen(a.x, a.y - a.h, a.d)[1];
     const s = (texToScreen(a.x, a.y, a.d)[1] - top)/P.R.h;
+    a.sx = x; a.sy = y; a.s = s;
     P.root.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${s.toFixed(4)})`);
     P.root.style.opacity = a.alpha.toFixed(3);
     P.root.style.pointerEvents = a.alpha > .5 && !a.away ? 'auto' : 'none';
     const flip = (a.face*a.dir) < 0;
     if (flip !== a.flipped){ a.flipped = flip; P.flip.setAttribute('transform', flip ? 'scale(-1 1)' : ''); }
     if (a.tufts) a.tufts.g.style.display = a.o.dy < -.004 ? 'none' : '';
-    // heads follow the pointer a little (looking at you)
     if (!reduced() && P.look.head){
       const hp = P.pivots.head, hx = x + hp[0]*s*(flip ? -1 : 1), hy = y + hp[1]*s;
-      const near = Math.hypot(pointer.x-hx, pointer.y-hy) < 420;
-      let want = near ? clamp((pointer.x - hx)/18, -9, 9)*(flip ? -1 : 1) + clamp((pointer.y - hy)/40, -4, 4) : 0;
-      if (a.key === 'owl') want *= 1.8;                             // owls really turn their heads
+      const near = Math.hypot(pointer.x-hx, pointer.y-hy) < 380 && a.state !== 'walk';
+      let want = 0;
+      if (near){
+        if (a.gait === 'perch') want = clamp((pointer.x - hx)/14, -16, 16);                       // front-facing: turn toward you
+        else want = clamp((pointer.y - hy)/30, -7, 7) * a.face;                                    // side-on: nod up/down toward you
+      }
       a.look += (want - a.look)*Math.min(1, dt*4);
       Puppet.lookAt(P, a.look);
     }
   }
 }
 
-/* idle life: each animal has its own little habits */
+/* ── locomotion ─────────────────────────────────────────────────────────── */
+// convert a rotation as seen on screen into the puppet's local (possibly mirrored) space
+const localRot = (a, deg) => deg*((a.face*a.dir) < 0 ? -1 : 1);
+function setLegs(a, phase, k){                    // k = 0 standing … 1 full stride
+  const P = a.p;
+  for (const L of a.legs){
+    if (!P.act[L.id]) continue;
+    const ang = Math.sin((phase + L.ph)*Math.PI*2)*L.amp*k;
+    gsap.set(P.act[L.id], {rotation:ang, svgOrigin:P.pivots[L.id].join(' ')});
+  }
+  gsap.set(P.rigG, {y:-Math.abs(Math.sin(phase*Math.PI*2))*a.bob*k});
+}
+function settleLegs(a){ for (const L of a.legs || []) if (a.p.act[L.id]) gsap.to(a.p.act[L.id], {rotation:0, svgOrigin:a.p.pivots[L.id].join(' '), duration:.3}); gsap.to(a.p.rigG, {y:0, duration:.3}); }
+function chooseTarget(a){
+  const [lo, hi] = a.range, cur = a.x0 + a.o.dx;
+  let t = lo + Math.random()*(hi - lo);
+  if (Math.abs(t - cur) < (hi - lo)*.25) t = cur < (lo+hi)/2 ? hi - Math.random()*(hi-lo)*.2 : lo + Math.random()*(hi-lo)*.2;
+  a.target = t; a.dir = t > cur ? 1 : -1;
+}
+function hop(a){                                   // rabbit: crouch → push off with the hind feet → land
+  const P = a.p, piv = id => P.pivots[id].join(' '), len = .018 + Math.random()*.008;
+  a.busy = true;
+  const tl = gsap.timeline({onComplete:() => { a.busy = false; }});
+  tl.to(P.rigG, {scaleY:.94, svgOrigin:'0 0', duration:.12, ease:'power1.in'})
+    .to(P.rigG, {scaleY:1.04, rotation:localRot(a, -9*a.dir), svgOrigin:'0 0', duration:.12, ease:'power2.out'})
+    .to(P.act.hindFoot, {rotation:-26, svgOrigin:piv('hindFoot'), duration:.14, ease:'power2.out'}, '<')
+    .to(P.act.frontPaws, {rotation:20, svgOrigin:piv('frontPaws'), duration:.14}, '<')
+    .to(P.act.ears, {rotation:-14, svgOrigin:piv('ears'), duration:.14}, '<')
+    .to(a.o, {keyframes:[{dy:-.03, duration:.2, ease:'power2.out'},{dy:0, duration:.2, ease:'power2.in'}], dx:a.o.dx + a.dir*len, duration:.4, ease:'none'}, '<')
+    .to(P.rigG, {rotation:localRot(a, 7*a.dir), scaleY:1, svgOrigin:'0 0', duration:.2}, '-=.2')
+    .to([P.act.hindFoot, P.act.frontPaws], {rotation:0, duration:.18}, '-=.1')
+    .to(P.act.ears, {rotation:0, duration:.4, ease:'elastic.out(1,.5)'}, '-=.1')
+    .to(P.rigG, {rotation:0, scaleY:.96, svgOrigin:'0 0', duration:.1}, '-=.35')
+    .to(P.rigG, {scaleY:1, svgOrigin:'0 0', duration:.15});
+  return tl;
+}
+function bound(a){                                 // squirrel: sit → leap (real leap photo mid-air) → sit
+  const P = a.p, len = .025 + Math.random()*.01;
+  a.busy = true;
+  const tl = gsap.timeline({onComplete:() => { a.busy = false; }});
+  tl.to(P.rigG, {scaleY:.93, svgOrigin:'0 0', duration:.1})
+    .add(() => { P.rigG.style.visibility = 'hidden'; P.leap.setAttribute('visibility', 'visible'); })
+    .to(a.o, {keyframes:[{dy:-.028, duration:.17, ease:'power2.out'},{dy:0, duration:.17, ease:'power2.in'}], dx:a.o.dx + a.dir*len, duration:.34, ease:'none'})
+    .add(() => { P.leap.setAttribute('visibility', 'hidden'); P.rigG.style.visibility = ''; })
+    .to(P.rigG, {scaleY:1, svgOrigin:'0 0', duration:.18, ease:'back.out(3)'})
+    .to(P.act.tail, {keyframes:[{rotation:-10, duration:.12},{rotation:0, duration:.45, ease:'elastic.out(1,.4)'}], svgOrigin:P.pivots.tail.join(' ')}, '<');
+  return tl;
+}
 function updateActors(dt){
   if (!zooReady) return;
   const n = V.P ? V.P.night : 0, rm = reduced();
   for (const a of ACTORS){
     const want = a.when(n) && !a.away ? 1 : 0;
     a.alpha += (want - a.alpha)*Math.min(1, dt*1.5);
-    if (rm || a.busy || a.alpha < .05) continue;
-    if (a.patrol){                                                  // the fox trots its beat, legs and all
-      if (a.pause > 0){ a.pause -= dt; a.trot.pause(); }
-      else {
-        a.trot.resume(); a.o.dx += a.dir*.012*dt;
-        const x = a.x + a.o.dx;
-        if (x > a.patrol[1] || x < a.patrol[0]){ a.dir *= -1; a.pause = 2.5 + Math.random()*4; }
-      }
+    if (rm || a.alpha < .05 || a.busy) continue;
+    if (a.gait === 'perch'){ a.next -= dt; if (a.next <= 0){ a.next = 2.5 + Math.random()*4; idle(a); } continue; }
+    const cur = () => a.x0 + a.o.dx;
+    if (a.state === 'rest'){
+      a.rest -= dt; a.next -= dt;
+      if (a.next <= 0){ a.next = 2 + Math.random()*3.5; idle(a); }
+      if (a.rest <= 0){ chooseTarget(a); a.state = 'walk'; a.phase = 0; a.k = 0; }
+    } else {                                       // walking toward the target
+      const remaining = (a.target - cur())*a.dir;
+      if (remaining <= 0){ a.state = 'rest'; a.rest = 3 + Math.random()*6; if (a.legs) settleLegs(a); continue; }
+      if (a.gait === 'walk'){
+        a.k = Math.min(1, (a.k || 0) + dt*3) * Math.min(1, remaining/.01 + .25);
+        a.phase += dt/a.cycle;
+        a.o.dx += a.dir*a.speed*dt*a.k;
+        setLegs(a, a.phase, a.k);
+      } else if (a.gait === 'hop') hop(a);
+      else if (a.gait === 'bound') bound(a);
     }
-    a.next -= dt;
-    if (a.next <= 0){ a.next = 2.5 + Math.random()*5; idle(a); }
   }
 }
-function foxTrot(a){
-  const P = a.p, tl = gsap.timeline({repeat:-1, paused:true});
-  const [nx,ny] = P.pivots.legNear, [fx,fy] = P.pivots.legFar;
-  tl.to(P.act.legNear, {rotation:14, svgOrigin:`${nx} ${ny}`, duration:.22, ease:'sine.inOut'}, 0)
-    .to(P.act.legFar, {rotation:-12, svgOrigin:`${fx} ${fy}`, duration:.22, ease:'sine.inOut'}, 0)
-    .to(P.rigG, {y:-4, duration:.11, ease:'sine.out', yoyo:true, repeat:1}, 0)
-    .to(P.act.legNear, {rotation:-12, svgOrigin:`${nx} ${ny}`, duration:.22, ease:'sine.inOut'}, .22)
-    .to(P.act.legFar, {rotation:14, svgOrigin:`${fx} ${fy}`, duration:.22, ease:'sine.inOut'}, .22)
-    .to(P.rigG, {y:-4, duration:.11, ease:'sine.out', yoyo:true, repeat:1}, .22);
-  gsap.to(P.act.tail, {rotation:-5, svgOrigin:P.pivots.tail.join(' '), duration:1.6, ease:'sine.inOut', yoyo:true, repeat:-1});
-  return tl;
-}
+
+/* ── idle habits ────────────────────────────────────────────────────────── */
 const pick = arr => arr[Math.floor(Math.random()*arr.length)];
 function idle(a){
-  const P = a.p, r = Math.random();
-  if (r < .35) { Puppet.blink(P); return; }
+  const P = a.p;
+  if (Math.random() < .35 && P.lids.length) { Puppet.blink(P); return; }
+  const tilt = (deg, d1 = .6, d2 = .8) => Puppet.rot(P,'head',deg,d1).then(() => Puppet.rot(P,'head',0,d2));
   switch (a.key){
-    case 'deer':     pick([() => Puppet.flick(P,'earL',-16), () => Puppet.flick(P,'earR',16), () => Puppet.rot(P,'head',pick([-4,4]),.8).then(() => Puppet.rot(P,'head',0,1))])(); break;
-    case 'fox':      pick([() => Puppet.flick(P,'earL',-14), () => Puppet.flick(P,'earR',12), () => Puppet.rot(P,'head',6,.5).then(() => Puppet.rot(P,'head',0,.7))])(); break;
-    case 'bear':     pick([() => Puppet.flick(P,'earL',-12), () => Puppet.rot(P,'head',-5,1.4).then(() => Puppet.rot(P,'head',0,1.6)),
-                           () => gsap.timeline().to(P.act.foot, {rotation:9, svgOrigin:P.pivots.foot.join(' '), duration:.18, yoyo:true, repeat:3})])(); break;
+    case 'deer':     pick([() => Puppet.flick(P,'earL',-16), () => Puppet.flick(P,'earR',16), () => tilt(pick([-5,5])), () => Puppet.flick(P,'tail',-25)])(); break;
+    case 'fox':      pick([() => Puppet.flick(P,'earL',14), () => Puppet.flick(P,'earR',-12), () => tilt(pick([-6,6]),.5,.7)])(); break;      // sniffing the grass
+    case 'bear':     pick([() => Puppet.flick(P,'ear',-12), () => tilt(10,1.2,1.4), () => tilt(-6,1,1.2)])(); break;                       // nose down to graze
+    case 'raccoon':  pick([() => Puppet.flick(P,'ear',12), () => tilt(10,.5,.7), () => gsap.to(P.act.tail, {rotation:-14, svgOrigin:P.pivots.tail.join(' '), duration:.25, yoyo:true, repeat:1})])(); break;
+    case 'rabbit':   pick([() => Puppet.flick(P,'ears',-12), () => Puppet.flick(P,'ears',10), () => gsap.timeline().to(P.act.head, {scaleY:1.015, svgOrigin:P.pivots.head.join(' '), duration:.06, yoyo:true, repeat:7})])(); break;
     case 'squirrel': pick([() => nibble(a), () => nibble(a), () => Puppet.flick(P,'ear',-14), () => gsap.timeline().to(P.act.tail, {rotation:-7, svgOrigin:P.pivots.tail.join(' '), duration:.16, yoyo:true, repeat:3})])(); break;
-    case 'rabbit':   pick([() => Puppet.flick(P,'earF',-15), () => Puppet.flick(P,'earB',14), () => gsap.timeline().to(P.act.head, {scaleY:1.015, svgOrigin:P.pivots.head.join(' '), duration:.06, yoyo:true, repeat:7})])(); break;
     case 'owl':      pick([() => Puppet.rot(P,'head',pick([-18,18]),.6,'power2.inOut').then(() => gsap.delayedCall(1, () => Puppet.rot(P,'head',0,.7))), () => Puppet.blink(P,0),
                            () => gsap.timeline().to(P.act.wing, {rotation:3, svgOrigin:P.pivots.wing.join(' '), duration:.12, yoyo:true, repeat:3})])(); break;
-    case 'raccoon':  pick([() => Puppet.flick(P,'earL',-12), () => Puppet.flick(P,'earR',12), () => Puppet.rot(P,'head',pick([-6,6]),.6).then(() => Puppet.rot(P,'head',0,.8))])(); break;
   }
 }
 function nibble(a){
@@ -999,58 +1058,61 @@ function nibble(a){
     .to(P.act.paws, {rotation:-6, svgOrigin:P.pivots.paws.join(' '), duration:.09, yoyo:true, repeat:7, ease:'sine.inOut'}, 0);
 }
 
-/* tap reactions: a real little performance, hearts and a kind tip */
+/* ── tap performances: a real little act, hearts and a kind tip ─────────── */
 function poke(a){
-  if (a.busy || !zooReady) return;
-  a.busy = true; const P = a.p;
+  if (!zooReady || a.poking) return;
+  a.poking = true; a.busy = true; const P = a.p;
+  if (a.legs) settleLegs(a);
+  a.state = 'rest'; a.rest = 4 + Math.random()*4;
   say(a, a.msgs[a.mi++ % a.msgs.length]); hearts(a); chirp(a.key);
-  const done = () => { a.busy = false; };
+  const done = () => { a.busy = false; a.poking = false; };
   if (reduced()) { setTimeout(done, 400); return; }
   const piv = id => P.pivots[id].join(' ');
   const tl = gsap.timeline({onComplete:done});
   switch (a.key){
-    case 'deer':   // startle: ears up, head up, blink… then bound away and wander back later
+    case 'deer': {  // startle: ears up, tail up, blink… then trots off and comes back later
       tl.to(P.act.earL, {rotation:-20, svgOrigin:piv('earL'), duration:.12}, 0).to(P.act.earR, {rotation:20, svgOrigin:piv('earR'), duration:.12}, 0)
-        .to(P.act.head, {rotation:-4, svgOrigin:piv('head'), duration:.2}, 0).add(Puppet.blink(P), .25)
-        .to(a.o, {keyframes:[{dy:-.035, dx:a.o.dx-.05, duration:.28, ease:'power2.out'},{dy:0, dx:a.o.dx-.09, duration:.25, ease:'power2.in'},
-          {dy:-.03, dx:a.o.dx-.14, duration:.26, ease:'power2.out'},{dy:0, dx:a.o.dx-.18, duration:.24, ease:'power2.in'},
-          {dy:-.025, dx:a.o.dx-.23, duration:.25, ease:'power2.out'},{dy:0, dx:a.o.dx-.27, duration:.22, ease:'power2.in'}]}, .7)
-        .add(() => { a.away = true; gsap.set([P.act.earL, P.act.earR, P.act.head], {rotation:0}); setTimeout(() => { a.o.dx = 0; a.away = false; }, 22000); });
-      a.dir = -1;   // bounding to the left
-      tl.add(() => { a.dir = 1; });
+        .to(P.act.tail, {rotation:-35, svgOrigin:piv('tail'), duration:.15}, 0).add(Puppet.blink(P), .2)
+        .to(P.act.head, {rotation:-6, svgOrigin:piv('head'), duration:.25}, 0)
+        .add(() => { a.dir = a.x0 + a.o.dx > .32 ? -1 : 1; }, .6);
+      const run = {t:0};
+      tl.to(run, {t:1, duration:1.6, ease:'none', onUpdate(){ a.phase += .045; a.o.dx += a.dir*.0032; setLegs(a, a.phase, 1); }}, .65)
+        .to(a, {alpha:0, duration:.5}, '-=.5')
+        .add(() => { a.away = true; settleLegs(a); gsap.set([P.act.earL, P.act.earR, P.act.head, P.act.tail], {rotation:0}); setTimeout(() => { a.o.dx = 0; a.away = false; }, 20000); });
+      break; }
+    case 'fox':     // curious head tilt, happy tail, a little pounce
+      tl.to(P.act.head, {rotation:-12, svgOrigin:piv('head'), duration:.3, ease:'back.out(2)'}, 0)
+        .to(P.act.tail, {keyframes:[{rotation:-14, duration:.14},{rotation:8, duration:.14},{rotation:-14, duration:.14},{rotation:8, duration:.14},{rotation:0, duration:.2}], svgOrigin:piv('tail')}, .1)
+        .to(P.act.frontNear, {rotation:-30, svgOrigin:piv('frontNear'), duration:.2, yoyo:true, repeat:1}, .35)
+        .to(a.o, {keyframes:[{dy:-.02, duration:.18, ease:'power2.out'},{dy:0, duration:.18, ease:'power2.in'}]}, .4)
+        .to(P.act.head, {rotation:0, svgOrigin:piv('head'), duration:.4}, '+=.5');
       break;
-    case 'fox':    // curious head tilt, happy tail, a little hop
-      tl.to(P.act.head, {rotation:16, svgOrigin:piv('head'), duration:.3, ease:'back.out(2)'}, 0)
-        .to(P.act.tail, {keyframes:[{rotation:-12, duration:.14},{rotation:8, duration:.14},{rotation:-12, duration:.14},{rotation:8, duration:.14},{rotation:0, duration:.2}], svgOrigin:piv('tail')}, .1)
-        .to(a.o, {keyframes:[{dy:-.025, duration:.18, ease:'power2.out'},{dy:0, duration:.18, ease:'power2.in'}]}, .4)
-        .to(P.act.head, {rotation:0, svgOrigin:piv('head'), duration:.4}, '+=.6');
+    case 'bear':    // stops, lifts a paw to wave hello, nods
+      tl.to(P.act.frontNear, {rotation:-48, svgOrigin:piv('frontNear'), duration:.35, ease:'power2.out'}, 0)
+        .to(P.act.frontNear, {keyframes:[{rotation:-36, duration:.18},{rotation:-50, duration:.18},{rotation:-36, duration:.18},{rotation:-50, duration:.18},{rotation:0, duration:.4}], svgOrigin:piv('frontNear')})
+        .to(P.act.head, {rotation:-8, svgOrigin:piv('head'), duration:.25, yoyo:true, repeat:3}, .3);
       break;
-    case 'bear':   // belly laugh + toe wiggle
-      tl.to(P.act.head, {keyframes:[{rotation:-10, duration:.25},{rotation:-6, duration:.12},{rotation:-10, duration:.12},{rotation:-6, duration:.12},{rotation:0, duration:.4}], svgOrigin:piv('head')}, 0)
-        .to(P.rigG, {keyframes:[{scaleY:1.03, duration:.12},{scaleY:.985, duration:.12},{scaleY:1.025, duration:.12},{scaleY:1, duration:.2}], svgOrigin:'0 0'}, .1)
-        .to(P.act.foot, {rotation:16, svgOrigin:piv('foot'), duration:.12, yoyo:true, repeat:5}, 0);
+    case 'raccoon': // sits up a little, waves, tail swish
+      tl.to(P.act.frontNear, {keyframes:[{rotation:-40, duration:.2},{rotation:-25, duration:.15},{rotation:-42, duration:.15},{rotation:-25, duration:.15},{rotation:0, duration:.3}], svgOrigin:piv('frontNear')}, 0)
+        .to(P.act.tail, {rotation:-18, svgOrigin:piv('tail'), duration:.2, yoyo:true, repeat:3}, 0)
+        .to(P.act.head, {rotation:-10, svgOrigin:piv('head'), duration:.3, yoyo:true, repeat:1}, .1);
       break;
-    case 'squirrel': // startled jump with a big tail flick, then back to the nut
-      tl.to(P.act.tail, {rotation:-14, svgOrigin:piv('tail'), duration:.12}, 0)
-        .to(a.o, {keyframes:[{dy:-.03, duration:.16, ease:'power2.out'},{dy:0, duration:.16, ease:'power2.in'}]}, 0)
-        .to(P.act.tail, {rotation:0, svgOrigin:piv('tail'), duration:.5, ease:'elastic.out(1,.4)'}, .3).add(nibble(a), .5);
-      break;
-    case 'rabbit': // a happy "binky": jump, twist, ears flop back
-      tl.to(P.act.earF, {rotation:-28, svgOrigin:piv('earF'), duration:.15}, 0).to(P.act.earB, {rotation:-22, svgOrigin:piv('earB'), duration:.15}, 0)
+    case 'rabbit':  // a happy "binky": twisting leap with ears flopping
+      tl.to(P.act.ears, {rotation:-28, svgOrigin:piv('ears'), duration:.15}, 0)
+        .to(P.act.hindFoot, {rotation:-30, svgOrigin:piv('hindFoot'), duration:.15}, 0)
         .to(a.o, {keyframes:[{dy:-.05, duration:.28, ease:'power2.out'},{dy:0, duration:.26, ease:'power2.in'}]}, .05)
-        .to(P.rigG, {keyframes:[{rotation:-12, duration:.2},{rotation:0, duration:.3}], svgOrigin:'0 -100'}, .05)
-        .to([P.act.earF, P.act.earB], {rotation:0, duration:.5, ease:'elastic.out(1,.5)'}, .55);
+        .to(P.rigG, {keyframes:[{rotation:-14, duration:.2},{rotation:6, duration:.2},{rotation:0, duration:.2}], svgOrigin:'0 -150'}, .05)
+        .to([P.act.ears, P.act.hindFoot], {rotation:0, duration:.5, ease:'elastic.out(1,.5)'}, .55);
       break;
-    case 'owl':    // the famous owl head turn… and a wink
+    case 'squirrel': // startled bound and a big tail flick
+      tl.add(bound(a)).add(() => { a.busy = true; }).add(nibble(a));
+      break;
+    case 'owl':     // the famous owl head turn… and a wink
       tl.to(P.act.head, {rotation:-28, svgOrigin:piv('head'), duration:.35, ease:'power2.inOut'})
         .to(P.act.head, {scaleX:-1, svgOrigin:piv('head'), duration:.25, ease:'power1.inOut'})
         .to(P.act.head, {rotation:24, svgOrigin:piv('head'), duration:.4, ease:'power2.inOut'}, '+=.35')
         .to(P.act.head, {scaleX:1, rotation:0, svgOrigin:piv('head'), duration:.35}, '+=.3')
         .add(Puppet.blink(P, 0));
-      break;
-    case 'raccoon': // a little wave
-      tl.to(P.act.paw, {keyframes:[{rotation:-22, duration:.18},{rotation:14, duration:.18},{rotation:-22, duration:.18},{rotation:14, duration:.18},{rotation:0, duration:.25}], svgOrigin:piv('paw')}, 0)
-        .to(P.act.head, {rotation:8, svgOrigin:piv('head'), duration:.3, yoyo:true, repeat:1}, .1).add(Puppet.blink(P), .4);
       break;
   }
 }
@@ -1064,7 +1126,7 @@ function say(a, text){
 function placeBubble(){
   if (!bubbleFor) return;
   const a = bubbleFor, [x,y] = texToScreen(a.x + a.o.dx, a.y + a.o.dy - a.h, a.d);
-  bubble.style.left = clamp(x, 140, innerWidth-140)+'px'; bubble.style.top = Math.max(70, y-10)+'px';
+  bubble.style.left = clamp(x, 140, innerWidth-140)+'px'; bubble.style.top = Math.max(70, y - 28)+'px';
 }
 function hearts(a){
   if (reduced()) return;
