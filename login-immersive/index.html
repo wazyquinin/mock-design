@@ -174,6 +174,12 @@ button,input{font:inherit}
 .ui .topbar,.ui .card,.story .calm{pointer-events:auto}
 #play{position:fixed;inset:0;z-index:3;cursor:default}
 #play.sky{cursor:pointer}
+#zoo{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+#zoo .animal{cursor:pointer;outline:none}
+#zoo .animal:focus-visible ellipse:first-child{stroke:#5eead4;stroke-width:6}
+#zoo .tufts{transform-box:fill-box;transform-origin:50% 100%;animation:tuftSway 4s ease-in-out infinite alternate}
+@keyframes tuftSway{from{transform:skewX(-6deg)}to{transform:skewX(5deg)}}
+.reduced #zoo .tufts{animation:none}
 .critter{position:absolute;left:0;top:0;border:0;padding:0;background:transparent;cursor:pointer;border-radius:40%;will-change:transform}
 .critter:focus-visible{outline:2px solid #5eead4;outline-offset:2px}
 .critter[hidden]{display:none}
@@ -223,7 +229,11 @@ button,input{font:inherit}
 <div class="wash"></div>
 <div class="bloom" id="bloom"></div>
 
-<div id="play" role="group" aria-label="The valley: say hello to the animals, or tap the sky"></div>
+<div id="play" role="group" aria-label="The valley: say hello to the animals, or tap the sky"><svg id="zoo" aria-hidden="false">
+  <defs>
+    <radialGradient id="critterShadow"><stop offset="0" stop-color="#000" stop-opacity=".55"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+    <filter id="critterLight" color-interpolation-filters="sRGB" x="-5%" y="-5%" width="110%" height="110%"><feColorMatrix id="critterLightM" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0"/><feGaussianBlur stdDeviation=".9"/></filter>
+  </defs></svg></div>
 <div class="ui">
   <header class="topbar">
     <a class="brand" href="#" aria-label="NanoHRMS" data-enter="ui">
@@ -359,7 +369,7 @@ button,input{font:inherit}
   <ul><li>The previous vector-illustrated version is kept at <a href="./illustrated.html" style="color:#5eead4">illustrated.html</a>.</li></ul>
   <h4>Built to lower stress</h4>
   <ul>
-    <li><b>Seven real animals</b> (deer, rabbit, fox, bear, squirrel by day; owl and raccoon by night). They're cut-out photographs, lit by the same time-of-day grade as the valley and depth-tested so nearer trees and shrubs hide them. Each has small idle habits and does a little performance when tapped, with hearts and a short, kind wellbeing tip.</li>
+    <li><b>Seven rigged SVG animals</b> (deer, rabbit, fox, bear, squirrel by day; owl and raccoon at night). Each is a photographic cut-out split into parts (head, ears, tail, legs, paws, eyelids) with its own pivot, so any part animates independently: blinking, ear flicks, a tail swish, the squirrel nibbling, the fox trotting with real leg swings, heads that follow your pointer, the owl's head turn and wink, and the raccoon's wave. A shared SVG colour matrix lights them with the valley's time-of-day grade, and real-coloured grass blades sway in front of their feet. Tapping one gives a little performance, hearts and a short, kind wellbeing tip. Adding an animation is a few lines: <code>Puppet.rot(p, 'head', 8)</code>, <code>Puppet.flick(p, 'earL', -15)</code>, <code>Puppet.blink(p)</code>.</li>
     <li><b>Tap the sky:</b> by day a flock lifts off from your tap; at night a shooting star crosses and your wish is made. Tap the moon for its phase.</li>
     <li><b>1-minute breather:</b> four slow breaths (in 4 s, hold 4 s, out 6 s). The clouds, wind and birds slow down with you, and soft chimes play if sound is on.</li>
     <li><b>Nature sounds</b> (off by default): wind and birdsong by day, crickets and an owl at night. They're generated live with WebAudio, so there are no audio files.</li>
@@ -518,71 +528,6 @@ void main(){
   gl_FragColor = vec4(col, 1.);
 }
 </script>
-<script id="svs" type="x-shader/x-vertex">
-attribute vec2 c;
-uniform vec2 uRes, uMouse; uniform float uAsp, uZoom, uDepth, uFlip, uShadow;
-uniform vec4 uRect;   // tex: centre x, feet y, width, height
-uniform vec4 uOff;    // dx, dy, vertical squash, rotation (about the feet)
-uniform vec4 uAt;     // atlas rect u0, v0, du, dv
-varying vec2 vA, vC;
-vec2 texToScreen(vec2 t){
-  vec2 uv = vec2(t.x, 1.-t.y);
-  uv = (uv - vec2(.5,.38))*uZoom + vec2(.5,.38);
-  float va = uRes.x/uRes.y;
-  if (va > uAsp){ float k = uAsp/va; return vec2(uv.x, uv.y/k); }
-  float k = va/uAsp; return vec2((uv.x-.5)/k+.5, uv.y);
-}
-void main(){
-  vC = c;
-  vec2 t;
-  if (uShadow > .5){
-    t = vec2(uRect.x + uOff.x + (c.x-.5)*uRect.z*1.05, uRect.y + (c.y-.5)*uRect.z*.14);
-  } else {
-    vec2 l = vec2((c.x-.5)*uRect.z, -c.y*uRect.w*uOff.z);
-    float s = sin(uOff.w), co = cos(uOff.w);
-    l = vec2(co*l.x - s*l.y, s*l.x + co*l.y);
-    t = uRect.xy + uOff.xy + l;
-  }
-  t += uMouse*vec2(.016,.006)*(uDepth-.25);          // same parallax as the photo at this depth
-  gl_Position = vec4(texToScreen(t)*2.-1., 0., 1.);
-  float u = uFlip > .5 ? 1.-c.x : c.x;
-  vA = vec2(uAt.x + u*uAt.z, uAt.y + (1.-c.y)*uAt.w);
-}
-</script>
-<script id="sfs" type="x-shader/x-fragment">
-precision highp float;
-varying vec2 vA, vC;
-uniform sampler2D uAtl, uData;
-uniform vec2 uRes, uMouse; uniform float uAsp, uZoom, uDepth, uShadow, uAlpha, uFade;
-uniform vec3 uTint, uSkyHor, uSkyMid; uniform float uExp, uSat, uHaze, uNight;
-vec2 imgUv(vec2 s){
-  float va = uRes.x/uRes.y; vec2 uv = s;
-  if (va > uAsp){ float k = uAsp/va; uv.y = s.y*k; } else { float k = va/uAsp; uv.x = (s.x-.5)*k+.5; }
-  uv = (uv - vec2(.5,.38))/uZoom + vec2(.5,.38);
-  return vec2(uv.x, 1.-uv.y);
-}
-void main(){
-  // depth-tested against the photo: nearer trees and shrubs hide the animal
-  vec2 uv0 = imgUv(gl_FragCoord.xy/uRes), par = uMouse*vec2(.016,.006);
-  float d0 = texture2D(uData, uv0).r; vec2 uv = uv0 - par*(d0-.25);
-  float d1 = texture2D(uData, uv).r; uv = uv0 - par*(d1-.25);
-  float occ = 1. - smoothstep(uDepth+.012, uDepth+.05, texture2D(uData, uv).r);
-  if (uShadow > .5){
-    vec2 q = vC*2.-1.; float a = (1.-smoothstep(.15,1.,length(q)))*.42*(1.-uNight*.5)*occ*uAlpha;
-    gl_FragColor = vec4(0.,0.,0.,a); return;
-  }
-  vec4 t = texture2D(uAtl, vA);                        // premultiplied
-  if (t.a < .004) discard;
-  vec3 L = pow(t.rgb/t.a, vec3(2.2));
-  float lum = dot(L, vec3(.2126,.7152,.0722));
-  L = mix(vec3(lum), L, uSat) * uTint * uExp;           // same light as the photo
-  vec3 hz = pow(mix(uSkyHor, uSkyMid, .25), vec3(2.2))*mix(1., .55, uNight);
-  L = mix(L, hz, uHaze*(1.-smoothstep(0.,.16,uDepth))*.85);
-  vec3 col = pow(max(L*uFade,0.), vec3(1./2.2));
-  float a = t.a*occ*uAlpha;
-  gl_FragColor = vec4(col*a, a);
-}
-</script>
 <script>
 (() => {
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
@@ -672,6 +617,7 @@ const phase = moonPhase(new Date());
 
 function render(){
   const h = effHour(), P = paletteAt(h); V.P = P;
+  setCritterLight(P);
   root.style.setProperty('--sky-top', P.skyTop); root.style.setProperty('--sky-mid', P.skyMid); root.style.setProperty('--sky-hor', P.skyHor);
   document.body.classList.toggle('is-dark', P.night > .5);
   document.body.classList.add('story-dark');
@@ -701,7 +647,6 @@ function draw(){
   gl.uniform1f(U.uCover, P.cover); gl.uniform1f(U.uNight, P.night); gl.uniform1f(U.uAur, smooth((P.night-.8)*5)); gl.uniform1f(U.uWind, V.wind); gl.uniform1f(U.uMist, P.mist);
   gl.uniform3fv(U.uSun, V.sun); gl.uniform3fv(U.uMoon, V.moon); gl.uniform2f(U.uPhase, phase.k, phase.waxing ? 1 : -1);
   gl.drawArrays(gl.TRIANGLES, 0, 3);
-  drawSprites();
 }
 
 /* ═════════ Birds (2D silhouettes) ═════════ */
@@ -841,62 +786,116 @@ $('#mockMin').addEventListener('click', () => { const m = $('#mock').classList.t
 addEventListener('keydown', e => { if (e.key === 'Escape'){ $('#notes').classList.remove('open'); $('#apPop').classList.remove('open'); } });
 
 
-/* ═════════ Animals: real cut-out photos, lit and depth-tested like the valley ═════════ */
-const ATLAS = {deer:[.00351,.00654,.17384,.4902,.66], fox:[.18086,.00654,.28709,.4902,1.09], bear:[.47147,.00654,.34416,.4902,1.30667],
-  rabbit:[.81914,.00654,.17735,.4902,.67333], squirrel:[.00351,.50327,.32748,.4902,1.24333], raccoon:[.3345,.50327,.25022,.4902,.95], owl:[.58824,.50327,.21598,.4902,.82]};
-// x / y = where the feet touch the photo (texture space), h = height, d = depth used for occlusion & parallax
-const ACTORS = [
-  {key:'deer',     name:'deer',     x:.300, y:.935, h:.135, d:.31, flip:false, when:n => n < .8,  msgs:['Easy now. Drop your shoulders and unclench your jaw.','Gentle reminder: you don’t have to sprint all day.','Look out a window for 20 seconds. Your eyes will thank you.']},
-  {key:'rabbit',   name:'rabbit',   x:.352, y:.962, h:.052, d:.34, flip:true,  when:n => n < .45, msgs:['Hop up and grab some water 💧','A short walk between meetings resets your brain.','Tiny breaks, big difference.']},
-  {key:'fox',      name:'fox',      x:.235, y:.985, h:.085, d:.37, flip:false, when:() => true,   msgs:['One thing at a time gets you further, faster.','Clever move: 25 focused minutes, then stretch.','Mute one notification today. Just one.'], patrol:[.215,.36]},
-  {key:'bear',     name:'bear',     x:.415, y:1.0,  h:.105, d:.46, flip:false, when:n => n < .5,  msgs:['Bear hug! You’re doing better than you think.','Even bears rest. Take your breaks.','Big day? Pick the one thing that matters most.']},
-  {key:'squirrel', name:'squirrel', x:.178, y:.992, h:.05,  d:.62, flip:true,  when:n => n < .3,  msgs:['Stash a win: note one thing that went well today.','Small steps still count.','Snack break? Make it a real one.']},
-  {key:'raccoon',  name:'raccoon',  x:.335, y:.99,  h:.07,  d:.40, flip:false, when:n => n > .55, msgs:['Late shift? Stretch, sip water, and log off on time.','Snack check: something real, not just coffee ☕','The inbox will still be there tomorrow.']},
-  {key:'owl',      name:'owl',      x:.962, y:.615, h:.06,  d:.56, flip:true,  when:n => n > .5,  msgs:['Whooo deserves a proper rest tonight? You do.','Wise words: tomorrow’s list can wait until tomorrow.','Screens off 30 minutes before bed. Owl’s orders.']},
-];
-ACTORS.forEach((a,i) => Object.assign(a, {o:{dx:0,dy:0,sq:1,rot:0}, alpha:0, away:false, busy:false, ph:i*1.7, next:3+Math.random()*5, walkDir:1, mi:0}));
+/* ═════════ The zoo: rigged SVG puppets living in the valley ═════════ */
+/* ═════════ SVG puppets ═════════
+   Each animal is a photographic cut-out split into parts (body, head, ears, tail, legs, paws).
+   Every part is an SVG <g> with its own pivot, so any part can be animated independently:
+       Puppet.rot(p, 'head', 8)      // tilt the head 8° around the neck
+       Puppet.blink(p)               // close/open the eyelids
+   A part has two nested groups: .act (performances / GSAP tweens) and .look (live pointer-follow),
+   so a scripted tilt and "looking at you" never fight over the same transform. */
+const NS = 'http://www.w3.org/2000/svg';
+const Puppet = {
+  rig: null,
+  base: './assets/animals/',
+  el(tag, attrs, parent){ const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent && parent.appendChild(e); return e; },
+  async load(){ this.rig = await (await fetch(this.base + 'rig.json')).json(); return this.rig; },
+  build(key, svg, opts = {}){
+    const R = this.rig[key], ox = -R.w/2, oy = -R.h;          // local origin = feet (bottom-centre)
+    const root = this.el('g', {class:'animal', 'data-key':key}, svg);
+    const shadow = this.el('ellipse', {cx:0, cy:-2, rx:R.w*.42, ry:R.w*.06, fill:'url(#critterShadow)'}, root);
+    const flip = this.el('g', {class:'flip'}, root);
+    const rigG = this.el('g', {class:'rig', filter:'url(#critterLight)'}, flip);
+    const img = (name, box, parent) => this.el('image', {href:`${this.base}${key}-${name}.webp`, x:box[0]+ox, y:box[1]+oy, width:box[2], height:box[3]}, parent);
+    const p = {key, root, flip, rigG, shadow, R, parts:{}, act:{}, look:{}, lids:[], ox, oy, pivots:{}};
+    img('body', R.body, rigG);
+    const mount = (part, parentG) => {
+      const act = this.el('g', {class:'act p-' + part.id}, parentG), look = this.el('g', {class:'look'}, act);
+      img(part.id, part.box, look);
+      p.act[part.id] = act; p.look[part.id] = look; p.pivots[part.id] = [part.pivot[0]+ox, part.pivot[1]+oy];
+      for (const ch of R.parts.filter(c => c.parent === part.id)) mount(ch, look);
+    };
+    for (const part of R.parts.filter(c => !c.parent)) mount(part, rigG);
+    const lidHost = p.look.head || rigG;
+    for (const l of R.lids){
+      const e = this.el('ellipse', {cx:l.x+ox, cy:l.y+oy, rx:l.r*1.22, ry:l.r*1.15, fill:l.color, stroke:'rgba(25,18,10,.55)', 'stroke-width':Math.max(1.2, l.r*.22)}, lidHost);
+      gsap.set(e, {scaleY:0, svgOrigin:`${l.x+ox} ${l.y+oy-l.r*1.2}`});
+      p.lids.push(e);
+    }
+    // whole-body breathing pivots at the feet
+    p.breath = gsap.to(rigG, {scaleY:1.012, scaleX:.996, svgOrigin:`0 0`, duration:1.8 + Math.random()*.6, ease:'sine.inOut', yoyo:true, repeat:-1});
+    return p;
+  },
+  rot(p, id, deg, dur = .35, ease = 'sine.inOut', extra = {}){
+    const g = p.act[id]; if (!g) return null; const [x, y] = p.pivots[id];
+    return gsap.to(g, {rotation:deg, svgOrigin:`${x} ${y}`, duration:dur, ease, overwrite:'auto', ...extra});
+  },
+  flick(p, id, deg){ const g = p.act[id]; if (!g) return; const [x, y] = p.pivots[id];
+    return gsap.timeline().to(g, {rotation:deg, svgOrigin:`${x} ${y}`, duration:.07, ease:'power2.out'}).to(g, {rotation:0, svgOrigin:`${x} ${y}`, duration:.22, ease:'power2.inOut'}); },
+  blink(p, which){
+    const lids = which == null ? p.lids : [p.lids[which]].filter(Boolean);
+    return gsap.timeline().to(lids, {scaleY:1, duration:.07, ease:'power1.in'}).to(lids, {scaleY:0, duration:.12, ease:'power1.out'}, '+=.04');
+  },
+  lookAt(p, deg){ const g = p.look.head; if (!g) return; const [x, y] = p.pivots.head; gsap.set(g, {rotation:deg, svgOrigin:`${x} ${y}`}); },
+};
 
-let sprog, SU = {}, sbuf, atlasReady = false, mbuf;
-function initSprites(){
-  sprog = gl.createProgram();
-  gl.attachShader(sprog, sh(gl.VERTEX_SHADER, $('#svs').textContent));
-  gl.attachShader(sprog, sh(gl.FRAGMENT_SHADER, $('#sfs').textContent));
-  gl.linkProgram(sprog); if (!gl.getProgramParameter(sprog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(sprog));
-  sbuf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, sbuf);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0,0, 1,0, 0,1, 0,1, 1,0, 1,1]), gl.STATIC_DRAW);
-  for (const n of ['uRes','uMouse','uAsp','uZoom','uDepth','uFlip','uShadow','uRect','uOff','uAt','uAtl','uData','uAlpha','uFade','uTint','uSkyHor','uSkyMid','uExp','uSat','uHaze','uNight']) SU[n] = gl.getUniformLocation(sprog, n);
-  const t = gl.createTexture(), im = new Image();
-  im.onload = () => {
-    gl.activeTexture(gl.TEXTURE2); gl.bindTexture(gl.TEXTURE_2D, t);
-    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, im);
-    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
-    for (const [k,v] of [[gl.TEXTURE_MIN_FILTER,gl.LINEAR],[gl.TEXTURE_MAG_FILTER,gl.LINEAR],[gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE],[gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE]]) gl.texParameteri(gl.TEXTURE_2D, k, v);
-    atlasReady = true;
-  };
-  im.src = './assets/animals.webp';
-}
-function drawSprites(){
-  if (!sprog || !atlasReady) return;
-  const P = V.P;
-  gl.useProgram(sprog);
-  gl.bindBuffer(gl.ARRAY_BUFFER, sbuf);
-  const loc = gl.getAttribLocation(sprog, 'c'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-  gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-  gl.uniform1i(SU.uAtl, 2); gl.uniform1i(SU.uData, 1);
-  gl.uniform2f(SU.uRes, cv.width, cv.height); gl.uniform2f(SU.uMouse, V.mx, V.my); gl.uniform1f(SU.uAsp, imgAsp); gl.uniform1f(SU.uZoom, V.zoom); gl.uniform1f(SU.uFade, V.fade);
-  gl.uniform3fv(SU.uTint, P.tint); gl.uniform1f(SU.uExp, P.exp*(1.05 + 1.1*P.night));   // a little extra moonlight so night animals are findable gl.uniform1f(SU.uSat, P.sat); gl.uniform1f(SU.uHaze, P.haze);
-  gl.uniform3fv(SU.uSkyHor, rgb(P.skyHor)); gl.uniform3fv(SU.uSkyMid, rgb(P.skyMid)); gl.uniform1f(SU.uNight, P.night);
-  for (const a of [...ACTORS].sort((p,q) => p.d - q.d)){
-    if (a.alpha < .01) continue;
-    const at = ATLAS[a.key], w = a.h*at[4]/imgAsp;                    // width in texture units
-    gl.uniform4f(SU.uRect, a.x, a.y, w, a.h); gl.uniform4f(SU.uOff, a.o.dx, a.o.dy, a.o.sq, a.o.rot);
-    gl.uniform4f(SU.uAt, at[0], at[1], at[2], at[3]); gl.uniform1f(SU.uDepth, a.d); gl.uniform1f(SU.uAlpha, a.alpha);
-    gl.uniform1f(SU.uFlip, (a.flip ? 1 : 0) ^ (a.walkDir < 0 ? 1 : 0));
-    if (a.key !== 'owl'){ gl.uniform1f(SU.uShadow, 1); gl.drawArrays(gl.TRIANGLES, 0, 6); }
-    gl.uniform1f(SU.uShadow, 0); gl.drawArrays(gl.TRIANGLES, 0, 6);
+// x / y = where the feet touch the photo (texture space), h = height in texture units, d = depth (parallax)
+const ACTORS = [
+  {key:'deer',     name:'deer',     x:.300, y:.935, h:.135, d:.31, face:1,  when:n => n < .8,  msgs:['Easy now. Drop your shoulders and unclench your jaw.','Gentle reminder: you don’t have to sprint all day.','Look out a window for 20 seconds. Your eyes will thank you.']},
+  {key:'rabbit',   name:'rabbit',   x:.352, y:.962, h:.052, d:.34, face:-1, when:n => n < .45, msgs:['Hop up and grab some water 💧','A short walk between meetings resets your brain.','Tiny breaks, big difference.']},
+  {key:'fox',      name:'fox',      x:.235, y:.985, h:.085, d:.37, face:1,  when:() => true,   msgs:['One thing at a time gets you further, faster.','Clever move: 25 focused minutes, then stretch.','Mute one notification today. Just one.'], patrol:[.215,.36]},
+  {key:'bear',     name:'bear',     x:.415, y:1.0,  h:.105, d:.46, face:1,  when:n => n < .5,  msgs:['Bear hug! You’re doing better than you think.','Even bears rest. Take your breaks.','Big day? Pick the one thing that matters most.']},
+  {key:'squirrel', name:'squirrel', x:.178, y:.992, h:.05,  d:.62, face:-1, when:n => n < .3,  msgs:['Stash a win: note one thing that went well today.','Small steps still count.','Snack break? Make it a real one.']},
+  {key:'raccoon',  name:'raccoon',  x:.335, y:.99,  h:.07,  d:.40, face:1,  when:n => n > .55, msgs:['Late shift? Stretch, sip water, and log off on time.','Snack check: something real, not just coffee ☕','The inbox will still be there tomorrow.']},
+  {key:'owl',      name:'owl',      x:.962, y:.615, h:.06,  d:.56, face:-1, when:n => n > .5,  msgs:['Whooo deserves a proper rest tonight? You do.','Wise words: tomorrow’s list can wait until tomorrow.','Screens off 30 minutes before bed. Owl’s orders.']},
+];
+ACTORS.forEach(a => Object.assign(a, {o:{dx:0,dy:0}, alpha:0, away:false, busy:false, next:2+Math.random()*4, dir:1, mi:0, look:0, lookT:0, step:0}));
+const zoo = $('#zoo');
+let zooReady = false;
+Puppet.load().then(() => {
+  for (const a of ACTORS){
+    a.p = Puppet.build(a.key, zoo);
+    const r = a.p.root;
+    r.setAttribute('tabindex', '0'); r.setAttribute('role', 'button'); r.setAttribute('aria-label', `Say hello to the ${a.name}`);
+    r.style.opacity = 0;
+    r.addEventListener('click', e => { e.stopPropagation(); poke(a); });
+    r.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); poke(a); } });
+    r.addEventListener('pointerenter', () => { if (!a.busy && !reduced()) Puppet.blink(a.p); });
+    a.tufts = grassFor(a); if (a.tufts && photoPx) recolourGrass(a);
+    if (a.key === 'fox') a.trot = foxTrot(a);
   }
-  gl.disable(gl.BLEND);
+  zooReady = true; render();
+});
+
+/* scene light → one SVG colour matrix shared by every animal (same grade as the photo) */
+function setCritterLight(P){
+  const f = $('#critterLightM'); if (!f) return;
+  const e = P.exp*(.98 + .9*P.night), g = P.tint.map(t => Math.pow(t*e, 1/2.2)), s = P.sat*.9;
+  const m = [[.213+.787*s, .715-.715*s, .072-.072*s],[.213-.213*s, .715+.285*s, .072-.072*s],[.213-.213*s, .715-.715*s, .072+.928*s]];
+  const hz = rgb(mix(P.skyHor, P.skyMid, .3)), h = P.haze*.25;
+  const rows = m.map((row,i) => [...row.map(v => (v*g[i]*(1-h)).toFixed(4)), 0, (hz[i]*h).toFixed(4)].join(' '));
+  f.setAttribute('values', rows.join(' ') + ' 0 0 0 1 0');
+}
+
+/* a few blades of real-coloured grass in front of the feet, so animals stand *in* the meadow */
+let photoPx = null;
+(() => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = 600; c.height = 400; const x = c.getContext('2d'); x.drawImage(im,0,0,600,400); photoPx = x.getImageData(0,0,600,400).data; ACTORS.forEach(a => a.tufts && recolourGrass(a)); }; im.src = './assets/valley.webp'; })();
+function photoColour(tx, ty){ if (!photoPx) return '#4d6b3a'; const x = Math.round(clamp(tx,0,1)*599), y = Math.round(clamp(ty,0,1)*399), i = (y*600+x)*4; return toHex([photoPx[i], photoPx[i+1], photoPx[i+2]]); }
+function grassFor(a){
+  if (a.key === 'owl') return null;
+  const R = a.p.R, g = Puppet.el('g', {class:'tufts'}, a.p.root), blades = [];
+  const n = 16, span = R.w*.9;
+  for (let i=0;i<n;i++){
+    const x = -span/2 + span*(i+Math.random()*.8)/n, hgt = R.h*(.04 + Math.random()*.08), lean = (Math.random()-.5)*R.h*.06, w = R.h*(.008 + Math.random()*.006);
+    const path = Puppet.el('path', {d:`M${x-w} 2Q${x+lean*.4} ${-hgt*.6} ${x+lean} ${-hgt}Q${x+lean*.35+w*.6} ${-hgt*.5} ${x+w} 2Z`}, g);
+    blades.push(path);
+  }
+  g.style.animationDuration = (3 + Math.random()*2) + 's';
+  return {g, blades};
+}
+function recolourGrass(a){
+  const base = photoColour(a.x - .01, a.y + .004), side = photoColour(a.x + .02, a.y - a.h*.1), dark = mix(base, '#000000', .25), light = mix(side, '#ffffff', .1);
+  a.tufts.blades.forEach((b,i) => { b.setAttribute('fill', [base, side, dark, light][i%4]); b.setAttribute('opacity', (.75 + Math.random()*.25).toFixed(2)); });
 }
 
 /* screen ↔ photo mapping (mirrors the shaders) */
@@ -915,88 +914,144 @@ function screenToTex(x, y){
   u = (u-.5)/V.zoom+.5; v = (v-.38)/V.zoom+.38;
   return [u, 1-v];
 }
-// sky mask for tap handling, read once from the data texture
 let skyData = null, skyW = 0, skyH = 0;
 (() => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = skyW = im.width; c.height = skyH = im.height; const x = c.getContext('2d'); x.drawImage(im,0,0); skyData = x.getImageData(0,0,skyW,skyH).data; }; im.src = './assets/valley-data.png'; })();
 const isSky = (tx, ty) => { if (!skyData || tx < 0 || tx > 1 || ty < 0 || ty > 1) return false; const i = (Math.floor(ty*(skyH-1))*skyW + Math.floor(tx*(skyW-1)))*4; return skyData[i+1] > 128; };
 
-/* hit targets: one real button per animal (keyboard + screen-reader friendly) */
-const play = $('#play');
-ACTORS.forEach(a => {
-  const b = document.createElement('button'); b.className = 'critter'; b.type = 'button'; b.hidden = true;
-  b.setAttribute('aria-label', `Say hello to the ${a.name}`);
-  b.addEventListener('click', e => { e.stopPropagation(); poke(a); });
-  play.appendChild(b); a.btn = b;
-});
-function placeButtons(){
+/* place every puppet on its spot in the photo each frame (follows parallax + camera) */
+let pointer = {x:-1e4, y:-1e4};
+addEventListener('pointermove', e => { pointer = {x:e.clientX, y:e.clientY}; }, {passive:true});
+function placeZoo(dt){
+  if (!zooReady) return;
   for (const a of ACTORS){
-    const on = a.alpha > .5 && !a.away;
-    if (a.btn.hidden === on) a.btn.hidden = !on;
-    if (!on) continue;
-    const w = a.h*ATLAS[a.key][4]/imgAsp;
-    const [x0,y0] = texToScreen(a.x + a.o.dx - w/2, a.y + a.o.dy - a.h*a.o.sq, a.d), [x1,y1] = texToScreen(a.x + a.o.dx + w/2, a.y + a.o.dy, a.d);
-    a.btn.style.width = (x1-x0)+'px'; a.btn.style.height = (y1-y0)+'px';
-    a.btn.style.transform = `translate(${x0}px,${y0}px)`;
+    const P = a.p, [x, y] = texToScreen(a.x + a.o.dx, a.y + a.o.dy, a.d), top = texToScreen(a.x, a.y - a.h, a.d)[1];
+    const s = (texToScreen(a.x, a.y, a.d)[1] - top)/P.R.h;
+    P.root.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${s.toFixed(4)})`);
+    P.root.style.opacity = a.alpha.toFixed(3);
+    P.root.style.pointerEvents = a.alpha > .5 && !a.away ? 'auto' : 'none';
+    const flip = (a.face*a.dir) < 0;
+    if (flip !== a.flipped){ a.flipped = flip; P.flip.setAttribute('transform', flip ? 'scale(-1 1)' : ''); }
+    if (a.tufts) a.tufts.g.style.display = a.o.dy < -.004 ? 'none' : '';
+    // heads follow the pointer a little (looking at you)
+    if (!reduced() && P.look.head){
+      const hp = P.pivots.head, hx = x + hp[0]*s*(flip ? -1 : 1), hy = y + hp[1]*s;
+      const near = Math.hypot(pointer.x-hx, pointer.y-hy) < 420;
+      let want = near ? clamp((pointer.x - hx)/18, -9, 9)*(flip ? -1 : 1) + clamp((pointer.y - hy)/40, -4, 4) : 0;
+      if (a.key === 'owl') want *= 1.8;                             // owls really turn their heads
+      a.look += (want - a.look)*Math.min(1, dt*4);
+      Puppet.lookAt(P, a.look);
+    }
   }
 }
 
-/* idle life */
-function updateActors(dt, t){
+/* idle life: each animal has its own little habits */
+function updateActors(dt){
+  if (!zooReady) return;
   const n = V.P ? V.P.night : 0, rm = reduced();
   for (const a of ACTORS){
     const want = a.when(n) && !a.away ? 1 : 0;
     a.alpha += (want - a.alpha)*Math.min(1, dt*1.5);
     if (rm || a.busy || a.alpha < .05) continue;
-    a.o.sq = 1 + .007*Math.sin(t*2.1 + a.ph);                       // breathing
-    if (a.key === 'bear') a.o.rot = .035*Math.sin(t*.7 + a.ph);
-    if (a.patrol){                                                   // the fox trots back and forth
-      if (a.pause > 0) a.pause -= dt;
+    if (a.patrol){                                                  // the fox trots its beat, legs and all
+      if (a.pause > 0){ a.pause -= dt; a.trot.pause(); }
       else {
-        a.o.dx += a.walkDir*.014*dt; a.o.dy = -.0025*Math.abs(Math.sin(t*9));
+        a.trot.resume(); a.o.dx += a.dir*.012*dt;
         const x = a.x + a.o.dx;
-        if (x > a.patrol[1] || x < a.patrol[0]){ a.walkDir *= -1; a.pause = 2 + Math.random()*4; a.o.dy = 0; }
+        if (x > a.patrol[1] || x < a.patrol[0]){ a.dir *= -1; a.pause = 2.5 + Math.random()*4; }
       }
     }
     a.next -= dt;
-    if (a.next <= 0){ a.next = 4 + Math.random()*7; idleAction(a); }
+    if (a.next <= 0){ a.next = 2.5 + Math.random()*5; idle(a); }
   }
 }
-function idleAction(a){
-  const o = a.o;
-  if (a.key === 'rabbit') gsap.to(o, {keyframes:[{dy:-.02, dx:o.dx + (Math.random()-.5)*.02, duration:.22, ease:'power2.out'},{dy:0, duration:.2, ease:'power2.in'}]});
-  else if (a.key === 'squirrel') gsap.to(o, {keyframes:[{dy:-.008, duration:.1},{dy:0, duration:.1}], onComplete:() => { if (Math.random() < .4) a.flip = !a.flip; }});
-  else if (a.key === 'owl') gsap.to(o, {keyframes:[{sq:.88, duration:.08},{sq:1, duration:.1}]});
-  else if (a.key === 'deer' && Math.random() < .3) a.flip = !a.flip;
+function foxTrot(a){
+  const P = a.p, tl = gsap.timeline({repeat:-1, paused:true});
+  const [nx,ny] = P.pivots.legNear, [fx,fy] = P.pivots.legFar;
+  tl.to(P.act.legNear, {rotation:14, svgOrigin:`${nx} ${ny}`, duration:.22, ease:'sine.inOut'}, 0)
+    .to(P.act.legFar, {rotation:-12, svgOrigin:`${fx} ${fy}`, duration:.22, ease:'sine.inOut'}, 0)
+    .to(P.rigG, {y:-4, duration:.11, ease:'sine.out', yoyo:true, repeat:1}, 0)
+    .to(P.act.legNear, {rotation:-12, svgOrigin:`${nx} ${ny}`, duration:.22, ease:'sine.inOut'}, .22)
+    .to(P.act.legFar, {rotation:14, svgOrigin:`${fx} ${fy}`, duration:.22, ease:'sine.inOut'}, .22)
+    .to(P.rigG, {y:-4, duration:.11, ease:'sine.out', yoyo:true, repeat:1}, .22);
+  gsap.to(P.act.tail, {rotation:-5, svgOrigin:P.pivots.tail.join(' '), duration:1.6, ease:'sine.inOut', yoyo:true, repeat:-1});
+  return tl;
+}
+const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+function idle(a){
+  const P = a.p, r = Math.random();
+  if (r < .35) { Puppet.blink(P); return; }
+  switch (a.key){
+    case 'deer':     pick([() => Puppet.flick(P,'earL',-16), () => Puppet.flick(P,'earR',16), () => Puppet.rot(P,'head',pick([-4,4]),.8).then(() => Puppet.rot(P,'head',0,1))])(); break;
+    case 'fox':      pick([() => Puppet.flick(P,'earL',-14), () => Puppet.flick(P,'earR',12), () => Puppet.rot(P,'head',6,.5).then(() => Puppet.rot(P,'head',0,.7))])(); break;
+    case 'bear':     pick([() => Puppet.flick(P,'earL',-12), () => Puppet.rot(P,'head',-5,1.4).then(() => Puppet.rot(P,'head',0,1.6)),
+                           () => gsap.timeline().to(P.act.foot, {rotation:9, svgOrigin:P.pivots.foot.join(' '), duration:.18, yoyo:true, repeat:3})])(); break;
+    case 'squirrel': pick([() => nibble(a), () => nibble(a), () => Puppet.flick(P,'ear',-14), () => gsap.timeline().to(P.act.tail, {rotation:-7, svgOrigin:P.pivots.tail.join(' '), duration:.16, yoyo:true, repeat:3})])(); break;
+    case 'rabbit':   pick([() => Puppet.flick(P,'earF',-15), () => Puppet.flick(P,'earB',14), () => gsap.timeline().to(P.act.head, {scaleY:1.015, svgOrigin:P.pivots.head.join(' '), duration:.06, yoyo:true, repeat:7})])(); break;
+    case 'owl':      pick([() => Puppet.rot(P,'head',pick([-18,18]),.6,'power2.inOut').then(() => gsap.delayedCall(1, () => Puppet.rot(P,'head',0,.7))), () => Puppet.blink(P,0),
+                           () => gsap.timeline().to(P.act.wing, {rotation:3, svgOrigin:P.pivots.wing.join(' '), duration:.12, yoyo:true, repeat:3})])(); break;
+    case 'raccoon':  pick([() => Puppet.flick(P,'earL',-12), () => Puppet.flick(P,'earR',12), () => Puppet.rot(P,'head',pick([-6,6]),.6).then(() => Puppet.rot(P,'head',0,.8))])(); break;
+  }
+}
+function nibble(a){
+  const P = a.p;
+  return gsap.timeline()
+    .to(P.act.head, {rotation:7, svgOrigin:P.pivots.head.join(' '), duration:.09, yoyo:true, repeat:7, ease:'sine.inOut'}, 0)
+    .to(P.act.paws, {rotation:-6, svgOrigin:P.pivots.paws.join(' '), duration:.09, yoyo:true, repeat:7, ease:'sine.inOut'}, 0);
 }
 
-/* tap reactions: a little performance, hearts and a kind tip */
+/* tap reactions: a real little performance, hearts and a kind tip */
 function poke(a){
-  if (a.busy) return;
-  a.busy = true; const o = a.o, rm = reduced();
-  const msg = a.msgs[a.mi++ % a.msgs.length];
-  say(a, msg); hearts(a); chirp(a.key);
+  if (a.busy || !zooReady) return;
+  a.busy = true; const P = a.p;
+  say(a, a.msgs[a.mi++ % a.msgs.length]); hearts(a); chirp(a.key);
   const done = () => { a.busy = false; };
-  if (rm) { setTimeout(done, 400); return; }
+  if (reduced()) { setTimeout(done, 400); return; }
+  const piv = id => P.pivots[id].join(' ');
   const tl = gsap.timeline({onComplete:done});
   switch (a.key){
-    case 'deer':   // three bounds away, then wanders back later
-      tl.to(o, {keyframes:[{dy:-.035, dx:o.dx-.05, duration:.28, ease:'power2.out'},{dy:0, dx:o.dx-.09, duration:.25, ease:'power2.in'},
-        {dy:-.03, dx:o.dx-.14, duration:.26, ease:'power2.out'},{dy:0, dx:o.dx-.18, duration:.24, ease:'power2.in'},
-        {dy:-.025, dx:o.dx-.23, duration:.25, ease:'power2.out'},{dy:0, dx:o.dx-.27, duration:.22, ease:'power2.in'}]})
-        .add(() => { a.away = true; setTimeout(() => { o.dx = 0; a.away = false; }, 22000); });
+    case 'deer':   // startle: ears up, head up, blink… then bound away and wander back later
+      tl.to(P.act.earL, {rotation:-20, svgOrigin:piv('earL'), duration:.12}, 0).to(P.act.earR, {rotation:20, svgOrigin:piv('earR'), duration:.12}, 0)
+        .to(P.act.head, {rotation:-4, svgOrigin:piv('head'), duration:.2}, 0).add(Puppet.blink(P), .25)
+        .to(a.o, {keyframes:[{dy:-.035, dx:a.o.dx-.05, duration:.28, ease:'power2.out'},{dy:0, dx:a.o.dx-.09, duration:.25, ease:'power2.in'},
+          {dy:-.03, dx:a.o.dx-.14, duration:.26, ease:'power2.out'},{dy:0, dx:a.o.dx-.18, duration:.24, ease:'power2.in'},
+          {dy:-.025, dx:a.o.dx-.23, duration:.25, ease:'power2.out'},{dy:0, dx:a.o.dx-.27, duration:.22, ease:'power2.in'}]}, .7)
+        .add(() => { a.away = true; gsap.set([P.act.earL, P.act.earR, P.act.head], {rotation:0}); setTimeout(() => { a.o.dx = 0; a.away = false; }, 22000); });
+      a.dir = -1;   // bounding to the left
+      tl.add(() => { a.dir = 1; });
       break;
-    case 'rabbit': // a happy "binky"
-      tl.to(o, {keyframes:[{dy:-.05, rot:.5, duration:.3, ease:'power2.out'},{dy:0, rot:0, duration:.3, ease:'bounce.out'}]}); break;
-    case 'bear':   // wobble
-      tl.to(o, {keyframes:[{rot:.14, duration:.18},{rot:-.12, duration:.22},{rot:.09, duration:.2},{rot:0, duration:.25}]}); break;
-    case 'squirrel':
-      tl.to(o, {keyframes:[{dy:-.02, duration:.14},{dy:0, duration:.12}], repeat:2}).add(() => { a.flip = !a.flip; }); break;
-    case 'raccoon':
-      tl.to(o, {keyframes:[{dy:.035, duration:.3, ease:'power2.in'},{dy:.035, duration:.6},{dy:0, duration:.4, ease:'back.out(2)'}]}); break;
-    case 'owl':
-      tl.to(o, {keyframes:[{rot:.25, duration:.2},{rot:-.22, duration:.3},{rot:0, duration:.25},{sq:.86, duration:.08},{sq:1, duration:.1}]}); break;
-    case 'fox':
-      tl.to(o, {keyframes:[{dy:-.03, duration:.2, ease:'power2.out'},{dy:0, duration:.2, ease:'power2.in'}]}).add(() => { a.walkDir *= -1; a.pause = 0; }); break;
+    case 'fox':    // curious head tilt, happy tail, a little hop
+      tl.to(P.act.head, {rotation:16, svgOrigin:piv('head'), duration:.3, ease:'back.out(2)'}, 0)
+        .to(P.act.tail, {keyframes:[{rotation:-12, duration:.14},{rotation:8, duration:.14},{rotation:-12, duration:.14},{rotation:8, duration:.14},{rotation:0, duration:.2}], svgOrigin:piv('tail')}, .1)
+        .to(a.o, {keyframes:[{dy:-.025, duration:.18, ease:'power2.out'},{dy:0, duration:.18, ease:'power2.in'}]}, .4)
+        .to(P.act.head, {rotation:0, svgOrigin:piv('head'), duration:.4}, '+=.6');
+      break;
+    case 'bear':   // belly laugh + toe wiggle
+      tl.to(P.act.head, {keyframes:[{rotation:-10, duration:.25},{rotation:-6, duration:.12},{rotation:-10, duration:.12},{rotation:-6, duration:.12},{rotation:0, duration:.4}], svgOrigin:piv('head')}, 0)
+        .to(P.rigG, {keyframes:[{scaleY:1.03, duration:.12},{scaleY:.985, duration:.12},{scaleY:1.025, duration:.12},{scaleY:1, duration:.2}], svgOrigin:'0 0'}, .1)
+        .to(P.act.foot, {rotation:16, svgOrigin:piv('foot'), duration:.12, yoyo:true, repeat:5}, 0);
+      break;
+    case 'squirrel': // startled jump with a big tail flick, then back to the nut
+      tl.to(P.act.tail, {rotation:-14, svgOrigin:piv('tail'), duration:.12}, 0)
+        .to(a.o, {keyframes:[{dy:-.03, duration:.16, ease:'power2.out'},{dy:0, duration:.16, ease:'power2.in'}]}, 0)
+        .to(P.act.tail, {rotation:0, svgOrigin:piv('tail'), duration:.5, ease:'elastic.out(1,.4)'}, .3).add(nibble(a), .5);
+      break;
+    case 'rabbit': // a happy "binky": jump, twist, ears flop back
+      tl.to(P.act.earF, {rotation:-28, svgOrigin:piv('earF'), duration:.15}, 0).to(P.act.earB, {rotation:-22, svgOrigin:piv('earB'), duration:.15}, 0)
+        .to(a.o, {keyframes:[{dy:-.05, duration:.28, ease:'power2.out'},{dy:0, duration:.26, ease:'power2.in'}]}, .05)
+        .to(P.rigG, {keyframes:[{rotation:-12, duration:.2},{rotation:0, duration:.3}], svgOrigin:'0 -100'}, .05)
+        .to([P.act.earF, P.act.earB], {rotation:0, duration:.5, ease:'elastic.out(1,.5)'}, .55);
+      break;
+    case 'owl':    // the famous owl head turn… and a wink
+      tl.to(P.act.head, {rotation:-28, svgOrigin:piv('head'), duration:.35, ease:'power2.inOut'})
+        .to(P.act.head, {scaleX:-1, svgOrigin:piv('head'), duration:.25, ease:'power1.inOut'})
+        .to(P.act.head, {rotation:24, svgOrigin:piv('head'), duration:.4, ease:'power2.inOut'}, '+=.35')
+        .to(P.act.head, {scaleX:1, rotation:0, svgOrigin:piv('head'), duration:.35}, '+=.3')
+        .add(Puppet.blink(P, 0));
+      break;
+    case 'raccoon': // a little wave
+      tl.to(P.act.paw, {keyframes:[{rotation:-22, duration:.18},{rotation:14, duration:.18},{rotation:-22, duration:.18},{rotation:14, duration:.18},{rotation:0, duration:.25}], svgOrigin:piv('paw')}, 0)
+        .to(P.act.head, {rotation:8, svgOrigin:piv('head'), duration:.3, yoyo:true, repeat:1}, .1).add(Puppet.blink(P), .4);
+      break;
   }
 }
 const bubble = document.createElement('div'); bubble.className = 'bubble'; bubble.setAttribute('role','status'); document.body.appendChild(bubble);
@@ -1008,7 +1063,7 @@ function say(a, text){
 }
 function placeBubble(){
   if (!bubbleFor) return;
-  const a = bubbleFor, [x,y] = texToScreen(a.x + a.o.dx, a.y + a.o.dy - a.h*a.o.sq, a.d);
+  const a = bubbleFor, [x,y] = texToScreen(a.x + a.o.dx, a.y + a.o.dy - a.h, a.d);
   bubble.style.left = clamp(x, 140, innerWidth-140)+'px'; bubble.style.top = Math.max(70, y-10)+'px';
 }
 function hearts(a){
@@ -1026,7 +1081,7 @@ function whisper(x, y, text){
 }
 
 /* sky taps: birds take off by day, wishes on shooting stars at night */
-const stars = [];
+const play = $('#play'), shooting = [];
 play.addEventListener('pointermove', e => { const [tx,ty] = screenToTex(e.clientX, e.clientY); play.classList.toggle('sky', isSky(tx,ty)); }, {passive:true});
 play.addEventListener('click', e => {
   const [tx,ty] = screenToTex(e.clientX, e.clientY), n = V.P ? V.P.night : 0;
@@ -1042,11 +1097,11 @@ function spawnFlockAt(x, y){
   const n = 5 + Math.floor(Math.random()*4), dir = x < innerWidth*.4 ? -1 : 1;
   for (let i=0;i<n;i++) birds.push({kind:'swift', x:x+(Math.random()-.5)*30, y:y+(Math.random()-.5)*20, vx:dir*(120+Math.random()*60), vy:-30-Math.random()*40, ph:Math.random()*6.3, s:5+Math.random()*2.5, dir, burst:true});
 }
-function shootingStar(x, y){ if (!reduced()) stars.push({x, y, vx:-420-Math.random()*200, vy:160+Math.random()*80, life:1}); }
+function shootingStar(x, y){ if (!reduced()) shooting.push({x, y, vx:-420-Math.random()*200, vy:160+Math.random()*80, life:1}); }
 function drawStars(dt){
-  for (let i=stars.length-1;i>=0;i--){
-    const s = stars[i]; s.life -= dt*1.1; s.x += s.vx*dt; s.y += s.vy*dt;
-    if (s.life <= 0){ stars.splice(i,1); continue; }
+  for (let i=shooting.length-1;i>=0;i--){
+    const s = shooting[i]; s.life -= dt*1.1; s.x += s.vx*dt; s.y += s.vy*dt;
+    if (s.life <= 0){ shooting.splice(i,1); continue; }
     const g = fxc.createLinearGradient(s.x, s.y, s.x - s.vx*.18, s.y - s.vy*.18);
     g.addColorStop(0, `rgba(255,255,255,${s.life})`); g.addColorStop(1, 'rgba(255,255,255,0)');
     fxc.strokeStyle = g; fxc.lineWidth = 2; fxc.beginPath(); fxc.moveTo(s.x, s.y); fxc.lineTo(s.x - s.vx*.18, s.y - s.vy*.18); fxc.stroke();
@@ -1155,7 +1210,7 @@ $('#soundBtn').addEventListener('click', () => {
 /* ═════════ Boot + one render loop ═════════ */
 const q = new URLSearchParams(location.search);
 if (q.has('time')){ S.hour = +q.get('time'); setFollow(false); } else S.hour = liveHour();
-try { initGL(); initSprites(); } catch (e) { document.body.classList.add('no-gl'); console.warn(e); }
+try { initGL(); } catch (e) { document.body.classList.add('no-gl'); console.warn(e); }
 resize(); render();
 if (q.has('rm') || matchMedia('(prefers-reduced-motion: reduce)').matches) setReduced(true);
 if (q.has('notes')) $('#notes').classList.add('open');
@@ -1170,13 +1225,13 @@ gsap.ticker.add((time, dtMs) => {
   V.wind = rm ? 0 : 1 - .6*V.calm;
   const k = rm ? 1 : 1 - Math.pow(.0025, dt);                         // critically-damped pointer follow
   V.mx += ((rm ? 0 : V.tmx) - V.mx)*k; V.my += ((rm ? 0 : V.tmy) - V.my)*k;
-  updateActors(dt, simT);
+  updateActors(dt);
   if (!rm && V.P && V.P.night < .4 && V.calm < .1){
     nextRaptor -= dt; nextFlock -= dt;
     if (nextRaptor < 0 && birds.filter(b => b.kind === 'raptor').length < 2){ spawnRaptor(); nextRaptor = 20 + Math.random()*20; }
     if (nextFlock < 0){ spawnFlock(); nextFlock = 16 + Math.random()*16; }
   }
-  draw(); drawBirds(dt, time); drawStars(dt); placeButtons(); placeBubble();
+  draw(); drawBirds(dt, time); drawStars(dt); placeZoo(dt); placeBubble();
   // adaptive resolution: if frames run long, render the scene canvas smaller (the photo stays sharp enough)
   frames++; ftime += dtMs;
   if (frames >= 45){ const avg = ftime/frames; frames = 0; ftime = 0;
