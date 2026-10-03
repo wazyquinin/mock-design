@@ -168,6 +168,49 @@ button,input{font:inherit}
   .tbtn .lbl{display:none}
   .mock:not(.min){right:16px;width:auto}
 }
+
+/* ───────── Play layer: animals, sky taps, calm tools ───────── */
+.ui{pointer-events:none}
+.ui .topbar,.ui .card,.story .calm{pointer-events:auto}
+#play{position:fixed;inset:0;z-index:3;cursor:default}
+#play.sky{cursor:pointer}
+.critter{position:absolute;left:0;top:0;border:0;padding:0;background:transparent;cursor:pointer;border-radius:40%;will-change:transform}
+.critter:focus-visible{outline:2px solid #5eead4;outline-offset:2px}
+.critter[hidden]{display:none}
+.bubble{position:fixed;z-index:6;max-width:250px;padding:10px 13px;border-radius:14px;background:rgba(255,255,255,.95);color:#0b1b33;
+  font-size:13.5px;font-weight:600;line-height:1.4;box-shadow:0 12px 30px -10px rgba(0,0,0,.45);pointer-events:none;opacity:0;transform:translate(-50%,-100%)}
+.bubble::after{content:"";position:absolute;left:50%;bottom:-6px;width:12px;height:12px;background:inherit;transform:translateX(-50%) rotate(45deg);border-radius:2px}
+.heart{position:fixed;z-index:6;pointer-events:none;font-size:18px;will-change:transform,opacity}
+.whisper{position:fixed;z-index:6;pointer-events:none;color:#fff;font-size:14px;font-weight:600;text-shadow:0 1px 6px rgba(0,0,0,.6)}
+
+.calm{margin-top:26px;display:flex;flex-direction:column;gap:12px;max-width:560px}
+.calm-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.calm-q{font-size:14px;font-weight:600;margin-right:4px}
+.mood{width:40px;height:40px;border-radius:999px;border:1px solid color-mix(in srgb,var(--story-ink) 22%,transparent);background:var(--chipbg);
+  font-size:20px;line-height:1;cursor:pointer;transition:transform .15s,background .2s}
+.mood:hover{transform:translateY(-2px) scale(1.06)}
+.mood[aria-pressed="true"]{background:rgba(45,212,191,.35);border-color:#5eead4}
+.calm-reply{font-size:14px;color:var(--story-soft);min-height:20px}
+.breathe-btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:999px;border:1px solid rgba(94,234,212,.55);
+  background:rgba(15,118,110,.45);color:#fff;font-size:14px;font-weight:700;cursor:pointer}
+.breathe-btn:hover{background:rgba(15,118,110,.65)}
+.tbtn[aria-pressed="true"]{background:rgba(15,118,110,.55);border-color:#5eead4;color:#fff}
+.only-mobile{display:none}
+@media (max-width:980px){ .only-mobile{display:inline-flex} }
+
+/* breather */
+.breather{position:fixed;inset:0;z-index:25;display:none;align-items:center;justify-content:center;flex-direction:column;gap:26px;
+  background:radial-gradient(60% 60% at 50% 50%,rgba(6,12,28,.35),rgba(6,12,28,.72));color:#fff;text-align:center}
+.breather.open{display:flex}
+.ring{position:relative;width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(94,234,212,.35),rgba(94,234,212,.08) 60%,transparent 70%);
+  box-shadow:0 0 0 2px rgba(255,255,255,.55) inset,0 0 60px rgba(94,234,212,.35);will-change:transform}
+.breath-label{font-size:28px;font-weight:700;letter-spacing:-.01em;min-height:36px}
+.breath-sub{font-size:15px;color:rgba(255,255,255,.8);max-width:340px}
+.breath-dots{display:flex;gap:8px}
+.breath-dots i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.3)}
+.breath-dots i.on{background:#5eead4}
+.breather .close{position:absolute;top:22px;right:22px;width:42px;height:42px;border-radius:12px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:#fff;font-size:20px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -180,6 +223,7 @@ button,input{font:inherit}
 <div class="wash"></div>
 <div class="bloom" id="bloom"></div>
 
+<div id="play" role="group" aria-label="The valley: say hello to the animals, or tap the sky"></div>
 <div class="ui">
   <header class="topbar">
     <a class="brand" href="#" aria-label="NanoHRMS" data-enter="ui">
@@ -187,6 +231,8 @@ button,input{font:inherit}
       <b>Nano<span>HRMS</span></b>
     </a>
     <div class="tools" data-enter="ui">
+      <button class="tbtn" type="button" id="soundBtn" aria-pressed="false" aria-label="Turn nature sounds on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg><span class="lbl">Sounds</span></button>
+      <button class="tbtn only-mobile" type="button" data-breathe aria-label="One-minute breather"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 19c8 0 14-6 14-14C11 5 5 11 5 19z"/><path d="M5 19 13 11"/></svg></button>
       <button class="tbtn" type="button" aria-label="Language: English"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><span>EN</span></button>
       <button class="tbtn" type="button" id="apBtn" aria-haspopup="true" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="lbl">Appearance</span></button>
       <div class="pop" id="apPop" role="menu" aria-label="Appearance">
@@ -213,6 +259,16 @@ button,input{font:inherit}
     <div class="now" data-enter="ui">
       <div class="clock" id="clock">10:00</div>
       <div class="nowmeta"><div id="date">Saturday, 3 October</div><div id="phase">Daylight</div></div>
+    </div>
+    <div class="calm" data-enter="ui">
+      <div class="calm-row"><span class="calm-q">How are you arriving today?</span>
+        <button class="mood" type="button" data-mood="tough" aria-pressed="false" aria-label="Tough">😣</button>
+        <button class="mood" type="button" data-mood="meh" aria-pressed="false" aria-label="So-so">😐</button>
+        <button class="mood" type="button" data-mood="good" aria-pressed="false" aria-label="Good">🙂</button>
+        <button class="mood" type="button" data-mood="great" aria-pressed="false" aria-label="Great">😄</button>
+        <button class="breathe-btn" type="button" data-breathe>🌿 1-minute breather</button>
+      </div>
+      <div class="calm-reply" id="moodReply" aria-live="polite"></div>
     </div>
   </section>
 
@@ -246,6 +302,13 @@ button,input{font:inherit}
   </section>
 </div>
 <div class="toast" id="toast" role="status"></div>
+<div class="breather" id="breather" role="dialog" aria-modal="true" aria-label="One-minute breather" tabindex="-1">
+  <button class="close" id="breathClose" type="button" aria-label="End breather">×</button>
+  <div class="ring" id="ring"></div>
+  <div class="breath-label" id="breathLabel"></div>
+  <div class="breath-sub" id="breathSub"></div>
+  <div class="breath-dots" id="breathDots"><i></i><i></i><i></i><i></i></div>
+</div>
 
 <aside class="mock min" id="mock" aria-label="Mock controls">
   <header><b>Mock controls</b><button type="button" id="mockMin" aria-label="Expand mock controls" aria-expanded="false">+</button></header>
@@ -265,7 +328,7 @@ button,input{font:inherit}
       <button type="button" id="rm" aria-pressed="false">Reduced motion</button>
       <button type="button" id="notesBtn">Design notes</button>
     </div>
-    <div class="hint">Try signing in: any email + password plays the success exit; the password <b>wrong</b> shows the error state.</div>
+    <div class="hint">Tap the animals and the sky. Try signing in: any email + password plays the success exit; the password <b>wrong</b> shows the error state.</div>
   </div>
 </aside>
 
@@ -294,8 +357,17 @@ button,input{font:inherit}
   </ul>
   <h4>Compare</h4>
   <ul><li>The previous vector-illustrated version is kept at <a href="./illustrated.html" style="color:#5eead4">illustrated.html</a>.</li></ul>
+  <h4>Built to lower stress</h4>
+  <ul>
+    <li><b>Seven real animals</b> (deer, rabbit, fox, bear, squirrel by day; owl and raccoon by night). They're cut-out photographs, lit by the same time-of-day grade as the valley and depth-tested so nearer trees and shrubs hide them. Each has small idle habits and does a little performance when tapped, with hearts and a short, kind wellbeing tip.</li>
+    <li><b>Tap the sky:</b> by day a flock lifts off from your tap; at night a shooting star crosses and your wish is made. Tap the moon for its phase.</li>
+    <li><b>1-minute breather:</b> four slow breaths (in 4 s, hold 4 s, out 6 s). The clouds, wind and birds slow down with you, and soft chimes play if sound is on.</li>
+    <li><b>Nature sounds</b> (off by default): wind and birdsong by day, crickets and an owl at night. They're generated live with WebAudio, so there are no audio files.</li>
+    <li><b>"How are you arriving today?"</b> One tap gives a gentle, practical tip. Nothing is sent in this mock. In the product it could become an opt-in, anonymous, aggregate-only pulse for the Engagement module, never tied to a named login.</li>
+    <li>None of it blocks signing in: the form works at any moment, and everything respects reduced motion and is keyboard-reachable.</li>
+  </ul>
   <h4>Photo</h4>
-  <ul><li>Unsplash photo <code>1464822759023-fed622ff2c3b</code>, used under the Unsplash License. For production, confirm the licence and credit, or commission or generate an owned image; the depth and sky masks regenerate with the same scripts.</li></ul>
+  <ul><li>Valley: Unsplash photo <code>1464822759023-fed622ff2c3b</code>. Animals: Unsplash photos <code>1484406566174</code>, <code>1585110396000</code>, <code>1474511320723</code>, <code>1530595467537</code>, <code>1507666405895</code>, <code>1497752531616</code>, <code>1543549790</code>, cut out with an ML matting model. All used under the Unsplash License. For production, confirm the licence and credit, or commission or generate an owned image; the depth and sky masks regenerate with the same scripts.</li></ul>
   <h4>How it would port</h4>
   <ul>
     <li>Replace <code>PaintedEnvironment</code> and the cast with one <code>ValleyScene</code> component (a WebGL canvas, the photo and a data texture). Keep the static photo as the reduced-motion / no-WebGL fallback.</li>
@@ -446,6 +518,71 @@ void main(){
   gl_FragColor = vec4(col, 1.);
 }
 </script>
+<script id="svs" type="x-shader/x-vertex">
+attribute vec2 c;
+uniform vec2 uRes, uMouse; uniform float uAsp, uZoom, uDepth, uFlip, uShadow;
+uniform vec4 uRect;   // tex: centre x, feet y, width, height
+uniform vec4 uOff;    // dx, dy, vertical squash, rotation (about the feet)
+uniform vec4 uAt;     // atlas rect u0, v0, du, dv
+varying vec2 vA, vC;
+vec2 texToScreen(vec2 t){
+  vec2 uv = vec2(t.x, 1.-t.y);
+  uv = (uv - vec2(.5,.38))*uZoom + vec2(.5,.38);
+  float va = uRes.x/uRes.y;
+  if (va > uAsp){ float k = uAsp/va; return vec2(uv.x, uv.y/k); }
+  float k = va/uAsp; return vec2((uv.x-.5)/k+.5, uv.y);
+}
+void main(){
+  vC = c;
+  vec2 t;
+  if (uShadow > .5){
+    t = vec2(uRect.x + uOff.x + (c.x-.5)*uRect.z*1.05, uRect.y + (c.y-.5)*uRect.z*.14);
+  } else {
+    vec2 l = vec2((c.x-.5)*uRect.z, -c.y*uRect.w*uOff.z);
+    float s = sin(uOff.w), co = cos(uOff.w);
+    l = vec2(co*l.x - s*l.y, s*l.x + co*l.y);
+    t = uRect.xy + uOff.xy + l;
+  }
+  t += uMouse*vec2(.016,.006)*(uDepth-.25);          // same parallax as the photo at this depth
+  gl_Position = vec4(texToScreen(t)*2.-1., 0., 1.);
+  float u = uFlip > .5 ? 1.-c.x : c.x;
+  vA = vec2(uAt.x + u*uAt.z, uAt.y + (1.-c.y)*uAt.w);
+}
+</script>
+<script id="sfs" type="x-shader/x-fragment">
+precision highp float;
+varying vec2 vA, vC;
+uniform sampler2D uAtl, uData;
+uniform vec2 uRes, uMouse; uniform float uAsp, uZoom, uDepth, uShadow, uAlpha, uFade;
+uniform vec3 uTint, uSkyHor, uSkyMid; uniform float uExp, uSat, uHaze, uNight;
+vec2 imgUv(vec2 s){
+  float va = uRes.x/uRes.y; vec2 uv = s;
+  if (va > uAsp){ float k = uAsp/va; uv.y = s.y*k; } else { float k = va/uAsp; uv.x = (s.x-.5)*k+.5; }
+  uv = (uv - vec2(.5,.38))/uZoom + vec2(.5,.38);
+  return vec2(uv.x, 1.-uv.y);
+}
+void main(){
+  // depth-tested against the photo: nearer trees and shrubs hide the animal
+  vec2 uv0 = imgUv(gl_FragCoord.xy/uRes), par = uMouse*vec2(.016,.006);
+  float d0 = texture2D(uData, uv0).r; vec2 uv = uv0 - par*(d0-.25);
+  float d1 = texture2D(uData, uv).r; uv = uv0 - par*(d1-.25);
+  float occ = 1. - smoothstep(uDepth+.012, uDepth+.05, texture2D(uData, uv).r);
+  if (uShadow > .5){
+    vec2 q = vC*2.-1.; float a = (1.-smoothstep(.15,1.,length(q)))*.42*(1.-uNight*.5)*occ*uAlpha;
+    gl_FragColor = vec4(0.,0.,0.,a); return;
+  }
+  vec4 t = texture2D(uAtl, vA);                        // premultiplied
+  if (t.a < .004) discard;
+  vec3 L = pow(t.rgb/t.a, vec3(2.2));
+  float lum = dot(L, vec3(.2126,.7152,.0722));
+  L = mix(vec3(lum), L, uSat) * uTint * uExp;           // same light as the photo
+  vec3 hz = pow(mix(uSkyHor, uSkyMid, .25), vec3(2.2))*mix(1., .55, uNight);
+  L = mix(L, hz, uHaze*(1.-smoothstep(0.,.16,uDepth))*.85);
+  vec3 col = pow(max(L*uFade,0.), vec3(1./2.2));
+  float a = t.a*occ*uAlpha;
+  gl_FragColor = vec4(col*a, a);
+}
+</script>
 <script>
 (() => {
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
@@ -486,7 +623,7 @@ const arc = p => ({ x: .1 + .52*p, y: .52 - .37*Math.sin(Math.PI*p) });
 /* ═════════ WebGL ═════════ */
 const cv = $('#gl');
 const gl = cv.getContext('webgl', {antialias:false, alpha:false, premultipliedAlpha:false, powerPreference:'high-performance'});
-let prog, U = {}, texReady = 0, imgAsp = 1.5;
+let prog, U = {}, texReady = 0, imgAsp = 1.5, mainBuf;
 function sh(type, src){ const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; }
 function tex(unit, url, cb){
   const t = gl.createTexture(), im = new Image();
@@ -506,7 +643,7 @@ function initGL(){
   gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, $('#fs').textContent));
   gl.linkProgram(prog); if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
   gl.useProgram(prog);
-  const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b);
+  mainBuf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, mainBuf);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 3,-1, -1,3]), gl.STATIC_DRAW);
   const loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
   for (const n of ['uImg','uData','uRes','uT','uAsp','uMouse','uZoom','uFade','uSkyTop','uSkyMid','uSkyHor','uGlow','uTint','uExp','uSat','uHaze','uAlpen','uCover','uNight','uAur','uWind','uMist','uSun','uMoon','uPhase']) U[n] = gl.getUniformLocation(prog, n);
@@ -555,6 +692,8 @@ let simT = 0;
 function draw(){
   if (!gl || texReady < 2) return;
   const P = V.P;
+  gl.useProgram(prog); gl.bindBuffer(gl.ARRAY_BUFFER, mainBuf);
+  { const loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0); }
   gl.uniform2f(U.uRes, cv.width, cv.height); gl.uniform1f(U.uT, simT); gl.uniform1f(U.uAsp, imgAsp);
   gl.uniform2f(U.uMouse, V.mx, V.my); gl.uniform1f(U.uZoom, V.zoom); gl.uniform1f(U.uFade, V.fade);
   gl.uniform3fv(U.uSkyTop, rgb(P.skyTop)); gl.uniform3fv(U.uSkyMid, rgb(P.skyMid)); gl.uniform3fv(U.uSkyHor, rgb(P.skyHor)); gl.uniform3fv(U.uGlow, rgb(P.glow));
@@ -562,6 +701,7 @@ function draw(){
   gl.uniform1f(U.uCover, P.cover); gl.uniform1f(U.uNight, P.night); gl.uniform1f(U.uAur, smooth((P.night-.8)*5)); gl.uniform1f(U.uWind, V.wind); gl.uniform1f(U.uMist, P.mist);
   gl.uniform3fv(U.uSun, V.sun); gl.uniform3fv(U.uMoon, V.moon); gl.uniform2f(U.uPhase, phase.k, phase.waxing ? 1 : -1);
   gl.drawArrays(gl.TRIANGLES, 0, 3);
+  drawSprites();
 }
 
 /* ═════════ Birds (2D silhouettes) ═════════ */
@@ -631,11 +771,11 @@ function drawBirds(dt, t){
       fxc.translate(x, y); fxc.rotate(bank*.35 + Math.PI*(b.w>0 ? 0 : 0)); fxc.scale(b.s*(1-.25*Math.abs(bank)), b.s*.9);
       raptorPath(fxc, flap); fxc.fill();
     } else {
-      if (!reduced()) { b.x += b.vx*dt; b.ph += dt*(11+Math.random()*2); b.y += Math.sin(b.ph*.15)*.25; }
+      if (!reduced()) { b.x += b.vx*dt; b.ph += dt*(11+Math.random()*2); b.y += Math.sin(b.ph*.15)*.25 + (b.vy||0)*dt; }
       const glide = Math.sin(b.ph*.11) > .6;
       fxc.translate(b.x, b.y); fxc.scale(b.s*b.dir, b.s);
       swiftPath(fxc, glide ? .1 : Math.sin(b.ph)); fxc.fill();
-      if ((b.dir > 0 && b.x > innerWidth*.62+80) || (b.dir < 0 && b.x < -80)) birds.splice(i,1);
+      if ((b.dir > 0 && b.x > (b.burst ? innerWidth+80 : innerWidth*.62+80)) || (b.dir < 0 && b.x < -80) || b.y < -60) birds.splice(i,1);
     }
     fxc.restore();
   }
@@ -700,10 +840,322 @@ $('#notesX').addEventListener('click', () => $('#notes').classList.remove('open'
 $('#mockMin').addEventListener('click', () => { const m = $('#mock').classList.toggle('min'); $('#mockMin').textContent = m ? '+' : '–'; $('#mockMin').setAttribute('aria-expanded', !m); $('#mockMin').setAttribute('aria-label', m ? 'Expand mock controls' : 'Minimise mock controls'); });
 addEventListener('keydown', e => { if (e.key === 'Escape'){ $('#notes').classList.remove('open'); $('#apPop').classList.remove('open'); } });
 
+
+/* ═════════ Animals: real cut-out photos, lit and depth-tested like the valley ═════════ */
+const ATLAS = {deer:[.00351,.00654,.17384,.4902,.66], fox:[.18086,.00654,.28709,.4902,1.09], bear:[.47147,.00654,.34416,.4902,1.30667],
+  rabbit:[.81914,.00654,.17735,.4902,.67333], squirrel:[.00351,.50327,.32748,.4902,1.24333], raccoon:[.3345,.50327,.25022,.4902,.95], owl:[.58824,.50327,.21598,.4902,.82]};
+// x / y = where the feet touch the photo (texture space), h = height, d = depth used for occlusion & parallax
+const ACTORS = [
+  {key:'deer',     name:'deer',     x:.300, y:.935, h:.135, d:.31, flip:false, when:n => n < .8,  msgs:['Easy now. Drop your shoulders and unclench your jaw.','Gentle reminder: you don’t have to sprint all day.','Look out a window for 20 seconds. Your eyes will thank you.']},
+  {key:'rabbit',   name:'rabbit',   x:.352, y:.962, h:.052, d:.34, flip:true,  when:n => n < .45, msgs:['Hop up and grab some water 💧','A short walk between meetings resets your brain.','Tiny breaks, big difference.']},
+  {key:'fox',      name:'fox',      x:.235, y:.985, h:.085, d:.37, flip:false, when:() => true,   msgs:['One thing at a time gets you further, faster.','Clever move: 25 focused minutes, then stretch.','Mute one notification today. Just one.'], patrol:[.215,.36]},
+  {key:'bear',     name:'bear',     x:.415, y:1.0,  h:.105, d:.46, flip:false, when:n => n < .5,  msgs:['Bear hug! You’re doing better than you think.','Even bears rest. Take your breaks.','Big day? Pick the one thing that matters most.']},
+  {key:'squirrel', name:'squirrel', x:.178, y:.992, h:.05,  d:.62, flip:true,  when:n => n < .3,  msgs:['Stash a win: note one thing that went well today.','Small steps still count.','Snack break? Make it a real one.']},
+  {key:'raccoon',  name:'raccoon',  x:.335, y:.99,  h:.07,  d:.40, flip:false, when:n => n > .55, msgs:['Late shift? Stretch, sip water, and log off on time.','Snack check: something real, not just coffee ☕','The inbox will still be there tomorrow.']},
+  {key:'owl',      name:'owl',      x:.962, y:.615, h:.06,  d:.56, flip:true,  when:n => n > .5,  msgs:['Whooo deserves a proper rest tonight? You do.','Wise words: tomorrow’s list can wait until tomorrow.','Screens off 30 minutes before bed. Owl’s orders.']},
+];
+ACTORS.forEach((a,i) => Object.assign(a, {o:{dx:0,dy:0,sq:1,rot:0}, alpha:0, away:false, busy:false, ph:i*1.7, next:3+Math.random()*5, walkDir:1, mi:0}));
+
+let sprog, SU = {}, sbuf, atlasReady = false, mbuf;
+function initSprites(){
+  sprog = gl.createProgram();
+  gl.attachShader(sprog, sh(gl.VERTEX_SHADER, $('#svs').textContent));
+  gl.attachShader(sprog, sh(gl.FRAGMENT_SHADER, $('#sfs').textContent));
+  gl.linkProgram(sprog); if (!gl.getProgramParameter(sprog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(sprog));
+  sbuf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, sbuf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0,0, 1,0, 0,1, 0,1, 1,0, 1,1]), gl.STATIC_DRAW);
+  for (const n of ['uRes','uMouse','uAsp','uZoom','uDepth','uFlip','uShadow','uRect','uOff','uAt','uAtl','uData','uAlpha','uFade','uTint','uSkyHor','uSkyMid','uExp','uSat','uHaze','uNight']) SU[n] = gl.getUniformLocation(sprog, n);
+  const t = gl.createTexture(), im = new Image();
+  im.onload = () => {
+    gl.activeTexture(gl.TEXTURE2); gl.bindTexture(gl.TEXTURE_2D, t);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, im);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+    for (const [k,v] of [[gl.TEXTURE_MIN_FILTER,gl.LINEAR],[gl.TEXTURE_MAG_FILTER,gl.LINEAR],[gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE],[gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE]]) gl.texParameteri(gl.TEXTURE_2D, k, v);
+    atlasReady = true;
+  };
+  im.src = './assets/animals.webp';
+}
+function drawSprites(){
+  if (!sprog || !atlasReady) return;
+  const P = V.P;
+  gl.useProgram(sprog);
+  gl.bindBuffer(gl.ARRAY_BUFFER, sbuf);
+  const loc = gl.getAttribLocation(sprog, 'c'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+  gl.uniform1i(SU.uAtl, 2); gl.uniform1i(SU.uData, 1);
+  gl.uniform2f(SU.uRes, cv.width, cv.height); gl.uniform2f(SU.uMouse, V.mx, V.my); gl.uniform1f(SU.uAsp, imgAsp); gl.uniform1f(SU.uZoom, V.zoom); gl.uniform1f(SU.uFade, V.fade);
+  gl.uniform3fv(SU.uTint, P.tint); gl.uniform1f(SU.uExp, P.exp*(1.05 + 1.1*P.night));   // a little extra moonlight so night animals are findable gl.uniform1f(SU.uSat, P.sat); gl.uniform1f(SU.uHaze, P.haze);
+  gl.uniform3fv(SU.uSkyHor, rgb(P.skyHor)); gl.uniform3fv(SU.uSkyMid, rgb(P.skyMid)); gl.uniform1f(SU.uNight, P.night);
+  for (const a of [...ACTORS].sort((p,q) => p.d - q.d)){
+    if (a.alpha < .01) continue;
+    const at = ATLAS[a.key], w = a.h*at[4]/imgAsp;                    // width in texture units
+    gl.uniform4f(SU.uRect, a.x, a.y, w, a.h); gl.uniform4f(SU.uOff, a.o.dx, a.o.dy, a.o.sq, a.o.rot);
+    gl.uniform4f(SU.uAt, at[0], at[1], at[2], at[3]); gl.uniform1f(SU.uDepth, a.d); gl.uniform1f(SU.uAlpha, a.alpha);
+    gl.uniform1f(SU.uFlip, (a.flip ? 1 : 0) ^ (a.walkDir < 0 ? 1 : 0));
+    if (a.key !== 'owl'){ gl.uniform1f(SU.uShadow, 1); gl.drawArrays(gl.TRIANGLES, 0, 6); }
+    gl.uniform1f(SU.uShadow, 0); gl.drawArrays(gl.TRIANGLES, 0, 6);
+  }
+  gl.disable(gl.BLEND);
+}
+
+/* screen ↔ photo mapping (mirrors the shaders) */
+function texToScreen(tx, ty, d){
+  const W = innerWidth, H = innerHeight, va = W/H;
+  tx += V.mx*.016*(d-.25); ty += V.my*.006*(d-.25);
+  let u = tx, v = 1-ty;
+  u = (u-.5)*V.zoom+.5; v = (v-.38)*V.zoom+.38;
+  let sx, sy;
+  if (va > imgAsp){ const k = imgAsp/va; sx = u; sy = v/k; } else { const k = va/imgAsp; sx = (u-.5)/k+.5; sy = v; }
+  return [sx*W, (1-sy)*H];
+}
+function screenToTex(x, y){
+  const W = innerWidth, H = innerHeight, va = W/H; let sx = x/W, sy = 1-y/H, u = sx, v = sy;
+  if (va > imgAsp){ v = sy*(imgAsp/va); } else { u = (sx-.5)*(va/imgAsp)+.5; }
+  u = (u-.5)/V.zoom+.5; v = (v-.38)/V.zoom+.38;
+  return [u, 1-v];
+}
+// sky mask for tap handling, read once from the data texture
+let skyData = null, skyW = 0, skyH = 0;
+(() => { const im = new Image(); im.onload = () => { const c = document.createElement('canvas'); c.width = skyW = im.width; c.height = skyH = im.height; const x = c.getContext('2d'); x.drawImage(im,0,0); skyData = x.getImageData(0,0,skyW,skyH).data; }; im.src = './assets/valley-data.png'; })();
+const isSky = (tx, ty) => { if (!skyData || tx < 0 || tx > 1 || ty < 0 || ty > 1) return false; const i = (Math.floor(ty*(skyH-1))*skyW + Math.floor(tx*(skyW-1)))*4; return skyData[i+1] > 128; };
+
+/* hit targets: one real button per animal (keyboard + screen-reader friendly) */
+const play = $('#play');
+ACTORS.forEach(a => {
+  const b = document.createElement('button'); b.className = 'critter'; b.type = 'button'; b.hidden = true;
+  b.setAttribute('aria-label', `Say hello to the ${a.name}`);
+  b.addEventListener('click', e => { e.stopPropagation(); poke(a); });
+  play.appendChild(b); a.btn = b;
+});
+function placeButtons(){
+  for (const a of ACTORS){
+    const on = a.alpha > .5 && !a.away;
+    if (a.btn.hidden === on) a.btn.hidden = !on;
+    if (!on) continue;
+    const w = a.h*ATLAS[a.key][4]/imgAsp;
+    const [x0,y0] = texToScreen(a.x + a.o.dx - w/2, a.y + a.o.dy - a.h*a.o.sq, a.d), [x1,y1] = texToScreen(a.x + a.o.dx + w/2, a.y + a.o.dy, a.d);
+    a.btn.style.width = (x1-x0)+'px'; a.btn.style.height = (y1-y0)+'px';
+    a.btn.style.transform = `translate(${x0}px,${y0}px)`;
+  }
+}
+
+/* idle life */
+function updateActors(dt, t){
+  const n = V.P ? V.P.night : 0, rm = reduced();
+  for (const a of ACTORS){
+    const want = a.when(n) && !a.away ? 1 : 0;
+    a.alpha += (want - a.alpha)*Math.min(1, dt*1.5);
+    if (rm || a.busy || a.alpha < .05) continue;
+    a.o.sq = 1 + .007*Math.sin(t*2.1 + a.ph);                       // breathing
+    if (a.key === 'bear') a.o.rot = .035*Math.sin(t*.7 + a.ph);
+    if (a.patrol){                                                   // the fox trots back and forth
+      if (a.pause > 0) a.pause -= dt;
+      else {
+        a.o.dx += a.walkDir*.014*dt; a.o.dy = -.0025*Math.abs(Math.sin(t*9));
+        const x = a.x + a.o.dx;
+        if (x > a.patrol[1] || x < a.patrol[0]){ a.walkDir *= -1; a.pause = 2 + Math.random()*4; a.o.dy = 0; }
+      }
+    }
+    a.next -= dt;
+    if (a.next <= 0){ a.next = 4 + Math.random()*7; idleAction(a); }
+  }
+}
+function idleAction(a){
+  const o = a.o;
+  if (a.key === 'rabbit') gsap.to(o, {keyframes:[{dy:-.02, dx:o.dx + (Math.random()-.5)*.02, duration:.22, ease:'power2.out'},{dy:0, duration:.2, ease:'power2.in'}]});
+  else if (a.key === 'squirrel') gsap.to(o, {keyframes:[{dy:-.008, duration:.1},{dy:0, duration:.1}], onComplete:() => { if (Math.random() < .4) a.flip = !a.flip; }});
+  else if (a.key === 'owl') gsap.to(o, {keyframes:[{sq:.88, duration:.08},{sq:1, duration:.1}]});
+  else if (a.key === 'deer' && Math.random() < .3) a.flip = !a.flip;
+}
+
+/* tap reactions: a little performance, hearts and a kind tip */
+function poke(a){
+  if (a.busy) return;
+  a.busy = true; const o = a.o, rm = reduced();
+  const msg = a.msgs[a.mi++ % a.msgs.length];
+  say(a, msg); hearts(a); chirp(a.key);
+  const done = () => { a.busy = false; };
+  if (rm) { setTimeout(done, 400); return; }
+  const tl = gsap.timeline({onComplete:done});
+  switch (a.key){
+    case 'deer':   // three bounds away, then wanders back later
+      tl.to(o, {keyframes:[{dy:-.035, dx:o.dx-.05, duration:.28, ease:'power2.out'},{dy:0, dx:o.dx-.09, duration:.25, ease:'power2.in'},
+        {dy:-.03, dx:o.dx-.14, duration:.26, ease:'power2.out'},{dy:0, dx:o.dx-.18, duration:.24, ease:'power2.in'},
+        {dy:-.025, dx:o.dx-.23, duration:.25, ease:'power2.out'},{dy:0, dx:o.dx-.27, duration:.22, ease:'power2.in'}]})
+        .add(() => { a.away = true; setTimeout(() => { o.dx = 0; a.away = false; }, 22000); });
+      break;
+    case 'rabbit': // a happy "binky"
+      tl.to(o, {keyframes:[{dy:-.05, rot:.5, duration:.3, ease:'power2.out'},{dy:0, rot:0, duration:.3, ease:'bounce.out'}]}); break;
+    case 'bear':   // wobble
+      tl.to(o, {keyframes:[{rot:.14, duration:.18},{rot:-.12, duration:.22},{rot:.09, duration:.2},{rot:0, duration:.25}]}); break;
+    case 'squirrel':
+      tl.to(o, {keyframes:[{dy:-.02, duration:.14},{dy:0, duration:.12}], repeat:2}).add(() => { a.flip = !a.flip; }); break;
+    case 'raccoon':
+      tl.to(o, {keyframes:[{dy:.035, duration:.3, ease:'power2.in'},{dy:.035, duration:.6},{dy:0, duration:.4, ease:'back.out(2)'}]}); break;
+    case 'owl':
+      tl.to(o, {keyframes:[{rot:.25, duration:.2},{rot:-.22, duration:.3},{rot:0, duration:.25},{sq:.86, duration:.08},{sq:1, duration:.1}]}); break;
+    case 'fox':
+      tl.to(o, {keyframes:[{dy:-.03, duration:.2, ease:'power2.out'},{dy:0, duration:.2, ease:'power2.in'}]}).add(() => { a.walkDir *= -1; a.pause = 0; }); break;
+  }
+}
+const bubble = document.createElement('div'); bubble.className = 'bubble'; bubble.setAttribute('role','status'); document.body.appendChild(bubble);
+let bubbleFor = null, bubbleTimer;
+function say(a, text){
+  bubble.textContent = text; bubbleFor = a;
+  gsap.killTweensOf(bubble); gsap.fromTo(bubble, {opacity:0, y:6}, {opacity:1, y:0, duration:.3});
+  clearTimeout(bubbleTimer); bubbleTimer = setTimeout(() => { gsap.to(bubble, {opacity:0, duration:.4, onComplete:() => { bubbleFor = null; }}); }, 4200);
+}
+function placeBubble(){
+  if (!bubbleFor) return;
+  const a = bubbleFor, [x,y] = texToScreen(a.x + a.o.dx, a.y + a.o.dy - a.h*a.o.sq, a.d);
+  bubble.style.left = clamp(x, 140, innerWidth-140)+'px'; bubble.style.top = Math.max(70, y-10)+'px';
+}
+function hearts(a){
+  if (reduced()) return;
+  const [x,y] = texToScreen(a.x + a.o.dx, a.y - a.h*.8, a.d);
+  for (let i=0;i<6;i++){
+    const h = document.createElement('span'); h.className = 'heart'; h.textContent = ['❤️','💚','✨'][i%3];
+    h.style.left = x+'px'; h.style.top = y+'px'; document.body.appendChild(h);
+    gsap.fromTo(h, {x:0, y:0, opacity:1, scale:.6}, {x:(Math.random()-.5)*90, y:-60-Math.random()*60, scale:1.1, opacity:0, duration:1.4+Math.random()*.5, ease:'power2.out', onComplete:() => h.remove()});
+  }
+}
+function whisper(x, y, text){
+  const w = document.createElement('div'); w.className = 'whisper'; w.textContent = text; w.style.left = x+'px'; w.style.top = y+'px'; document.body.appendChild(w);
+  gsap.fromTo(w, {opacity:0, y:6}, {keyframes:[{opacity:1, y:0, duration:.4},{opacity:0, y:-22, duration:1.2, delay:1}], onComplete:() => w.remove()});
+}
+
+/* sky taps: birds take off by day, wishes on shooting stars at night */
+const stars = [];
+play.addEventListener('pointermove', e => { const [tx,ty] = screenToTex(e.clientX, e.clientY); play.classList.toggle('sky', isSky(tx,ty)); }, {passive:true});
+play.addEventListener('click', e => {
+  const [tx,ty] = screenToTex(e.clientX, e.clientY), n = V.P ? V.P.night : 0;
+  if (V.moon[2] > .3 && Math.hypot((tx-V.moon[0])*imgAsp, ty-V.moon[1]) < .03){
+    const pct = Math.round(phase.k*100), name = phase.k < .03 ? 'New moon' : phase.k > .97 ? 'Full moon' : `${phase.waxing ? 'Waxing' : 'Waning'} ${phase.k < .5 ? 'crescent' : 'gibbous'}`;
+    whisper(e.clientX+12, e.clientY-10, `${name} · ${pct}% lit`); return;
+  }
+  if (!isSky(tx,ty)) return;
+  if (n > .55){ shootingStar(e.clientX, e.clientY); whisper(e.clientX+10, e.clientY+14, 'Wish made ✨'); chirp('wish'); }
+  else { spawnFlockAt(e.clientX, e.clientY); chirp('flock'); }
+});
+function spawnFlockAt(x, y){
+  const n = 5 + Math.floor(Math.random()*4), dir = x < innerWidth*.4 ? -1 : 1;
+  for (let i=0;i<n;i++) birds.push({kind:'swift', x:x+(Math.random()-.5)*30, y:y+(Math.random()-.5)*20, vx:dir*(120+Math.random()*60), vy:-30-Math.random()*40, ph:Math.random()*6.3, s:5+Math.random()*2.5, dir, burst:true});
+}
+function shootingStar(x, y){ if (!reduced()) stars.push({x, y, vx:-420-Math.random()*200, vy:160+Math.random()*80, life:1}); }
+function drawStars(dt){
+  for (let i=stars.length-1;i>=0;i--){
+    const s = stars[i]; s.life -= dt*1.1; s.x += s.vx*dt; s.y += s.vy*dt;
+    if (s.life <= 0){ stars.splice(i,1); continue; }
+    const g = fxc.createLinearGradient(s.x, s.y, s.x - s.vx*.18, s.y - s.vy*.18);
+    g.addColorStop(0, `rgba(255,255,255,${s.life})`); g.addColorStop(1, 'rgba(255,255,255,0)');
+    fxc.strokeStyle = g; fxc.lineWidth = 2; fxc.beginPath(); fxc.moveTo(s.x, s.y); fxc.lineTo(s.x - s.vx*.18, s.y - s.vy*.18); fxc.stroke();
+  }
+}
+
+/* ═════════ Calm tools ═════════ */
+// mood check-in (mock: nothing is sent; in the product this could be an opt-in, anonymous pulse)
+const MOOD = {
+  tough:  'Rough start? That’s okay. Try the 1-minute breather before you dive in.',
+  meh:    'Steady is fine. Pick one small win to start with.',
+  good:   'Nice. Protect that energy: take your breaks today.',
+  great:  'Love it! Pass some of that on to a teammate today.'};
+$$('.mood').forEach(b => b.addEventListener('click', () => {
+  $$('.mood').forEach(x => x.setAttribute('aria-pressed', x === b));
+  const r = $('#moodReply'); r.textContent = MOOD[b.dataset.mood];
+  gsap.fromTo(r, {opacity:0, y:4}, {opacity:1, y:0, duration:.35});
+}));
+
+// guided breathing: 4s in, 4s hold, 6s out, ×4 (≈ 1 minute). The valley slows down with you.
+let breathTl = null;
+V.calm = 0;
+function openBreather(){
+  const ov = $('#breather'); ov.classList.add('open'); ov.focus();
+  const ring = $('#ring'), label = $('#breathLabel'), sub = $('#breathSub'), dots = $$('#breathDots i');
+  dots.forEach(d => d.classList.remove('on'));
+  gsap.to(V, {calm:1, duration:1.5});
+  gsap.to(['.ui','#mock'], {opacity:.12, duration:.6});
+  sub.textContent = 'Follow the circle. Breathe in through your nose, out through your mouth.';
+  breathTl = gsap.timeline({onComplete:() => { label.textContent = 'Nice work.'; sub.textContent = 'Ready when you are.'; chime(660); setTimeout(closeBreather, 2600); }});
+  breathTl.add(() => { label.textContent = 'Get comfortable…'; }).to(ring, {scale:1, duration:1.5});
+  for (let i=0;i<4;i++){
+    breathTl.add(() => { label.textContent = 'Breathe in'; chime(528); dots[i].classList.add('on'); })
+      .to(ring, {scale:1.55, duration:4, ease:'sine.inOut'})
+      .add(() => { label.textContent = 'Hold'; })
+      .to(ring, {scale:1.58, duration:4, ease:'none'})
+      .add(() => { label.textContent = 'Breathe out'; chime(396); })
+      .to(ring, {scale:1, duration:6, ease:'sine.inOut'});
+  }
+}
+function closeBreather(){
+  if (breathTl){ breathTl.kill(); breathTl = null; }
+  $('#breather').classList.remove('open');
+  gsap.to(V, {calm:0, duration:1.5});
+  gsap.to(['.ui','#mock'], {opacity:1, duration:.6});
+}
+$$('[data-breathe]').forEach(b => b.addEventListener('click', openBreather));
+$('#breathClose').addEventListener('click', closeBreather);
+addEventListener('keydown', e => { if (e.key === 'Escape' && $('#breather').classList.contains('open')) closeBreather(); });
+
+/* ═════════ Nature sounds (procedural WebAudio, off by default) ═════════ */
+let AC = null, master, windGain, nightBus, dayBus, soundOn = false;
+function noiseBuffer(ctx, secs){ const b = ctx.createBuffer(1, ctx.sampleRate*secs, ctx.sampleRate), d = b.getChannelData(0); let last = 0;
+  for (let i=0;i<d.length;i++){ const w = Math.random()*2-1; last = (last + .02*w)/1.02; d[i] = last*3.5; } return b; }   // brown noise
+function startAudio(){
+  AC = new (window.AudioContext || window.webkitAudioContext)();
+  master = AC.createGain(); master.gain.value = 0; master.connect(AC.destination);
+  const src = AC.createBufferSource(); src.buffer = noiseBuffer(AC, 4); src.loop = true;
+  const lp = AC.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 520;
+  windGain = AC.createGain(); windGain.gain.value = .5;
+  const lfo = AC.createOscillator(), lfoG = AC.createGain(); lfo.frequency.value = .07; lfoG.gain.value = 260; lfo.connect(lfoG).connect(lp.frequency); lfo.start();
+  src.connect(lp).connect(windGain).connect(master); src.start();
+  dayBus = AC.createGain(); dayBus.connect(master); nightBus = AC.createGain(); nightBus.connect(master);
+  // crickets: a steady chirping texture at night
+  const cr = AC.createOscillator(); cr.frequency.value = 4400; const crA = AC.createGain(); crA.gain.value = 0;
+  const pulse = AC.createOscillator(); pulse.type = 'square'; pulse.frequency.value = 28; const pG = AC.createGain(); pG.gain.value = .012;
+  const env = AC.createOscillator(); env.frequency.value = 1.6; const eG = AC.createGain(); eG.gain.value = .5;
+  pulse.connect(pG).connect(crA.gain); cr.connect(crA).connect(nightBus); cr.start(); pulse.start(); env.connect(eG); env.start();
+  scheduleCalls();
+}
+function scheduleCalls(){
+  if (!AC) return;
+  const n = V.P ? V.P.night : 0;
+  dayBus.gain.setTargetAtTime(n < .5 ? 1 : 0, AC.currentTime, 1.5);
+  nightBus.gain.setTargetAtTime(n > .5 ? 1 : 0, AC.currentTime, 1.5);
+  windGain.gain.setTargetAtTime(.5 - V.calm*.3, AC.currentTime, 1);
+  if (soundOn){ if (n < .5) birdSong(); else if (Math.random() < .35) owlHoot(); }
+  setTimeout(scheduleCalls, 2500 + Math.random()*4500);
+}
+function tone(bus, f0, f1, t0, dur, vol, type='sine'){
+  const o = AC.createOscillator(), g = AC.createGain(), p = AC.createStereoPanner ? AC.createStereoPanner() : null;
+  o.type = type; o.frequency.setValueAtTime(f0, t0); o.frequency.exponentialRampToValueAtTime(f1, t0+dur);
+  g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(vol, t0+dur*.25); g.gain.exponentialRampToValueAtTime(.0001, t0+dur);
+  if (p){ p.pan.value = Math.random()*1.6-.8; o.connect(g).connect(p).connect(bus); } else o.connect(g).connect(bus);
+  o.start(t0); o.stop(t0+dur+.05);
+}
+function birdSong(){ const t = AC.currentTime, f = 2600 + Math.random()*1800, n = 2 + Math.floor(Math.random()*5);
+  for (let i=0;i<n;i++) tone(dayBus, f*(1+Math.random()*.1), f*(1.25+Math.random()*.3), t + i*.13, .09, .05); }
+function owlHoot(){ const t = AC.currentTime; tone(nightBus, 390, 360, t, .35, .07); tone(nightBus, 380, 350, t+.55, .5, .07); }
+function chime(f){ if (!AC || !soundOn) return; const t = AC.currentTime; tone(master, f, f*.995, t, 1.8, .06); tone(master, f*2, f*2, t, 1.2, .015); }
+function chirp(kind){
+  if (!AC || !soundOn) return; const t = AC.currentTime;
+  if (kind === 'flock') for (let i=0;i<6;i++) tone(master, 3000+Math.random()*1500, 4200, t+i*.05, .07, .04);
+  else if (kind === 'wish') { tone(master, 1320, 1760, t, .6, .04); tone(master, 1760, 2640, t+.12, .7, .03); }
+  else if (kind === 'owl') owlHoot();
+  else tone(master, 880, 1320, t, .18, .035);
+}
+$('#soundBtn').addEventListener('click', () => {
+  soundOn = !soundOn;
+  if (soundOn && !AC) startAudio();
+  if (AC){ AC.resume(); master.gain.setTargetAtTime(soundOn ? .55 : 0, AC.currentTime, .6); }
+  $('#soundBtn').setAttribute('aria-pressed', soundOn);
+  $('#soundBtn').setAttribute('aria-label', soundOn ? 'Turn nature sounds off' : 'Turn nature sounds on');
+});
+
 /* ═════════ Boot + one render loop ═════════ */
 const q = new URLSearchParams(location.search);
 if (q.has('time')){ S.hour = +q.get('time'); setFollow(false); } else S.hour = liveHour();
-try { initGL(); } catch (e) { document.body.classList.add('no-gl'); console.warn(e); }
+try { initGL(); initSprites(); } catch (e) { document.body.classList.add('no-gl'); console.warn(e); }
 resize(); render();
 if (q.has('rm') || matchMedia('(prefers-reduced-motion: reduce)').matches) setReduced(true);
 if (q.has('notes')) $('#notes').classList.add('open');
@@ -714,16 +1166,17 @@ let lapseAcc = 0, nextRaptor = 1.5, nextFlock = 6, frames = 0, ftime = 0;
 gsap.ticker.add((time, dtMs) => {
   const dt = Math.min(dtMs, 50)/1000, rm = reduced();
   if (S.lapse){ S.hour = (S.hour + dt*.9) % 24; lapseAcc += dtMs; if (lapseAcc > 66){ lapseAcc = 0; render(); } }
-  if (!rm) simT += dt;
-  V.wind = rm ? 0 : 1;
+  if (!rm) simT += dt*(1 - .7*V.calm);
+  V.wind = rm ? 0 : 1 - .6*V.calm;
   const k = rm ? 1 : 1 - Math.pow(.0025, dt);                         // critically-damped pointer follow
   V.mx += ((rm ? 0 : V.tmx) - V.mx)*k; V.my += ((rm ? 0 : V.tmy) - V.my)*k;
-  if (!rm && V.P && V.P.night < .4){
+  updateActors(dt, simT);
+  if (!rm && V.P && V.P.night < .4 && V.calm < .1){
     nextRaptor -= dt; nextFlock -= dt;
     if (nextRaptor < 0 && birds.filter(b => b.kind === 'raptor').length < 2){ spawnRaptor(); nextRaptor = 20 + Math.random()*20; }
     if (nextFlock < 0){ spawnFlock(); nextFlock = 16 + Math.random()*16; }
   }
-  draw(); drawBirds(dt, time);
+  draw(); drawBirds(dt, time); drawStars(dt); placeButtons(); placeBubble();
   // adaptive resolution: if frames run long, render the scene canvas smaller (the photo stays sharp enough)
   frames++; ftime += dtMs;
   if (frames >= 45){ const avg = ftime/frames; frames = 0; ftime = 0;
