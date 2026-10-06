@@ -6,7 +6,7 @@
 <title>NanoHRMS Redesign</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: dark ink sidebar frames a calm, light work surface; every page = header → summary → filters → table. */
 :root{
@@ -55,9 +55,9 @@ body{margin:0;font-family:var(--font);font-size:14px;line-height:20px;color:var(
 button,input,select,textarea{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:4px}
 .num{font-variant-numeric:tabular-nums}
-.mono{font-family:var(--mono);font-size:12.5px;letter-spacing:-.01em}
-.t-display{font-size:28px;line-height:34px;font-weight:600;letter-spacing:-.022em;text-wrap:balance}
-.t-heading{font-size:20px;line-height:28px;font-weight:600;letter-spacing:-.015em;text-wrap:balance}
+.mono{font-family:var(--mono-f,var(--mono));font-size:12.5px;letter-spacing:-.01em}
+.t-display{font-family:var(--font-head,var(--font));font-size:var(--disp-size,28px);line-height:1.2;font-weight:var(--disp-w,600);letter-spacing:var(--disp-ls,-.022em);text-wrap:balance}
+.t-heading{font-family:var(--font-head,var(--font));font-size:20px;line-height:28px;font-weight:var(--head-w,600);letter-spacing:-.015em;text-wrap:balance}
 .t-sub{font-size:15px;line-height:22px;font-weight:600;letter-spacing:-.008em}
 .t-body{font-size:14px;line-height:20px}
 .t-label{font-size:13px;line-height:18px;font-weight:500}
@@ -82,7 +82,7 @@ svg.i.sm{width:16px;height:16px} svg.i.xs{width:14px;height:14px}
 .app{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:calc(100vh - 51px)}
 .side{background:var(--side);color:var(--side-ink);position:sticky;top:51px;height:calc(100vh - 51px);display:flex;flex-direction:column;overflow:hidden}
 .brandrow{display:flex;align-items:center;gap:10px;padding:16px 16px 12px}
-.logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(140deg,#14A396,#0B6E67);display:grid;place-items:center;color:#fff;font-weight:700;font-size:14px;letter-spacing:-.04em}
+.logo{width:30px;height:30px;border-radius:8px;background:var(--logo,linear-gradient(140deg,#14A396,#0B6E67));display:grid;place-items:center;color:#fff;font-weight:700;font-size:14px;letter-spacing:-.04em}
 .brandrow .nm{font-weight:600;font-size:15px;letter-spacing:-.01em;color:#F2F7F6}
 .tenant{margin:0 12px 10px;padding:8px 10px;border-radius:8px;background:var(--side-2);display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--side-ink);border:1px solid var(--side-line);cursor:pointer}
 .tenant small{display:block;color:var(--side-dim);font-size:11.5px}
@@ -92,15 +92,15 @@ svg.i.sm{width:16px;height:16px} svg.i.xs{width:14px;height:14px}
 .nitem{display:flex;align-items:center;gap:10px;width:100%;border:0;background:transparent;color:var(--side-ink);padding:7px 10px;border-radius:7px;font-size:13.5px;cursor:pointer;text-align:left;position:relative;z-index:1;transition:color var(--d1),background var(--d1)}
 .nitem svg{color:var(--side-dim);transition:color var(--d1)}
 .nitem:hover{background:rgba(255,255,255,.04)}
-.nitem[aria-current="page"]{color:#fff}
-.nitem[aria-current="page"] svg{color:#5ED3C6}
+.nitem[aria-current="page"]{color:var(--nav-act-ink,#fff)}
+.nitem[aria-current="page"] svg{color:var(--nav-act-ic,#5ED3C6)}
 .nitem .cnt{margin-left:auto;font-size:11px;padding:1px 7px;border-radius:999px;background:rgba(94,211,198,.14);color:#7FE0D4;font-variant-numeric:tabular-nums}
 .nitem.soon{opacity:.62}
 .ql{display:flex;align-items:center;gap:12px;width:100%;border:0;background:transparent;color:var(--ink);padding:9px 10px;border-radius:8px;text-align:left;cursor:pointer;transition:background var(--d1)}
 .ql:hover{background:var(--fill)}
 .ql>svg{color:var(--ink-3)}
-.nind{position:absolute;left:10px;right:10px;top:0;height:34px;border-radius:7px;background:var(--side-2);box-shadow:inset 0 0 0 1px var(--side-line);transition:transform var(--d3) var(--ease),height var(--d3) var(--ease),opacity var(--d2);z-index:0;pointer-events:none}
-.nind::before{content:"";position:absolute;left:-10px;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0;background:#2BB5A7}
+.nind{position:absolute;left:10px;right:10px;top:0;height:34px;border-radius:7px;background:var(--nav-act,var(--side-2));box-shadow:inset 0 0 0 1px var(--side-line);transition:transform var(--d3) var(--ease),height var(--d3) var(--ease),opacity var(--d2);z-index:0;pointer-events:none}
+.nind::before{content:"";position:absolute;left:-10px;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0;background:var(--nav-bar,#2BB5A7)}
 .me{border-top:1px solid var(--side-line);padding:12px 14px;display:flex;align-items:center;gap:10px}
 .me .who{font-size:13px;line-height:17px}.me .who small{display:block;color:var(--side-dim);font-size:11.5px}
 
@@ -123,7 +123,7 @@ svg.i.sm{width:16px;height:16px} svg.i.xs{width:14px;height:14px}
 .ph p{margin:4px 0 0;color:var(--ink-2)}
 .ph h1{margin:0}
 .actions{display:flex;gap:8px;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:36px;padding:0 14px;border-radius:8px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);font-size:13.5px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background var(--d1),border-color var(--d1),transform var(--d1) var(--ease),box-shadow var(--d1)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:36px;padding:0 14px;border-radius:var(--r-btn,8px);border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);font-size:13.5px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background var(--d1),border-color var(--d1),transform var(--d1) var(--ease),box-shadow var(--d1)}
 .btn:hover{background:var(--fill)}
 .btn:active{transform:scale(.97)}
 .btn.pri{background:var(--brand);border-color:var(--brand);color:var(--on-brand);box-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 1px 2px rgba(11,122,114,.3)}
@@ -149,7 +149,7 @@ svg.i.sm{width:16px;height:16px} svg.i.xs{width:14px;height:14px}
 .kpi{padding:16px 18px;display:flex;flex-direction:column;gap:6px}
 .kpi .lb{font-size:12.5px;color:var(--ink-2);display:flex;align-items:center;gap:7px}
 .kpi .lb svg{color:var(--ink-3)}
-.kpi .v{font-size:26px;line-height:32px;font-weight:600;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
+.kpi .v{font-family:var(--font-head,var(--font));font-size:var(--kpi-size,26px);line-height:1.2;font-weight:600;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
 .kpi .v small{font-size:14px;font-weight:500;color:var(--ink-3);letter-spacing:0;margin-left:4px}
 .kpi .ft{font-size:12px;color:var(--ink-3);display:flex;align-items:center;gap:6px}
 .delta{display:inline-flex;align-items:center;gap:2px;font-weight:500;color:var(--ok)}
@@ -403,6 +403,131 @@ textarea.ta:focus{border-color:var(--brand);box-shadow:0 0 0 3px color-mix(in sr
 .switch::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:transform var(--d2) var(--ease)}
 .switch:checked{background:var(--brand)}.switch:checked::after{transform:translateX(14px)}
 
+
+/* ═══════════ Three directions. Each is a deliberate single-theme world. ═══════════ */
+/* Midnight: dark command-centre. Indigo light on near-black, content floats on an inset panel. */
+:root[data-dir="midnight"]{
+  --bg:#07080D; --surface:#10121A; --fill:#181B27; --fill-2:#222634; --line:#1E2230; --line-strong:#2D3244;
+  --ink:#ECEEF7; --ink-2:#A3A9BF; --ink-3:#727892;
+  --brand:#7563FF; --brand-hover:#8A7BFF; --brand-soft:#1D1940; --brand-ink:#B7AEFF; --on-brand:#FFFFFF;
+  --side:#07080D; --side-2:#141726; --side-ink:#C7CBDD; --side-dim:#6C7290; --side-line:#141726;
+  --ok:#4ADE95; --ok-soft:#0F2A1E; --warn:#F7BE55; --warn-soft:#2C2312; --bad:#FF7F8E; --bad-soft:#331720; --info:#7FB4FF; --info-soft:#13213B;
+  --c1:#7563FF; --c2:#34D6C4; --c3:#F7BE55; --c4:#FF7F8E; --c5:#5AA9FF; --c6:#8A90A6;
+  --scrim:rgba(0,0,0,.65); --sh-1:0 1px 0 rgba(255,255,255,.03) inset; --sh-2:0 12px 32px -10px rgba(0,0,0,.7); --sh-3:0 30px 80px -20px rgba(0,0,0,.85);
+  --font:"Plus Jakarta Sans",ui-sans-serif,system-ui,sans-serif; --font-head:"Plus Jakarta Sans",ui-sans-serif,system-ui,sans-serif;
+  --disp-size:32px; --disp-w:700; --disp-ls:-.03em; --head-w:700; --kpi-size:34px;
+  --r-md:18px; --r-btn:11px;
+  --nav-act:linear-gradient(90deg,rgba(117,99,255,.32),rgba(117,99,255,.06)); --nav-act-ink:#FFFFFF; --nav-act-ic:#B7AEFF; --nav-bar:#8A7BFF;
+  --logo:linear-gradient(140deg,#9D90FF,#4A36E0);
+  color-scheme:dark}
+[data-dir="midnight"] .main{margin:0 10px 10px 0;border-radius:22px;border:1px solid var(--line);background:radial-gradient(900px 420px at 85% -10%,rgba(117,99,255,.16),transparent 60%),radial-gradient(700px 360px at 0% 0%,rgba(52,214,196,.07),transparent 60%),#0B0D14;overflow:clip}
+[data-dir="midnight"] .top{background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none;border-bottom-color:transparent;position:relative;top:0}
+[data-dir="midnight"] .card{background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.01)),var(--surface);border-color:rgba(255,255,255,.06)}
+[data-dir="midnight"] .card .hd{border-bottom-color:rgba(255,255,255,.05)}
+[data-dir="midnight"] .kpi .v{background:linear-gradient(180deg,#FFFFFF,#B9B3E8);-webkit-background-clip:text;background-clip:text;color:transparent}
+[data-dir="midnight"] .btn.pri{background:linear-gradient(180deg,#8A7BFF,#6150F0);border-color:#6E5DFA;box-shadow:0 0 0 1px rgba(255,255,255,.08) inset,0 8px 24px -8px rgba(117,99,255,.7)}
+[data-dir="midnight"] .chart .ln{filter:drop-shadow(0 6px 14px rgba(117,99,255,.55))}
+[data-dir="midnight"] .hbar .tr i,[data-dir="midnight"] .track i,[data-dir="midnight"] .week .bar.on{background:linear-gradient(90deg,#5B49F5,#9D90FF)}
+[data-dir="midnight"] .week .bar.on{background:linear-gradient(0deg,#5B49F5,#9D90FF)}
+[data-dir="midnight"] .hello h1{background:linear-gradient(90deg,#FFFFFF 30%,#B7AEFF);-webkit-background-clip:text;background-clip:text;color:transparent}
+[data-dir="midnight"] .ribbon{background:#07080D;border-bottom-color:#141726}
+
+/* Marigold: Indian colour, confident and warm. Plum frame, marigold highlights, chunky rounded shapes. */
+:root[data-dir="marigold"]{
+  --bg:#F3F0F8; --surface:#FFFFFF; --fill:#F1EDF7; --fill-2:#E6DFF0; --line:#E8E2F0; --line-strong:#D3CAE2;
+  --ink:#1F1233; --ink-2:#584B6E; --ink-3:#83789A;
+  --brand:#3A1760; --brand-hover:#4D2179; --brand-soft:#FFF1D6; --brand-ink:#8F4F00; --on-brand:#FFFFFF;
+  --side:#2A1043; --side-2:#3B1A5C; --side-ink:#ECE2F7; --side-dim:#A893C4; --side-line:#3B1A5C;
+  --ok:#0F7A4B; --ok-soft:#DDF6E9; --warn:#A35A00; --warn-soft:#FFEFD0; --bad:#C0263F; --bad-soft:#FDE4E8; --info:#5B2FC9; --info-soft:#EDE5FF;
+  --c1:#FFA91F; --c2:#7B3FE4; --c3:#14B8A6; --c4:#F0446A; --c5:#3B82F6; --c6:#8B8398;
+  --sh-1:0 1px 2px rgba(42,16,67,.06),0 4px 14px -6px rgba(42,16,67,.10); --sh-2:0 12px 30px -10px rgba(42,16,67,.22); --sh-3:0 30px 70px -20px rgba(42,16,67,.4);
+  --font:"Figtree",ui-sans-serif,system-ui,sans-serif; --font-head:"Bricolage Grotesque","Figtree",ui-sans-serif,system-ui,sans-serif;
+  --disp-size:38px; --disp-w:800; --disp-ls:-.035em; --head-w:700; --kpi-size:34px;
+  --r-md:22px; --r-btn:999px;
+  --nav-act:#FFA91F; --nav-act-ink:#2A1043; --nav-act-ic:#2A1043; --nav-bar:transparent;
+  --logo:#FFA91F;
+  color-scheme:light}
+[data-dir="marigold"] .logo{color:#2A1043}
+[data-dir="marigold"] .nind{border-radius:999px;box-shadow:none}
+[data-dir="marigold"] .nitem{border-radius:999px}
+[data-dir="marigold"] .nitem[aria-current="page"]{font-weight:600}
+[data-dir="marigold"] .nitem .cnt{background:#FFA91F;color:#2A1043}
+[data-dir="marigold"] .card{border:0}
+[data-dir="marigold"] .kpis .kpi{border:0}
+[data-dir="marigold"] .kpis .kpi:nth-child(1){background:#2A1043;color:#FFFFFF}
+[data-dir="marigold"] .kpis .kpi:nth-child(2){background:#FFA91F;color:#2A1043}
+[data-dir="marigold"] .kpis .kpi:nth-child(3){background:#C9F2DF;color:#0B3D2A}
+[data-dir="marigold"] .kpis .kpi:nth-child(4){background:#E7DCFF;color:#2A1043}
+[data-dir="marigold"] .kpis .kpi .lb,[data-dir="marigold"] .kpis .kpi .ft,[data-dir="marigold"] .kpis .kpi .lb svg,[data-dir="marigold"] .kpis .kpi .v small,[data-dir="marigold"] .kpis .kpi .dim,[data-dir="marigold"] .kpis .kpi .lbal .nm{color:inherit;opacity:.78}
+[data-dir="marigold"] .kpis .kpi .link{color:inherit;text-decoration:underline;text-underline-offset:3px}
+[data-dir="marigold"] .kpis .kpi .delta{color:inherit}
+[data-dir="marigold"] .kpis .kpi:nth-child(1) .track{background:rgba(255,255,255,.16)}
+[data-dir="marigold"] .kpis .kpi:nth-child(1) .track i{background:#FFA91F}
+[data-dir="marigold"] .kpis .kpi .pill{background:rgba(255,255,255,.55);color:inherit}
+[data-dir="marigold"] .hello h1::after{content:"";display:block;width:64px;height:6px;border-radius:6px;background:#FFA91F;margin-top:10px}
+[data-dir="marigold"] .btn.pri{box-shadow:0 6px 16px -6px rgba(58,23,96,.55)}
+[data-dir="marigold"] .chip{border-radius:999px;border:0;background:#F1EDF7}
+[data-dir="marigold"] .t th{background:var(--surface)}
+[data-dir="marigold"] .notice{border-radius:18px}
+[data-dir="marigold"] .ribbon{background:#2A1043;color:#ECE2F7;border-bottom-color:#3B1A5C}
+[data-dir="marigold"] .ribbon .tag,[data-dir="marigold"] .ribbon .tag b{color:#ECE2F7}
+
+/* Ledger: precise and corporate. Black top bar, cobalt, square edges, ruled lines instead of cards. */
+:root[data-dir="ledger"]{
+  --bg:#FFFFFF; --surface:#FFFFFF; --fill:#F3F4F6; --fill-2:#E7E9ED; --line:#E3E5E9; --line-strong:#C5CAD3;
+  --ink:#0A0C10; --ink-2:#4A505E; --ink-3:#767D8C;
+  --brand:#1A47F5; --brand-hover:#123AD1; --brand-soft:#ECF0FF; --brand-ink:#1A47F5; --on-brand:#FFFFFF;
+  --side:#0A0C10; --side-2:#0A0C10; --side-ink:#C9CDD6; --side-dim:#7E8594; --side-line:#22262E;
+  --ok:#0B7A3E; --ok-soft:#E3F5EA; --warn:#9A5B00; --warn-soft:#FFF3DC; --bad:#C21F2F; --bad-soft:#FDE8EA; --info:#1A47F5; --info-soft:#ECF0FF;
+  --c1:#1A47F5; --c2:#0A0C10; --c3:#E8A20C; --c4:#E5484D; --c5:#7C8597; --c6:#B8BFCC;
+  --sh-1:none; --sh-2:0 8px 24px -8px rgba(10,12,16,.18); --sh-3:0 24px 60px -16px rgba(10,12,16,.3);
+  --font:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif; --font-head:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif; --mono-f:"IBM Plex Mono",ui-monospace,monospace;
+  --disp-size:34px; --disp-w:500; --disp-ls:-.025em; --head-w:600; --kpi-size:36px;
+  --r-md:3px; --r-btn:3px; --r-lg:4px;
+  --nav-act:transparent; --nav-act-ink:#FFFFFF; --nav-act-ic:#FFFFFF; --nav-bar:transparent;
+  --logo:#1A47F5;
+  color-scheme:light}
+[data-dir="ledger"] .app{grid-template-columns:minmax(0,1fr);grid-template-rows:auto 1fr}
+[data-dir="ledger"] .side{position:sticky;top:51px;z-index:25;height:52px;flex-direction:row;align-items:center;padding:0 16px 0 20px;gap:18px;width:auto;transform:none}
+[data-dir="ledger"] .brandrow{padding:0}
+[data-dir="ledger"] .tenant,[data-dir="ledger"] .me,[data-dir="ledger"] .nind,[data-dir="ledger"] .ngroup h6,[data-dir="ledger"] .nitem.soon,[data-dir="ledger"] .burger{display:none}
+[data-dir="ledger"] .navscroll{display:flex;align-items:stretch;gap:2px;padding:0;overflow-x:auto;overflow-y:hidden;height:52px;scrollbar-width:none}
+[data-dir="ledger"] .ngroup{display:flex;margin:0}
+[data-dir="ledger"] .nitem{border-radius:0;padding:0 12px;height:52px;white-space:nowrap;font-size:13.5px}
+[data-dir="ledger"] .nitem:hover{background:rgba(255,255,255,.06)}
+[data-dir="ledger"] .nitem[aria-current="page"]{box-shadow:inset 0 -3px 0 #1A47F5;font-weight:500}
+[data-dir="ledger"] .nitem svg{display:none}
+[data-dir="ledger"] .nitem .cnt{background:#1A47F5;color:#fff}
+[data-dir="ledger"] .moreb{display:flex}
+[data-dir="ledger"] .top{top:103px;background:#FFFFFF;backdrop-filter:none;-webkit-backdrop-filter:none}
+[data-dir="ledger"] .content{max-width:1240px}
+[data-dir="ledger"] .card{border-color:var(--line);box-shadow:none}
+[data-dir="ledger"] .card .hd h3{font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+[data-dir="ledger"] .kpis{gap:0;border-top:2px solid var(--ink);border-bottom:1px solid var(--line)}
+[data-dir="ledger"] .kpis .kpi{border:0;border-radius:0;border-right:1px solid var(--line);padding:18px 20px 20px}
+[data-dir="ledger"] .kpis .kpi:last-child{border-right:0}
+[data-dir="ledger"] .kpi .v{font-weight:400}
+[data-dir="ledger"] .pill{border-radius:2px;height:20px;font-size:11.5px;letter-spacing:.02em}
+[data-dir="ledger"] .pill::before{border-radius:0}
+[data-dir="ledger"] .chip{border-radius:2px}
+[data-dir="ledger"] .av{border-radius:3px}
+[data-dir="ledger"] .t th{color:var(--ink);border-bottom:1px solid var(--ink);font-weight:600}
+[data-dir="ledger"] .t td{padding:12px 16px}
+[data-dir="ledger"] .num,[data-dir="ledger"] .t .r.num,[data-dir="ledger"] .kpi .v{font-family:var(--mono-f);letter-spacing:-.02em}
+[data-dir="ledger"] .hello{border-bottom:1px solid var(--line);padding-bottom:20px}
+[data-dir="ledger"] .seg,[data-dir="ledger"] .seg .thumb,[data-dir="ledger"] .seg button{border-radius:2px}
+[data-dir="ledger"] .date{border-radius:2px}
+[data-dir="ledger"] .date small{background:var(--ink);color:#fff}
+[data-dir="ledger"] .notice{border-radius:0;border-width:0 0 0 3px;border-color:var(--warn)}
+[data-dir="ledger"] .ribbon{background:#FFFFFF}
+.moreb{display:none}
+@media (max-width:900px){
+  [data-dir="ledger"] .side{position:sticky;top:51px;left:auto;bottom:auto;height:52px;width:auto;padding-top:0;transform:none;box-shadow:none}
+  [data-dir="ledger"] .brandrow .nm{display:none}
+  [data-dir="ledger"] .main{margin:0}
+  [data-dir="midnight"] .main{margin:0;border-radius:0;border:0}
+}
+
 /* Responsive */
 @media (max-width:1100px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.s4,.s5,.s7,.s8,.s6,.s3{grid-column:span 12}}
 @media (max-width:900px){
@@ -430,14 +555,14 @@ textarea.ta:focus{border-color:var(--brand);box-shadow:0 0 0 3px color-mix(in sr
 
 
 <div class="ribbon">
-  <div class="tag"><b>NanoHRMS</b> <span class="long">reference design · every page here is a real screen from the app, redesigned · sample data</span></div>
+  <div class="tag"><b>NanoHRMS</b> <span class="long">three redesign directions · real app screens · sample data</span></div>
   <div class="sp"></div>
   <div class="seg" id="viewSeg" role="group" aria-label="View">
     <span class="thumb"></span>
     <button data-view="app" aria-pressed="true">App prototype</button>
     <button data-view="ds" aria-pressed="false">Design system</button>
   </div>
-  <button class="iconbtn" id="themeBtn" aria-label="Toggle dark mode"></button>
+  <div class="seg" id="dirSeg" role="group" aria-label="Design direction"><span class="thumb"></span><button data-dir="midnight" aria-pressed="true">A · Midnight</button><button data-dir="marigold" aria-pressed="false">B · Marigold</button><button data-dir="ledger" aria-pressed="false">C · Ledger</button></div>
 </div>
 
 <div class="app" id="app">
@@ -588,7 +713,7 @@ const S={page:'dashboard',view:'app',clockIn:null,sel:new Set(),lvFilter:'Pendin
 
 function renderNav(){
   const nav=document.getElementById('nav');
-  nav.innerHTML='<div class="nind" id="nind"></div>'+NAV.map(g=>`<div class="ngroup">${g.t?`<h6>${g.t}</h6>`:''}${g.items.map(it=>`<button class="nitem ${it.k.startsWith('x-')?'soon':''}" data-nav="${it.k}" ${S.page===it.k?'aria-current="page"':''}>${ic(it.i)}<span>${it.l}</span>${it.c?`<span class="cnt">${it.c}</span>`:''}</button>`).join('')}</div>`).join('');
+  nav.innerHTML='<div class="nind" id="nind"></div>'+NAV.map(g=>`<div class="ngroup">${g.t?`<h6>${g.t}</h6>`:''}${g.items.map(it=>`<button class="nitem ${it.k.startsWith('x-')?'soon':''}" data-nav="${it.k}" ${S.page===it.k?'aria-current="page"':''}>${ic(it.i)}<span>${it.l}</span>${it.c?`<span class="cnt">${it.c}</span>`:''}</button>`).join('')}</div>`).join('')+`<button class="nitem moreb">More ${ic('down','xs')}</button>`;
   requestAnimationFrame(moveInd);
 }
 function moveInd(){
@@ -796,9 +921,9 @@ function pgPayroll(){
 /* ───────────── Design system view ───────────── */
 function pgDS(){
   const colors=[['--brand','Brand','Primary actions, active nav'],['--brand-soft','Brand soft','Selected rows, chips'],['--ink','Ink','Primary text'],['--ink-2','Ink 2','Secondary text'],['--ink-3','Ink 3','Captions, placeholders'],['--bg','Background','Page'],['--surface','Surface','Cards, tables'],['--fill','Fill','Inputs, tracks'],['--line','Line','Dividers'],['--side','Sidebar','Navigation frame'],['--ok','Success','Approved, Paid, Active'],['--warn','Warning','Pending, Probation'],['--bad','Danger','Rejected, overdue'],['--info','Info','On Leave, notices']];
-  const chart=['--c1','--c2','--c3','--c4','--c5','--c6'];
+  const chart=['--c1','--c2','--c3','--c4','--c5','--c6'];const D=DIRS[S.dir];
   return `<div class="page ds">
-  <div style="--i:0;margin-bottom:24px"><h1 class="t-display" style="margin:0 0 6px">Design system</h1><p class="lead">One set of tokens, six type roles and a dozen components cover every screen. The app's existing Refined Glass rules (semantic tokens only, closed type scale, Base UI primitives, motion package) stay; this pass changes the font, the frame, the navigation and the rules for when to use cards, pills and colour.</p></div>
+  <div style="--i:0;margin-bottom:24px"><h1 class="t-display" style="margin:0 0 6px">Direction ${S.dir==='midnight'?'A':S.dir==='marigold'?'B':'C'} · ${D.n}</h1><p class="lead">Switch directions at the top. All three use the same pages, components and motion rules; they differ in colour, type, shape and frame. Each one maps onto the app's existing token system, so whichever you pick is a token and layout change, not a rewrite.</p></div>
 
   <section style="--i:1"><h2 class="t-heading">Why the current UI feels inconsistent</h2><p class="lead">Checked against the code on main.</p>
   <div class="findings">
@@ -807,16 +932,16 @@ function pgDS(){
      ['US placeholders in Indian forms','The add-employee form shows <code>Basic Salary (USD)</code>, <code>+1 234 567 890</code> and <code>e.g. Chase Bank</code>. The redesign uses ₹, +91, IFSC, PAN, UAN and lakh grouping (₹83,37,110).'],
      ['Novelty chrome','A Pomodoro "Quick tools" dock and an "Intelligent Tool Interface V24" label sit in the header. They read as a demo, not a payroll system. Removed from the frame.'],
      ['Every block is a card','Hero banners, glass panels and cards with the same radius and shadow give no hierarchy. Here cards hold data only; page headers, filters and notices are flat.'],
-     ['Inter with no hierarchy','Inter at many weights and sizes made pages look alike. Geist with six fixed roles and tabular figures for every amount gives a calmer, more exact feel.']
+     ['Same white card everywhere','Today every page is white cards, teal icons in pastel squares and Inter. Nothing tells Dashboard from Payroll, and nothing looks like it was designed for this product. Each direction here commits to one strong frame, colour and typeface.']
     ].map(([t,p])=>`<div class="card finding"><div class="row">${ic('alert','sm')}<div><b>${t}</b><p>${p}</p></div></div></div>`).join('')}
   </div></section>
 
-  <section style="--i:2"><h2 class="t-heading">Colour</h2><p class="lead">Teal stays as the brand and stays tenant-scopable. Neutrals carry a slight teal tint so greys feel chosen. Status colours mean status only, never decoration. Toggle dark mode at the top right to see the designed dark palette.</p>
+  <section style="--i:2"><h2 class="t-heading">Colour</h2><p class="lead">${D.col} Status colours mean status only, never decoration.</p>
    <div class="sw">${colors.map(([v,n,u])=>`<div class="s"><i style="background:var(${v})"></i><div><b>${n}</b><code>${v}</code><div class="t-cap">${u}</div></div></div>`).join('')}</div>
    <div style="display:flex;gap:6px;margin-top:14px;align-items:center;flex-wrap:wrap"><span class="t-label" style="margin-right:6px">Charts</span>${chart.map(c=>`<span style="width:40px;height:22px;border-radius:5px;background:var(${c})"></span>`).join('')}<span class="t-cap" style="margin-left:6px">Six categorical hues, used in this order</span></div>
   </section>
 
-  <section style="--i:3"><h2 class="t-heading">Typography</h2><p class="lead">Geist for everything people read, Geist Mono for codes people copy: employee IDs, IFSC, PAN, UAN, challan numbers. Both include the ₹ sign. All amounts use tabular figures so columns line up.</p>
+  <section style="--i:3"><h2 class="t-heading">Typography</h2><p class="lead">${D.fonts}. Every face includes the ₹ sign, and all amounts use tabular figures so columns line up.</p>
    <div class="card bd">
     <div class="typerow"><code>display · 28/34 · 600</code><span class="t-display">Payroll overview</span></div>
     <div class="typerow"><code>heading · 20/28 · 600</code><span class="t-heading">Pending approvals</span></div>
@@ -824,7 +949,7 @@ function pgDS(){
     <div class="typerow"><code>body · 14/20 · 400</code><span class="t-body">Bank details are stored securely. Only HR personnel with appropriate permissions can view or edit these fields.</span></div>
     <div class="typerow"><code>label · 13/18 · 500</code><span class="t-label">Date of joining</span></div>
     <div class="typerow"><code>caption · 12/16 · 400</code><span class="t-cap">Updated 2 min ago</span></div>
-    <div class="typerow"><code>mono · 12.5 · 400</code><span class="mono">KT-0142 · HDFC0001234 · ABCPR••••K · UAN 1009 4567 8812</span></div>
+    <div class="typerow"><code>mono · 12.5 · 400</code><span class="mono" style="font-size:14px">KT-0142 · HDFC0001234 · ABCPR••••K · UAN 1009 4567 8812</span></div>
     <div class="typerow"><code>figures · tabular</code><span class="num" style="font-size:20px;font-weight:600;letter-spacing:-.02em">₹21,55,170 · ₹83,37,110 · 212.5 days</span></div>
    </div></section>
 
@@ -991,6 +1116,8 @@ function openCmd(){show('cmd');const i=document.getElementById('cmdIn');i.value=
 document.addEventListener('click',ev=>{
   const t=ev.target.closest('button,tr[data-emp],tr[data-act],[data-act],[data-nav],[data-emp]');if(!t)return;
   if(t.dataset.view){setView(t.dataset.view);return}
+  if(t.dataset.dir){setDir(t.dataset.dir);return}
+  if(t.classList.contains('moreb')){toast('More opens a menu with Org chart, Documents, Shifts, Holidays, Salary structures, Statutory, Recruitment and Reports','warn');return}
   if(t.dataset.nav){closeAll();go(t.dataset.nav);return}
   if(t.dataset.emp){closeAll();setTimeout(()=>openEmp(t.dataset.emp),S.view==='app'?0:0);return}
   if(t.dataset.toast&&!t.dataset.act){toast(t.dataset.toast);return}
@@ -1049,18 +1176,23 @@ document.getElementById('burger').addEventListener('click',()=>{document.getElem
 document.addEventListener('click',ev=>{const t=ev.target.closest('#punchBtn');if(!t)return;S.clockIn=S.clockIn?null:new Date();toast(S.clockIn?'Checked in successfully':'Checked out successfully');updPunch()});
 
 /* Theme */
-function themeIcon(){const d=document.documentElement.dataset.theme==='dark'||(!document.documentElement.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);document.getElementById('themeBtn').innerHTML=ic(d?'sun':'moon')}
-document.getElementById('themeBtn').addEventListener('click',()=>{const r=document.documentElement,d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.theme=d?'light':'dark';themeIcon()});
-window.addEventListener('resize',()=>{moveInd();moveThumb('viewSeg');moveThumb('lvSeg');moveUl('dtabs')});
+const DIRS={
+ midnight:{n:'Midnight',fonts:'Plus Jakarta Sans for everything people read, Geist Mono for codes people copy',col:'Electric indigo on near-black, with teal, amber and rose for charts. Content floats on an inset panel with a soft glow, so the product feels like a command centre. Dark only, by design.'},
+ marigold:{n:'Marigold',fonts:'Bricolage Grotesque for headings and numbers, Figtree for body text, Geist Mono for codes',col:'A deep plum frame with marigold highlights, plus mint and lilac summary tiles. Warm, confident and recognisably Indian without being a cliché. Light only, by design.'},
+ ledger:{n:'Ledger',fonts:'IBM Plex Sans for text and IBM Plex Mono for every figure and code, so amounts line up like a ledger',col:'Black, white and one cobalt blue. Square edges, ruled lines instead of floating cards, and a top navigation bar. It reads like serious accounting software. Light only, by design.'}
+};
+function setDir(d,rerender=true){S.dir=d;const r=document.documentElement;r.dataset.dir=d;r.dataset.theme=d==='midnight'?'dark':'light';document.querySelectorAll('#dirSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.dir===d));try{localStorage.setItem('nh-dir',d)}catch(e){}if(rerender)render();requestAnimationFrame(()=>{moveThumb('dirSeg');moveInd()})}
+window.addEventListener('resize',()=>{moveInd();moveThumb('dirSeg');moveThumb('viewSeg');moveThumb('lvSeg');moveUl('dtabs')});
 
 /* Boot */
-hydrate(document);themeIcon();
+hydrate(document);
+let _d='midnight';try{_d=localStorage.getItem('nh-dir')||'midnight'}catch(e){}if(!DIRS[_d])_d='midnight';setDir(_d,false);
 document.getElementById('burger').innerHTML=ic('menu');
 const h=(location.hash||'').slice(1);
 S.clockIn=new Date(Date.now()-(2*3600+47*60)*1000);
 if(h==='ds'){S.view='ds'} else if(PAGES[h]){S.page=h}
 render();
-if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{moveInd();moveThumb('viewSeg');moveThumb('lvSeg')});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{moveInd();moveThumb('viewSeg');moveThumb('lvSeg');moveThumb('dirSeg')});
 </script>
 
 </body>
